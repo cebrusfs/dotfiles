@@ -1,0 +1,50 @@
+#
+# Mac for work
+# Additional command line tools
+#
+
+# Load Brewfile.min
+instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.min").read
+
+
+#
+# Core
+#
+
+# TODO: OSX build-in zsh is enough?
+#brew "zsh"
+
+
+#
+# Developing
+#
+
+# Remote working
+brew "tmux"
+brew "tmux-mem-cpu-load"            # show mem/cpu load in tmux
+brew "mosh"
+
+# System monitor
+brew "tree"
+brew "htop"
+brew "watch"
+
+# Networking
+brew "httpie"
+brew "netcat"
+brew "wget"
+
+# Version control
+brew "git"
+brew "mercurial"                    # hg
+
+# Misc
+brew "md5sha1sum"
+brew "dos2unix"
+
+#
+# App
+#
+
+cask "google-chrome"
+cask "skype"

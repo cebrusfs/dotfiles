@@ -1,0 +1,41 @@
+# vim: syntax=sshconfig
+
+# Adding compression to help speed up remote Vim.
+# https://stackoverflow.com/a/34206244/358069
+Compression yes
+
+# local vms on MBP2015 {{{
+# Host: 10.211.55.2
+# Host win7
+    # HostName 172.25.1.201
+Host u18
+    HostName ubuntu-18.04
+    ForwardAgent yes
+Host u20
+    HostName ubuntu-20.04
+    ForwardAgent yes
+# }}}
+
+# TFcis {{{
+Host phantom
+    HostName phantom.tfcis.org
+    User yuscvscv
+    Port 9527
+    ForwardAgent yes
+# }}}
+
+# Work stations @ NTU.CSIE {{{
+# cs[1-20]
+Host cs*
+    User r04922033
+    # cs\d -> linux\d.csie.org
+    ProxyCommand nc "linux$(echo "%h" | sed 's/cs//').csie.org" %p
+    ForwardAgent yes
+# }}}
+
+# overthewire
+Host *.labs.overthewire.org
+    SendEnv WECHALLTOKEN
+    SendEnv WECHALLUSER
+
+# Work

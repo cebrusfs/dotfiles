@@ -1,0 +1,69 @@
+# vim: set shiftwidth=4 tabstop=4:
+- defaults:
+    link:
+        relink: true
+        create: true
+    shell:
+        stdout: true
+        stderr: true
+
+- clean: ["~", "~/.ssh", "~/.irssi"]
+
+- shell:
+    - [git submodule update --init --recursive, "Installing submodules"]
+
+# misc
+- link:
+    # tmux
+    ~/.tmux.conf: config/tmux/tmux.conf
+
+    # irc
+    ~/.irssi/default.theme: config/irssi/default.theme
+    ~/.irssi/config: config/irssi/config
+    ~/.irssi/scripts: config/irssi/scripts
+    ~/.irssi/gen_client_cert.sh: config/irssi/gen_client_cert.sh
+
+    # pandoc
+    ~/.pandoc: config/pandoc
+
+    # zsh
+    ~/.zshenv: config/zsh/zshenv
+    ~/.zprofile: config/zsh/zprofile
+    ~/.zpreztorc: config/zsh/zpreztorc
+    ~/.zshrc: config/zsh/zshrc
+    ~/.zlogin: config/zsh/zlogin
+    ~/.zlogout: config/zsh/zlogout
+
+    # git
+    ~/.gitconfig: config/git/gitconfig
+
+    # ssh
+    ~/.ssh/config: config/ssh/config
+    ~/.ssh/authorized_keys: config/ssh/authorized_keys
+
+# fzf
+- link:
+    ~/.fzf: modules/fzf
+- shell:
+    - command: ~/.fzf/install --all
+      description: Installing fzf
+      stdout: false
+
+# vim
+- link:
+    ~/.vim: config/vim
+    # lint configs
+    ~/.rubocop.yml: config/vim/lint-config/rubocop.yml
+- shell:
+    - [mkdir -p "$HOME/.vimfiles/backup" "$HOME/.vimfiles/swap" "$HOME/.vimfiles/undo", "Create directory for vim backup/swap/undo files"]
+
+# nvim
+- link:
+    ~/.config/nvim: config/vim
+    ~/.local/share/nvim/site/autoload/plug.vim: config/vim/autoload/plug.vim
+
+# npm
+- shell:
+    - [mkdir -p "$HOME/.npm-packages/lib", "Create directory for npm modules"]
+- link:
+    ~/.npmrc: config/npmrc

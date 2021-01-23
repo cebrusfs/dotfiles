@@ -1,0 +1,15 @@
+{
+    "coc.preferences.extensionUpdateCheck": "daily",
+
+    "git.addGBlameToBufferVar": true,
+
+    "git.addedSign.hlGroup": "GitGutterAdd",
+    "git.changedSign.hlGroup": "GitGutterChange",
+    "git.removedSign.hlGroup": "GitGutterDelete",
+    "git.topRemovedSign.hlGroup": "GitGutterDelete",
+    "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
+
+    "clangd.semanticHighlighting": true,
+
+    "solargraph.formatting": true
+}

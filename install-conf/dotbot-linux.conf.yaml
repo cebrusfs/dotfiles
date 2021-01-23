@@ -1,0 +1,14 @@
+# vim: set shiftwidth=4 tabstop=4:
+- defaults:
+    link:
+        relink: true
+        create: true
+    shell:
+        stdout: true
+        stderr: true
+
+- clean: ['~']
+
+- link:
+    ~/bin: bin/x86_64
+    ~/.fonts.conf: config/fonts.conf

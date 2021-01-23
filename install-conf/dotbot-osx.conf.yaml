@@ -1,0 +1,27 @@
+# vim: set shiftwidth=4 tabstop=4:
+- defaults:
+    link:
+        relink: true
+        create: true
+    shell:
+        stdout: true
+        stderr: true
+
+- clean: ['~']
+
+- link:
+    ~/bin: bin/osx
+
+
+- link:
+    # karabiner
+    ~/.config/karabiner:
+        create: true
+        path: config/karabiner
+
+    # Better touch tool
+    ~/.btt_autoload_preset.json:
+        path: config/BetterTouchTool.bttpreset
+
+- shell:
+    - [brew analytics off, "Turn off homebrew analytics"]

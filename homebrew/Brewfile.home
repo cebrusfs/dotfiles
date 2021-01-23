@@ -1,0 +1,76 @@
+#
+# Mac at home
+# All stuff without CTF tools
+#
+
+# Load Brewfile.min
+instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
+
+
+#
+# sudo required
+#
+
+cask "xquartz"
+cask "mactex"
+
+
+#
+# Developing
+#
+
+# IDE tools
+cask "visual-studio-code"
+cask "010-editor"
+
+# IRC client
+brew "irssi"
+
+# IDE tools
+brew "gnupg"
+
+brew "certbot"
+
+#
+# Programming Language
+#
+
+brew "cmake"
+#brew "libtool", args: ["universal"]
+
+# C / C++
+brew "gcc"
+brew "clang-format"
+
+# Haskell
+brew "ghc"
+brew "cabal-install"
+
+# Javascript
+brew "node"
+
+# Rust
+brew "rust"
+
+# Golang
+brew "golang"
+
+# Markdown
+brew "pandoc"
+
+#
+# Apps
+#
+
+cask "google-backup-and-sync"
+
+cask "steam"
+
+cask "notion"               # note
+
+cask "calibre"              # ebook
+
+cask "slack"
+cask "discord"
+
+cask "lastpass"

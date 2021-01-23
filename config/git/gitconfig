@@ -1,0 +1,45 @@
+# vim: set noet:
+[user]
+	name = Meng-Huan Yu
+	email = 2252236+cebrusfs@users.noreply.github.com
+[push]
+	default = simple
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+
+[merge]
+	tool = vimdiff
+[mergetool]
+	prompt = false
+	keepBackup = false
+[branch]
+	# Use rebase instead of merge when pull
+	autosetuprebase = always
+# UI
+[color]
+	ui = true
+[core]
+	pager = ~/.dotfiles/modules/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
+	editor = vim
+	autocrlf = false
+	excludesfile = ~/.dotfiles/config/git/gitignore_default
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = yellow
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[stash]
+	# show file diff in `git stash show`
+	showPatch = true
+[format]
+	# show full information in `git log`
+	pretty = fuller

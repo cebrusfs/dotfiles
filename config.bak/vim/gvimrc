@@ -1,0 +1,9 @@
+colorscheme torte
+"set background=dark
+"set transparency=30    " 透明度 (%)
+"set macmeta            " fix shift and meta key
+
+set guifont=Monaco:h20
+set lines=40 columns=84
+
+

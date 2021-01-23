@@ -1,0 +1,6 @@
+# vim: filetype=sh
+
+git clone https://github.com/cebrusfs/dotfiles.git "$HOME/.dotfiles"
+cd "$HOME/.dotfiles"
+git remote set-url --push origin git@github.com:cebrusfs/dotfiles.git
+. ./install

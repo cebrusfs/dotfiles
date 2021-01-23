@@ -1,0 +1,11 @@
+# vim: syntax=zsh:
+
+#
+# Executes commands at logout.
+#
+
+# Print the message.
+cat <<-EOF
+
+Bye!
+EOF

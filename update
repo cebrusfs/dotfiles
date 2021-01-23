@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+source "${BASEDIR}/install-conf/utils.sh"
+
+function update_self() {
+    log "Pull/update dotfiles"
+
+    # FIXME: "git pull --autostash" doesn't support in old git version
+    git pull --autostash 2>/dev/null || git pull
+}
+
+function update_submodule() {
+    git submodule update --init --remote -f
+}
+
+function main() {
+    update_self
+    #update_submodule
+}
+
+pushd "${BASEDIR}"
+
+main
+
+popd

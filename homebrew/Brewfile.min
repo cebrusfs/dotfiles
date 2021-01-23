@@ -1,0 +1,35 @@
+#
+# Minimal dependancy for dotfile
+#
+
+cask_args appdir: "~/Applications", require_sha: true
+
+
+#
+# Taps
+#
+tap "homebrew/core"
+tap "homebrew/cask"
+tap "homebrew/bundle"
+
+tap "homebrew/command-not-found"  # brew command not found
+
+#
+# Shell / System Util Core
+#
+
+brew "ripgrep"                    # fastest 'grep'
+
+cask "keka"                       # Uncompressor
+
+cask "karabiner-elements"
+cask "bettertouchtool"
+
+#
+# Shell and VIM
+#
+
+cask "iterm2"
+
+brew "neovim"
+brew "node"                       # coc.nvim deps

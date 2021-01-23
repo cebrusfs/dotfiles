@@ -1,0 +1,132 @@
+# vim: syntax=zsh:
+
+#
+# Executes commands at login pre-zshrc.
+#
+
+#
+# Browser
+#
+
+if [[ "$OSTYPE" == darwin* ]]; then
+    export BROWSER='open'
+fi
+
+#
+# Editors
+#
+
+function check_command () {
+    command -v $1 >/dev/null
+}
+
+if ( check_command nvim ); then
+    export EDITOR='nvim'
+elif ( check_command vim ); then
+    export EDITOR='vim'
+fi
+export VISUAL="$EDITOR"
+export PAGER='less'
+
+#
+# Language
+#
+
+if [[ -z "$LANG" ]]; then
+    export LANG='en_US.UTF-8'
+fi
+
+#
+# Locale
+#
+
+export TZ='Asia/Taipei'
+
+#
+# Paths
+#
+
+# Node
+NPM_PACKAGES="${HOME}/.npm-packages"
+NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
+# Set the the list of directories that cd searches.
+# cdpath=(
+#   $cdpath
+# )
+
+# Set the list of directories that Zsh searches for programs.
+# (N) to remove the path when the path is not found
+path=(
+    $HOME/bin(N)                    # Customize binary/script managed by git repo
+
+    $HOME/Library/Python/*/bin(N)    # Python: Local pip path for OSX
+    $HOME/.gem/ruby/*/bin(N)        # Ruby: Local gem path
+    $HOME/.cargo/bin(N)             # Rust: Local cargo path
+    $NPM_PACKAGES/bin(N)            # Node: Local npm path
+
+    # Default Homebrew path
+    /usr/local/{bin,sbin}(N)
+    # Customized Homebrew path
+    $HOME/homebrew/{bin,sbin}(N)
+
+    # Latex
+    /Library/TeX/texbin(N)         # Mactex
+    /usr/texbin(N)
+
+    # Homebrew (keg-only)
+    #/usr/local/opt/binutils/bin
+    #/usr/local/opt/curl/bin
+
+    # Work related
+    $HOME/depot_tools(N)
+    $HOME/local_build/bin(N)        # for local build binary
+
+    $path
+)
+
+# Set the list of directories that Zsh searches for completions.
+fpath=(
+    /usr/local/share/zsh-completions
+    $fpath
+)
+
+# TODO: setup general path for MANPATH
+#manpath=(
+#    # Customized Homebrew path
+#    /usr/local/brew/share/man
+#
+#    $manpath
+#)
+
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path #manpath
+
+#
+# Less
+#
+
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+# set display charset of less
+export LESSCHARSET=UTF-8
+
+# Set the Less input preprocessor.
+# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+if (( $#commands[(i)lesspipe(|.sh)] )); then
+    export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi
+
+#
+# Temporary Files
+#
+
+if [[ ! -d "$TMPDIR" ]]; then
+    export TMPDIR="/tmp/$LOGNAME"
+    mkdir -p -m 700 "$TMPDIR"
+fi
+
+TMPPREFIX="${TMPDIR%/}/zsh"
