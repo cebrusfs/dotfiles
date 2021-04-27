@@ -4,9 +4,6 @@
 # Defines environment variables.
 #
 
-# setup zsh-config directory
-export ZCONFIGDIR="${ZDOTDIR:-$HOME}/.dotfiles/config/zsh"
-
 # OSX
 # tar: Do NOT pack UI configuration file (e.g. .DS_Store)
 export COPYFILE_DISABLE=true

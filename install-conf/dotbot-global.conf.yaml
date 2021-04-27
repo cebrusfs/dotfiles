@@ -42,10 +42,8 @@
     ~/.ssh/authorized_keys: config/ssh/authorized_keys
 
 # fzf
-- link:
-    ~/.fzf: modules/fzf
 - shell:
-    - command: ~/.fzf/install --all
+    - command: modules/fzf/install --all
       description: Installing fzf
       stdout: false
 
