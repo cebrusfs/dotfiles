@@ -482,6 +482,57 @@ call plug#end() " }
     " FIXME: color
     highlight ColorColumn guibg=firebrick4
 
-    autocmd FileType gitcommit setlocal textwidth=72
-    autocmd FileType go setlocal textwidth=0
+" }
+
+" Programming env {
+autocmd Filetype c
+            \ nnoremap <buffer> <Leader>c
+            \ :w<CR>
+            \ :make %< CC=gcc CFLAGS="-std=c2x -O2 -Wall -Wextra -Wshadow"<CR>
+            \ :cl<CR>
+autocmd Filetype cpp
+            \ nnoremap <buffer> <Leader>c
+            \ :w<CR>
+            \ :make %<
+                \ CXX="`(which g++-10) \\|\\| (which g++)`"
+                \ CXXFLAGS="-std=gnu++20 -O2 -Wall -Wextra -Wshadow -Wno-deprecated -DFISH"<CR>
+            \:cl<CR>
+autocmd Filetype c, cpp
+            \ nnoremap <buffer> <Leader>p
+            \ :!./%<<CR>
+
+autocmd FileType gitcommit setlocal textwidth=72
+
+autocmd FileType go
+            \ setlocal textwidth=0
+            \ setlocal tabstop=2
+            \ setlocal shiftwidth=2
+            \ setlocal softtabstop=2
+autocmd Filetype go
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!go run %<CR>
+
+autocmd Filetype javascript
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!node %<CR>
+
+autocmd Filetype makefile setlocal noexpandtab
+
+" -tt inconsistent tab usage (-tt: issue errors)
+autocmd Filetype python
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!python -W always -tt %<CR>
+
+autocmd Filetype ruby
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!ruby %<CR>
+
+autocmd Filetype sh
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!sh %<CR>
 " }
