@@ -2,6 +2,7 @@
 [user]
 	name = Meng-Huan Yu
 	email = 2252236+cebrusfs@users.noreply.github.com
+	signingKey = 3B5AF3173D713B0C
 [push]
 	default = simple
 [filter "lfs"]
@@ -17,6 +18,8 @@
 [branch]
 	# Use rebase instead of merge when pull
 	autosetuprebase = always
+[commit]
+	gpgSign = true
 # UI
 [color]
 	ui = true
@@ -43,3 +46,5 @@
 [format]
 	# show full information in `git log`
 	pretty = fuller
+[tag]
+	gpgSign = true
