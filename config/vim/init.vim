@@ -1,6 +1,4 @@
-" TODO(cebrusfs): copyright {
 " vim: set ts=4 ts=4 sts=4 et foldmarker={,} foldlevel=0 foldmethod=marker:
-" }
 
 scriptencoding utf-8
 
@@ -97,14 +95,8 @@ Plug 'jacoborus/tender.vim'
     "   git-branch: tpope/vim-fugitive
     "   git-status: coc-git
 
-    " Enable airline and coc-git integration
-    let g:airline#extensions#hunks#coc_git = 1
-
-    " let g:airline_theme = 'gruvbox'
-
-    " add git blame info to airline statusline section C
-    " in order for coc_git_blame variable to be populated, you need to set git.addGBlameToBufferVar": true in coc-settings.json
-    let g:airline_section_c = "%f [%{get(b:,'coc_git_blame','')}]"
+    " Enable power line fonts
+    let g:airline_powerline_fonts = 1
 " }
 
 " vim-indent-guides: Show indent space and tab with colors {
@@ -395,6 +387,9 @@ Plug 'jacoborus/tender.vim'
 " }
 " vim-pasta: Auto align when pasting code {
     Plug 'sickill/vim-pasta'
+
+    " example of disable list
+    "let g:pasta_disabled_filetypes = ['python', 'coffee', 'yaml']
 " }
 
 " nerdtree: {
