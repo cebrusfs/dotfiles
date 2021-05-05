@@ -18,6 +18,8 @@
 [branch]
 	# Use rebase instead of merge when pull
 	autosetuprebase = always
+[tag]
+	gpgSign = true
 [commit]
 	gpgSign = true
 # UI
@@ -40,11 +42,11 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+[log]
+	showSignature = true
 [stash]
 	# show file diff in `git stash show`
 	showPatch = true
 [format]
 	# show full information in `git log`
 	pretty = fuller
-[tag]
-	gpgSign = true
