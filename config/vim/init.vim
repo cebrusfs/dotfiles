@@ -370,6 +370,8 @@ Plug 'jacoborus/tender.vim'
 " vim-fugitive: git integration {
     Plug 'tpope/vim-fugitive'
 
+    nnoremap <silent> <Plug>(key-git)s      :<C-u>Gstatus<CR>
+    nnoremap <silent> <Plug>(key-git)d      :<C-u>Gdiff<CR>
     nnoremap <silent> <Plug>(key-git)b      :<C-u>Git blame<CR>
     nnoremap <silent> <Plug>(key-git)m      :<C-u>Git mergetool<CR>
 " }
