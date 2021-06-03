@@ -10,6 +10,7 @@
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
 
     "clangd.semanticHighlighting": true,
+    "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 
     "solargraph.formatting": true
 }
