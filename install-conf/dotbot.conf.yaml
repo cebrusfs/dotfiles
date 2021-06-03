@@ -12,7 +12,9 @@
 - shell:
     - [git submodule update --init --recursive, "Installing submodules"]
 
-# misc
+- create:
+    - ~/working
+
 - link:
     # tmux
     ~/.tmux.conf: config/tmux/tmux.conf
@@ -52,8 +54,10 @@
     ~/.vim: config/vim
     # lint configs
     ~/.rubocop.yml: config/vim/lint-config/rubocop.yml
-- shell:
-    - [mkdir -p "$HOME/.vimfiles/backup" "$HOME/.vimfiles/swap" "$HOME/.vimfiles/undo", "Create directory for vim backup/swap/undo files"]
+- create:
+    - ~/.vimfiles/backup
+    - ~/.vimfiles/swap
+    - ~/.vimfiles/undo
 
 # nvim
 - link:
@@ -61,7 +65,35 @@
     ~/.local/share/nvim/site/autoload/plug.vim: config/vim/autoload/plug.vim
 
 # npm
-- shell:
-    - [mkdir -p "$HOME/.npm-packages/lib", "Create directory for npm modules"]
+- create:
+    - ~/.npm-packages/lib
 - link:
     ~/.npmrc: config/npmrc
+
+
+# Linux specific links
+- link:
+    ~/bin:
+        path: bin/x86_64
+        if: '[[ "$OSTYPE" == linux* ]]'
+    ~/.fonts.conf:
+        path: config/fonts.conf
+        if: '[[ "$OSTYPE" == linux* ]]'
+
+# OSX specific links
+- link:
+    ~/bin:
+        path: bin/osx
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+    ~/.config/karabiner:
+        path: config/karabiner
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+    ~/.btt_autoload_preset.json:
+        path: config/BetterTouchTool.bttpreset
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+# OSX: homebrew check and install
+- shell:
+    - bash install-conf/homebrew-install.sh

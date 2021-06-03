@@ -10,8 +10,8 @@ source "${BASEDIR}/install-conf/utils.sh"
 DOTBOT_DIR="modules/dotbot"
 
 function dotbot_install() {
-    log "Install with dotbot config '$1'"
-    "${DOTBOT_DIR}/bin/dotbot" -d "${BASEDIR}" -c "${@}"
+    log "Install with dotbot config"
+    "${DOTBOT_DIR}/bin/dotbot" -d "${BASEDIR}" -c "install-conf/dotbot.conf.yaml" "${@}"
     echo ""
 }
 
@@ -22,84 +22,77 @@ function dotbot_init() {
 }
 
 function dotbot_main() {
-    if is_osx; then
-        OS_CONFIG="dotbot-osx.conf.yaml"
-    elif is_linux; then
-        OS_CONFIG="dotbot-linux.conf.yaml"
-    else
-        error "Unkown OSTYPE: $OSTYPE"
-    fi
-
     dotbot_init
-
-    log "Install with dotbot config"
-    dotbot_install "install-conf/dotbot-global.conf.yaml" "${@}"
-    dotbot_install "install-conf/${OS_CONFIG}" "${@}"
-    echo ""
+    dotbot_install
 }
 
-function install_vim_deps_via_homebrew() {
-    if ! check_command brew; then
-        error "No brew installed."
+
+function zsh_main() {
+    log "Check zsh"
+    if ! check_command zsh; then
+        # OSX should have zsh by default
+        if is_linux; then
+            linux_install zsh
+        else
+            error "No zsh is installed"
+        fi
     fi
 
-    brew bundle -v --no-lock --file="homebrew/Brewfile.min"
+    if [[ "$SHELL" != *zsh ]]; then
+        chsh -s $(which zsh)
+    fi
 }
 
-function is_pkg_installed() {
-    dpkg-query -W --showformat='${Status}\n' "$1" | \
-        grep -q "install ok installed"
-    # dpkg -l "$1" >/dev/null 2>&1
-}
 
-function apt_install() {
-    log "Trying to install package '$1'"
-    is_pkg_installed "$1" || sudo apt install -y "$1"
-}
-
-function install_vim_deps_via_apt() {
+function vim_install_deps_linux() {
     # coc.nvim deps
-    apt_install nodejs
+    linux_install nodejs
 
-    apt_install neovim
-
-    # apt_install python3-dev
-    # apt_install python3-dev
-    # apt_install python3-pip
-    # apt_install ruby-dev
-    # apt_install npm
+    # vim / neovim
+    linux_install vim
+    linux_install neovim
 }
 
-function install_vim_pkgs() {
-    # Core
-    log "Install packages for neovim core"
-    # pip3 install --user neovim
-    # gem install --user-install neovim
-    # npm install -g neovim
-
+function vim_install_dev_tools() {
     log "Install packages for neovim languages"
 
+    # CoC: Python
+    # OSX has ruby by default
+    linux_install python3-dev
+    linux_install python3-pip
+
     # CoC: Ruby
+    # OSX has ruby by default
+    linux_install ruby-dev
     gem install --user-install solargraph rubocop
-    # TODO: coc-pyright, python path
-    # TODO: coc-go
-    # TODO: node, npm, typescript, coc-tsserver
-    # TODO: coc-css
-    # TODO: rust coc-rust-analyzer
-    # TODO: exection of each languages
+
+    # CoC: javascript
+    linux_install npm
+    linux_install node-typescript
+    # FIXME: brew install typescript
+
+    # CoC: golang
+    # gopls will be auto installed by coc
+    linux_install golang
+    # FIXME: brew install go
+
+    # CoC: rust
+    linux_install rustc
+    # FIXME: brew install rust
 }
 
 function vim_main() {
     log "Install VIM dependancies"
+    # We don't need to handle OSX since packages are installed by homebrew bundle
     if is_osx; then
-        install_vim_deps_via_homebrew
+        :
     elif is_linux; then
-        install_vim_deps_via_apt
+        vim_install_deps_linux
     else
         error "Unkown OSTYPE: $OSTYPE"
     fi
 
-    install_vim_pkgs
+    vim_install_dev_tools
 
     # install vim plugin
     . "config/vim/update"
@@ -109,6 +102,7 @@ function main() {
     pushd "${BASEDIR}"
 
     dotbot_main
+    zsh_main
     vim_main
 
     popd

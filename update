@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: syntax=sh:
 
 set -e
 
@@ -8,7 +9,7 @@ source "${BASEDIR}/install-conf/utils.sh"
 function update_self() {
     log "Pull/update dotfiles"
 
-    # FIXME: "git pull --autostash" doesn't support in old git version
+    # "git pull --autostash" doesn't support in old git version.
     git pull --autostash 2>/dev/null || git pull
 }
 
@@ -17,12 +18,12 @@ function update_submodule() {
 }
 
 function main() {
+    pushd "${BASEDIR}"
+
     update_self
     #update_submodule
+
+    popd
 }
 
-pushd "${BASEDIR}"
-
 main
-
-popd

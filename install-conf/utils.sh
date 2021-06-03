@@ -42,3 +42,18 @@ function is_arm() {
 function check_command() {
     command -v "$1" &> /dev/null
 }
+
+function is_pkg_installed() {
+    dpkg-query -W --showformat='${Status}\n' "$1" | \
+        grep -q "install ok installed"
+    # dpkg -l "$1" >/dev/null 2>&1
+}
+
+function linux_install() {
+    if ! is_linux; then
+        return 0
+    fi
+    log "Trying to install package '$1'"
+    is_pkg_installed "$1" || sudo apt install -y "$1"
+}
+
