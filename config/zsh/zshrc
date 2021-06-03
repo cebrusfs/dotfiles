@@ -1,5 +1,43 @@
 # vim: syntax=zsh: ts=2: sts=2: sw=2
 
+#
+# Util functions
+#
+function _check_command () {
+  command -v $1 >/dev/null
+}
+
+function _warn() {
+  local COLOR='\033[1;31m'
+  local NO_COLOR='\033[0m'
+  printf "${COLOR}[WARN] ${1}${NO_COLOR}\n"
+}
+
+
+#
+# Alias (enable warning)
+#
+
+# Better rg wrapper for 'find'
+function _rgg () {
+  rg --colors=path:none --files -g "*$1*"
+}
+_check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
+
+# Use 'colordiff' instead of 'diff'
+_check_command colordiff && alias diff='colordiff' || _warn "'colordiff' is not installed"
+
+# Use 'neovim' to replace 'vim'
+_check_command nvim && alias vim='nvim' || _warn "'neovim' is not installed"
+
+# Warning for old zprezto configuration path
+if [[ -r "$HOME/.zprezto/init.zsh" ]]; then
+  echo "[WARN] $HOME/.zprezto is exists, use the following command to delete it"
+  echo "    rm -rf $HOME/.zprezto"
+fi
+
+# ---------------------------- No stdout output below ---------------------------
+
 # Disable ctrl-s for stop output by terminal.
 stty -ixon
 
@@ -22,17 +60,6 @@ if [[ -r "${ZPREZTO_DIR}/init.zsh" ]]; then
   source "${ZPREZTO_DIR}/init.zsh"
 fi
 
-
-# Warning for old zprezto configuration path
-if [[ -r "$HOME/.zprezto/init.zsh" ]]; then
-  echo "[WARN] $HOME/.zprezto is exists, use the following command to delete it"
-  echo "    rm -rf $HOME/.zprezto"
-fi
-
-function check_command () {
-  command -v $1 >/dev/null
-}
-
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward
 
@@ -41,23 +68,15 @@ setopt clobber
 
 
 #
-# Alias
+# Alias (silent)
 #
 
 alias rm='rm -r'
 alias cp='cp -rv'
 alias objdump='objdump -M intel'
 
-# Use 'colordiff' instead of 'diff'
-check_command colordiff && alias diff='colordiff'
-
-# Better rg wrapper for 'find'
-function rgg () {
-  rg --colors=path:none --files -g "*$1*"
-}
-
 # Use 'tmx2' instead of 'tmux' when available
-check_command tmx2 && alias tmux='tmx2'
+_check_command tmx2 && alias tmux='tmx2'
 
 # Irssi
 # TODO: remove this, given I'm using screen-256color in tmux now
