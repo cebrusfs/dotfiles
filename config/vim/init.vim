@@ -150,8 +150,6 @@ call plug#begin() " {
         \'coc-go',
         "\ Javascript/TypeScript
         \'coc-tsserver',
-        "\ CSS
-        \'coc-css',
         "\ Rust
         \'coc-rust-analyzer',
         "\ sh
