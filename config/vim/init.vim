@@ -81,10 +81,8 @@ scriptencoding utf-8
 
 call plug#begin() " {
 
-" TODO: find the other colorscheme
 " Color Scheme {
-Plug 'jacoborus/tender.vim'
-" Plug 'sainnhe/vim-color-desert-night'
+    Plug 'jacoborus/tender.vim'
 " }
 
 " vim-airline: Powerful status bar {
@@ -342,7 +340,7 @@ Plug 'jacoborus/tender.vim'
     nmap <silent> <Plug>(key-git)c <Plug>(coc-git-commit)
 " }
 " Fzf {
-    Plug '~/.fzf'
+    Plug '~/.dotfiles/modules/fzf'
 
     " Git
     nnoremap <silent> <Plug>(key-git)s      :<C-u>CocCommand fzf-preview.GitStatus<CR>
@@ -374,11 +372,6 @@ Plug 'jacoborus/tender.vim'
     nnoremap <silent> <Plug>(key-git)d      :<C-u>Gdiff<CR>
     nnoremap <silent> <Plug>(key-git)b      :<C-u>Git blame<CR>
     nnoremap <silent> <Plug>(key-git)m      :<C-u>Git mergetool<CR>
-" }
-
-" TODO: fix easy motions
-" vim-easymotion: Fast jump {
-    " Plug 'easymotion/vim-easymotion'
 " }
 
 " vim-easy-align: align tool {
@@ -453,11 +446,12 @@ Plug 'jacoborus/tender.vim'
 " }
 
 " FIXME
+" vim-easymotion: Fast jump {
+    " Plug 'easymotion/vim-easymotion'
+" }
+
 " " Grammar checker
 " Plug 'rhysd/vim-grammarous'
-
-" " Rust
-" Plug 'rust-lang/rust.vim'
 "
 
 call plug#end() " }
