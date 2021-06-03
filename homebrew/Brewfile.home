@@ -22,21 +22,26 @@ cask "mactex"
 # IDE tools
 cask "visual-studio-code"
 cask "010-editor"
+brew "colordiff"
 
 # IRC client
 brew "irssi"
 
-# IDE tools
+# GPG tools
 brew "gnupg"
+cask "gpg-suite-no-mail"
 
+# lets-encrypt for personal project
 brew "certbot"
+
+# VPN client
+brew "wireguard-tools"
 
 #
 # Programming Language
 #
 
 brew "cmake"
-#brew "libtool", args: ["universal"]
 
 # C / C++
 brew "gcc"
@@ -53,7 +58,7 @@ brew "node"
 brew "rust"
 
 # Golang
-brew "golang"
+brew "go"
 
 # Markdown
 brew "pandoc"

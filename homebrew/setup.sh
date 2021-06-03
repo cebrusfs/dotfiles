@@ -11,7 +11,7 @@ do
     case $opt in
         "Personal")
             # TODO: use PREFIX instead of HOME
-            file="$HOME/.dotfiles/homebrew/Brewfile.home"
+            file="$HOME/.dotfiles/homebrew/Brewfile.ctf"
             ;;
         "Work")
             file="$HOME/.dotfiles/homebrew/Brewfile.work"
@@ -22,7 +22,7 @@ do
             ;;
     esac
 
-    brew bundle cleanup --file="$file" --force
-    brew bundle --file="$file"
+    brew bundle cleanup -v --no-lock --file="$file" --force
+    brew bundle -v --no-lock --file="$file"
     break
 done
