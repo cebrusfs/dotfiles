@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: syntax=sh:
 
 set -e
 
@@ -57,20 +58,24 @@ function apt_install() {
 }
 
 function install_vim_deps_via_apt() {
+    # coc.nvim deps
+    apt_install nodejs
+
     apt_install neovim
 
-    apt_install python3-dev
-    apt_install python3-pip
-    apt_install ruby-dev
-    apt_install npm
+    # apt_install python3-dev
+    # apt_install python3-dev
+    # apt_install python3-pip
+    # apt_install ruby-dev
+    # apt_install npm
 }
 
 function install_vim_pkgs() {
     # Core
     log "Install packages for neovim core"
-    pip3 install --user neovim
-    gem install --user-install neovim
-    npm install -g neovim
+    # pip3 install --user neovim
+    # gem install --user-install neovim
+    # npm install -g neovim
 
     log "Install packages for neovim languages"
 
@@ -100,9 +105,13 @@ function vim_main() {
     . "config/vim/update"
 }
 
-pushd "${BASEDIR}"
+function main() {
+    pushd "${BASEDIR}"
 
-dotbot_main
-vim_main
+    dotbot_main
+    vim_main
 
-popd
+    popd
+}
+
+main
