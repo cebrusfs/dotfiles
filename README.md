@@ -6,8 +6,6 @@
    * Maybe https://github.com/bfredl/nvim-miniyank
 
 ## TODOs
-* Install `homebrew` for OSX
-* Install `python-minimal` `zsh` for linux
 * Fill key mappings
 
 ## INSTALL
