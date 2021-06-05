@@ -28,7 +28,6 @@ brew "colordiff"
 brew "irssi"
 
 # GPG tools
-brew "gnupg"
 cask "gpg-suite-no-mail"
 
 # lets-encrypt for personal project
