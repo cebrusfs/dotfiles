@@ -174,6 +174,10 @@ call plug#begin() " {
         \'coc-highlight',
     \]
 
+    let g:coc_filetype_map = {
+        \'pandoc': 'markdown'
+    \}
+
     " ==============================================================
     " Offcial references settings of coc
     " https://github.com/neoclide/coc.nvim#example-vim-configuration
