@@ -23,6 +23,9 @@ function main() {
     update_self
     #update_submodule
 
+    # update vim plugin
+    . "config/vim/update"
+
     popd
 }
 
