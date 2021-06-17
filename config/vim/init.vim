@@ -159,6 +159,9 @@ call plug#begin() " {
         \'coc-json',
         "\ YAML
         \'coc-yaml',
+        "\ formater: 'prettier': JavaScript/TypeScript/Flow/JSX/JSON/CSS/SCSS/Less
+        "\   HTML/Vue/Angular/GraphQL/Markdown/YAML
+        \'coc-prettier',
     \]
 
     " User Interface extensions
