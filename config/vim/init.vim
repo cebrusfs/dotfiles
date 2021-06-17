@@ -108,6 +108,7 @@ call plug#begin() " {
     let g:indent_guides_enable_on_vim_startup=1
 " }
 " vim-ShowTrailingWhitespace: Show trailing whitespace {
+    Plug 'inkarkat/vim-ingo-library' " Dependancy of ShowTrailingWhitespace
     Plug 'inkarkat/vim-ShowTrailingWhitespace'
 " }
 " rainbow: Colorized parantheses () <> {
