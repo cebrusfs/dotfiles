@@ -497,7 +497,7 @@ autocmd Filetype cpp
                 \ CXX="`(which g++-10) \\|\\| (which g++)`"
                 \ CXXFLAGS="-std=gnu++20 -O2 -Wall -Wextra -Wshadow -Wno-deprecated -DFISH"<CR>
             \:cl<CR>
-autocmd Filetype c, cpp
+autocmd Filetype c,cpp
             \ nnoremap <buffer> <Leader>p
             \ :!./%<<CR>
 
