@@ -532,4 +532,8 @@ autocmd Filetype sh
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
             \ :!sh %<CR>
+
+augroup filetypedetect
+    au! BufRead,BufNewFile *.mojom setfiletype mojom
+augroup END
 " }
