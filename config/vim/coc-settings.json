@@ -12,5 +12,18 @@
     "clangd.semanticHighlighting": true,
     "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 
-    "solargraph.formatting": true
+    "solargraph.formatting": true,
+
+    "rust-analyzer.linkedProjects": [
+        {
+            "sysroot_src": "/usr/local/lib/rustlib/src/rust/library",
+            "crates": [
+                {
+                    "root_module": "main.rs",
+                    "edition": "2018",
+                    "deps": []
+                }
+            ]
+        }
+    ]
 }
