@@ -86,7 +86,9 @@ path=(
 
 # Set the list of directories that Zsh searches for completions.
 fpath=(
-    /usr/local/share/zsh-completions
+    # User writable zsh completion
+    # (for symbolic links of installed packages and homebrew)
+    /usr/local/share/zsh/site-functions
     $fpath
 )
 
