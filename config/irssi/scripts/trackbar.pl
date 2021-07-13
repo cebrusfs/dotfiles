@@ -45,6 +45,9 @@
 #    Setting:     trackbar_require_seen
 #    Description: Only clear the trackbar if it has been scrolled to.
 #
+#    Setting:     trackbar_all_manual
+#    Description: Never clear the trackbar until you do /mark.
+#
 #     /mark is a command that will redraw the line at the bottom.
 #
 #    Command:     /trackbar, /trackbar goto
@@ -99,7 +102,7 @@ use strict;
 use warnings;
 use vars qw($VERSION %IRSSI);
 
-$VERSION = "2.5"; # 56e983314dc1b85
+$VERSION = "2.9"; # a4c78e85092a271
 
 %IRSSI = (
     authors     => "Peter 'kinlo' Leurs, Uwe Dudenhoeffer, " .
@@ -120,7 +123,7 @@ $VERSION = "2.5"; # 56e983314dc1b85
 # Use /SET  to change the value or /TOGGLE to switch it on or off.
 #
 #
-#    Tip:     The command 'trackbar' is very usefull if you bind that to a key,
+#    Tip:     The command 'trackbar' is very useful if you bind that to a key,
 #             so you can easily jump to the trackbar. Please see 'help bind' for
 #             more information about keybindings in Irssi.
 #
@@ -169,6 +172,9 @@ $VERSION = "2.5"; # 56e983314dc1b85
 
 ## Version history:
 #
+#  2.9: - fix crash on /mark in empty window
+#  2.8: - fix /^join bug
+#  2.7: - add /set trackbar_all_manual option
 #  2.5: - merge back on scripts.irssi.org
 #       - fix /trackbar redraw broken in 2.4
 #       - fix legacy encodings
@@ -291,10 +297,22 @@ sub remove_one_trackbar {
     }
 }
 
-sub add_one_trackbar {
+sub add_one_trackbar_pt1 {
     my $win = shift;
     my $view = shift || $win->view;
+
+    my $last_cur_line = ($view->{buffer}{cur_line}||+{})->{_irssi};
     $win->print(line($win->{width}), MSGLEVEL_NEVER);
+
+    my $cur_line = ($win->view->{buffer}{cur_line}||+{})->{_irssi}; # get a fresh buffer
+
+    ($last_cur_line//'') ne ($cur_line//'') # printing was successful
+}
+
+sub add_one_trackbar_pt2 {
+    my $win = shift;
+    my $view = $win->view;
+
     $view->set_bookmark_bottom('trackbar');
     $unseen_trackbar{ $win->{_irssi} } = 1;
     Irssi::signal_emit("window trackbar added", $win);
@@ -306,10 +324,16 @@ sub update_one_trackbar {
     my $view = shift || $win->view;
     my $force = shift;
     my $ignored = win_ignored($win, $view);
-    remove_one_trackbar($win, $view)
-	if $force || !defined $force || !$ignored;
-    add_one_trackbar($win, $view)
+    my $success;
+
+    $success = add_one_trackbar_pt1($win, $view) ? 1 : 0
 	if $force || !$ignored;
+
+    remove_one_trackbar($win, $view)
+	if ( $success || !defined $success ) && ( $force || !defined $force || !$ignored );
+
+    add_one_trackbar_pt2($win)
+	if $success;
 }
 
 sub win_ignored {
@@ -331,6 +355,7 @@ sub sig_window_changed {
     return if delete $keep_trackbar{ $oldwindow->{_irssi} };
     trackbar_update_seen($oldwindow);
     return if $config{require_seen} && $unseen_trackbar{ $oldwindow->{_irssi } };
+    return if $config{all_manual};
     update_one_trackbar($oldwindow, undef, 0);
 }
 
@@ -515,6 +540,7 @@ sub update_config {
     $config{style} = Irssi::settings_get_str('trackbar_style');
     $config{string} = Irssi::settings_get_str('trackbar_string');
     $config{require_seen} = Irssi::settings_get_bool('trackbar_require_seen');
+    $config{all_manual} = Irssi::settings_get_bool('trackbar_all_manual');
     $config{ignore_windows} = [ split /[,\s]+/, Irssi::settings_get_str('trackbar_ignore_windows') ];
     $config{use_status_window} = Irssi::settings_get_bool('trackbar_use_status_window');
     $config{print_timestamp} = Irssi::settings_get_bool('trackbar_print_timestamp');
@@ -545,6 +571,7 @@ Irssi::settings_add_str('trackbar', 'trackbar_ignore_windows', '');
 Irssi::settings_add_bool('trackbar', 'trackbar_use_status_window', 1);
 Irssi::settings_add_bool('trackbar', 'trackbar_print_timestamp', 0);
 Irssi::settings_add_bool('trackbar', 'trackbar_require_seen', 0);
+Irssi::settings_add_bool('trackbar', 'trackbar_all_manual', 0);
 
 update_config();
 
