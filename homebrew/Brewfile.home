@@ -74,6 +74,8 @@ cask "google-backup-and-sync"
 
 cask "steam"
 
+cask "vlc"
+
 cask "notion"               # note
 
 cask "calibre"              # ebook
