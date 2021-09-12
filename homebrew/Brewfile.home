@@ -80,6 +80,8 @@ cask "notion"               # note
 
 cask "calibre"              # ebook
 
+cask "clip-studio-paint"    # painting
+
 cask "slack"
 cask "discord"
 
