@@ -70,7 +70,7 @@ brew "typescript"
 # Apps
 #
 
-cask "google-backup-and-sync"
+cask "google-drive"
 
 cask "steam"
 
