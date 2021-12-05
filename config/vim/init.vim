@@ -456,9 +456,16 @@ call plug#begin() " {
     " Plug 'easymotion/vim-easymotion'
 " }
 
-" " Grammar checker
-" Plug 'rhysd/vim-grammarous'
-"
+" Grammar checker: {
+    Plug 'rhysd/vim-grammarous'
+
+    " Check comments only in source code by default
+    let g:grammarous#default_comments_only_filetypes = {
+        \ '*' : 1,
+        \ 'help' : 0,
+        \ 'markdown' : 0,
+        \ }
+" }
 
 call plug#end() " }
 
