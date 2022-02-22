@@ -501,7 +501,7 @@ autocmd Filetype cpp
             \ nnoremap <buffer> <Leader>c
             \ :w<CR>
             \ :make %<
-                \ CXX="`(which g++-10) \\|\\| (which g++)`"
+                \ CXX="`bash -c '(which g++-11) \\|\\| (which g++)'`"
                 \ CXXFLAGS="-std=gnu++20 -O2 -Wall -Wextra -Wshadow -Wno-deprecated -DFISH"<CR>
             \:cl<CR>
 autocmd Filetype c,cpp
