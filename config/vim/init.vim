@@ -512,7 +512,7 @@ autocmd Filetype c,cpp
 autocmd FileType gitcommit setlocal textwidth=72
 
 autocmd FileType go
-            \ setlocal textwidth=0 tabstop=2 shiftwidth=2 softtabstop=2
+            \ setlocal textwidth=0 tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
 autocmd Filetype go
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
