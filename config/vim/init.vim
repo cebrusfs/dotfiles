@@ -32,6 +32,7 @@ scriptencoding utf-8
     set virtualedit=onemore             " Allow for cursor beyond last character
 
     set foldmethod=marker   " fold
+    set foldlevel=1
 
     "set autoindent		    " auto indentation
     set copyindent		    " copy the previous indentation on autoindenting
