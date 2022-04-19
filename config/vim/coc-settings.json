@@ -9,7 +9,10 @@
     "git.topRemovedSign.hlGroup": "GitGutterDelete",
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
 
+    // https://github.com/jackguo380/vim-lsp-cxx-highlight#requirements
     "clangd.semanticHighlighting": true,
+    "coc.preferences.semanticTokensHighlights": false,
+
     "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 
     "solargraph.formatting": true,
