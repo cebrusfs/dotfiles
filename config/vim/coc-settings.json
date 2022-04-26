@@ -1,4 +1,7 @@
 {
+    // Enable semantic tokens highlight feature
+    "semanticTokens.filetypes": ["*"],
+
     "coc.preferences.extensionUpdateCheck": "daily",
 
     "git.addGBlameToBufferVar": true,
@@ -8,10 +11,6 @@
     "git.removedSign.hlGroup": "GitGutterDelete",
     "git.topRemovedSign.hlGroup": "GitGutterDelete",
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
-
-    // https://github.com/jackguo380/vim-lsp-cxx-highlight#requirements
-    "clangd.semanticHighlighting": true,
-    "coc.preferences.semanticTokensHighlights": false,
 
     "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 

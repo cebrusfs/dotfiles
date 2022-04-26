@@ -137,9 +137,6 @@ call plug#begin() " {
 " coc: Intellisense engine for Vim8 & Neovim, full language server protocol support as VSCode {
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-    " vim-lsp-cxx-highlight: provides semantic highlighting using the language server protocol
-    Plug 'jackguo380/vim-lsp-cxx-highlight'
-
     " Programming language extensions
     let g:coc_global_extensions = [
         "\ C/C++/Objective-C
