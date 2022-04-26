@@ -53,9 +53,6 @@ brew "cabal-install"
 # Javascript
 brew "node"
 
-# Rust
-brew "rust"
-
 # Golang
 brew "go"
 
