@@ -3,6 +3,8 @@
 scriptencoding utf-8
 
 " General {
+    set nocompatible
+
     " Store a ton of history (default is 20)
     set history=1000
 
@@ -81,10 +83,6 @@ scriptencoding utf-8
 
 
 call plug#begin() " {
-
-
-" TODO: migrate to lua only vim plugins
-"Plug 'Mofiqul/vscode.nvim'
 
 " Color Scheme {
     Plug 'jacoborus/tender.vim'
