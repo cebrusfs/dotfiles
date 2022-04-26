@@ -18,18 +18,5 @@
 
     "python.formatting.autopep8Args": [
         "--experimental"
-    ],
-
-    "rust-analyzer.linkedProjects": [
-        {
-            "sysroot_src": "/usr/local/lib/rustlib/src/rust/library",
-            "crates": [
-                {
-                    "root_module": "main.rs",
-                    "edition": "2021",
-                    "deps": []
-                }
-            ]
-        }
     ]
 }
