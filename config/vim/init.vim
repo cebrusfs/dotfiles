@@ -480,6 +480,9 @@ call plug#end() " }
         set termguicolors
     endif
 
+    " Fallback for vim
+    silent! colorscheme codedark
+
     " For dark theme
     let g:vscode_style = "dark"
     " Disable nvim-tree background color
