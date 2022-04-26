@@ -34,9 +34,9 @@ scriptencoding utf-8
     set foldmethod=marker   " fold
     set foldlevel=1
 
-    "set autoindent		    " auto indentation
-    set copyindent		    " copy the previous indentation on autoindenting
-    set smarttab		    " insert tabs on the start of a line according to context
+    "set autoindent         " auto indentation
+    set copyindent          " copy the previous indentation on autoindenting
+    set smarttab            " insert tabs on the start of a line according to context
     set expandtab           " use spaces instead of tabs
 
     " 1 tab == 4 spaces
@@ -48,7 +48,7 @@ scriptencoding utf-8
     " " disable preview window when completing (default: menu,preview)
     " set completeopt-=preview
     " set wildmenu            " use menu when completing
-    " set wildchar=<TAB>	    " start wild expansion in the command line using
+    " set wildchar=<TAB>        " start wild expansion in the command line using
 
     " set wildignore^=*.o,*.class,*.pyc " ignore these files while expanding wild chars
     " }
@@ -119,7 +119,7 @@ call plug#begin() " {
 
     " 0: disable
     let g:rainbow_conf = {
-        \	'separately': {
+        \   'separately': {
         \       'tex': {
         \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
         \       },
