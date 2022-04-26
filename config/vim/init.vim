@@ -82,17 +82,25 @@ scriptencoding utf-8
 
 call plug#begin() " {
 
+
+" TODO: migrate to lua only vim plugins
+"Plug 'Mofiqul/vscode.nvim'
+
 " Color Scheme {
     Plug 'jacoborus/tender.vim'
+    Plug 'tomasiser/vim-code-dark'
+    Plug 'Mofiqul/vscode.nvim'
 " }
 
 " vim-airline: Powerful status bar {
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
 
-    " Note:
+    " Note: airline integration with another vim plugins
     "   git-branch: tpope/vim-fugitive
     "   git-status: coc-git
+
+    let g:airline_theme = 'tender'
 
     " Enable power line fonts
     let g:airline_powerline_fonts = 1
@@ -474,7 +482,12 @@ call plug#end() " }
         set termguicolors
     endif
 
-    silent! colorscheme tender
+    " For dark theme
+    let g:vscode_style = "dark"
+    " Disable nvim-tree background color
+    " let g:vscode_disable_nvimtree_bg = v:true
+
+    silent! colorscheme vscode
 
     " Remove the backgroud color of sign column
     highlight clear SignColumn ctermbg guibg
