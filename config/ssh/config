@@ -4,6 +4,14 @@
 # https://stackoverflow.com/a/34206244/358069
 Compression yes
 
+# SSH Multiplexing
+Host ws*
+    ControlMaster auto
+    ControlPath ~/.ssh/ctrl-%C
+    #For ssh < 6.7
+    #ControlPath ~/.ssh/ctrl-%r@%h-%p
+    ControlPersist 600
+
 # local vms on MBP2015 {{{
 # Host: 10.211.55.2
 # Host win7

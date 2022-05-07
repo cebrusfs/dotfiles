@@ -58,11 +58,11 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 # Set the list of directories that Zsh searches for programs.
 # (N) to remove the path when the path is not found
 path=(
-    $HOME/bin(N)                    # Customized binary/script managed by git
+    $HOME/bin                       # Customized binary/script managed by git
+    $HOME/.cargo/bin                # Rust: Local cargo path
 
     $HOME/Library/Python/*/bin(N)   # Python: Local pip path for OSX
     $HOME/.gem/ruby/*/bin(N)        # Ruby: Local gem path
-    $HOME/.cargo/bin(N)             # Rust: Local cargo path
     $NPM_PACKAGES/bin(N)            # Node: Local npm path
 
     # Homebrew binary
@@ -72,10 +72,6 @@ path=(
     # Latex
     /Library/TeX/texbin(N)          # Mactex
     /usr/texbin(N)
-
-    # Homebrew (keg-only)
-    #/usr/local/opt/binutils/bin
-    #/usr/local/opt/curl/bin
 
     # Work related
     $HOME/depot_tools(N)
