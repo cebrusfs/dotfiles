@@ -74,7 +74,10 @@ path=(
     /usr/texbin(N)
 
     # Work related
+    $HOME/working/cros_script/bin(N)
+    #$HOME/chromiumos/src/config/bin(N)
     $HOME/depot_tools(N)
+    $HOME/crosfleet(N)
     $HOME/local_build/bin(N)        # for local build binary
 
     $path
