@@ -22,7 +22,6 @@ cask "mactex"
 # IDE tools
 cask "visual-studio-code"
 cask "010-editor"
-brew "colordiff"
 
 # IRC client
 brew "irssi"

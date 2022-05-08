@@ -14,6 +14,7 @@
 
 - create:
     - ~/working
+    - ~/Applications
 
 - link:
     # tmux
@@ -44,6 +45,7 @@
     ~/.ssh/authorized_keys: config/ssh/authorized_keys
 
 # fzf
+# TODO: move to post install script
 - shell:
     - command: modules/fzf/install --all
       description: Installing fzf
@@ -70,10 +72,6 @@
 - link:
     ~/.npmrc: config/npmrc
 
-# Rust
-- shell:
-    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-
 # Linux specific links
 - link:
     ~/bin:
@@ -97,10 +95,3 @@
         path: config/BetterTouchTool.bttpreset
         if: '[[ "$OSTYPE" == darwin* ]]'
 
-# OSX: homebrew check and install
-- shell:
-    - bash install-conf/homebrew-install.sh
-
-# Linux: apt check and install
-- shell:
-    - bash install-conf/apt-install.sh

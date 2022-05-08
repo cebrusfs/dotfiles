@@ -66,7 +66,8 @@ path=(
     $NPM_PACKAGES/bin(N)            # Node: Local npm path
 
     # Homebrew binary
-    /usr/local/{bin,sbin}(N)
+    /usr/local/{bin,sbin}(N)        # Default homebrew for Intel
+    /opt/homebrew/{bin,sbin}(N)     # Default homebrew for Apple Silicon
     $HOME/homebrew/{bin,sbin}(N)    # Customized Homebrew path
 
     # Latex
@@ -95,6 +96,7 @@ fpath=(
 #manpath=(
 #    # Customized Homebrew path
 #    /usr/local/brew/share/man
+#    /opt/homebrew/share/man
 #
 #    $manpath
 #)

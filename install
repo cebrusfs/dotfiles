@@ -28,7 +28,6 @@ function dotbot_main() {
 
 
 function zsh_main() {
-    log "Check zsh"
     if ! check_command zsh; then
         # OSX should have zsh by default
         if is_linux; then
@@ -39,7 +38,13 @@ function zsh_main() {
     fi
 
     if [[ "$SHELL" != *zsh ]]; then
+        log "Current shell is not zsh, switch default shell to zsh"
         chsh -s $(which zsh)
+
+        log "Enable the setting in zsh before process the following steps"
+        if [[ "$SHELL" != *zsh ]]; then
+            exec zsh --login -c "$BASEDIR/install post"
+        fi
     fi
 }
 
@@ -67,18 +72,18 @@ function vim_install_dev_tools() {
     gem install --user-install solargraph rubocop
 
     # CoC: javascript
-    linux_install npm
-    linux_install node-typescript
+    # linux_install npm
+    # linux_install node-typescript
     # FIXME: brew install typescript
 
     # CoC: golang
     # gopls will be auto installed by coc
-    linux_install golang
+    # linux_install golang
     # FIXME: brew install go
 
     # CoC: rust
-    linux_install rustc
-    # FIXME: brew install rust
+    # Use rustup. Avoid "apt" or "homebrew" to avoid potencial issue.
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
 }
 
 function vim_main() {
@@ -98,14 +103,48 @@ function vim_main() {
     . "config/vim/update"
 }
 
+function package_manager_main() {
+    log "Install OS package manager"
+    if is_osx; then
+        . install-conf/homebrew-install.sh
+    elif is_linux; then
+        :
+    else
+        error "Unkown OSTYPE: $OSTYPE"
+    fi
+}
+
+function zsh_deps_main() {
+    linux_install ripgrep
+    linux_install fd-find
+}
+
+
 function main() {
     pushd "${BASEDIR}"
 
     dotbot_main
     zsh_main
+    post_main
+
+    popd
+}
+
+function post_main() {
+    pushd "${BASEDIR}"
+
+    log "Post main"
+
+    package_manager_main
+    zsh_deps_main
     vim_main
 
     popd
 }
 
-main
+
+if [ "$1" = "post" ]; then
+    post_main
+else
+    main
+fi

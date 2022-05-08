@@ -8,14 +8,6 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.min").read
 
 
 #
-# Core
-#
-
-# TODO: OSX build-in zsh is enough?
-#brew "zsh"
-
-
-#
 # Developing
 #
 
