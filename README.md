@@ -12,6 +12,7 @@
 
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/cebrusfs/dotfiles/main/fetch)
+p10k configure
 ```
 
 ### Post install (OSX)
