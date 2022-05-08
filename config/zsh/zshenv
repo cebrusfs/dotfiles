@@ -3,6 +3,9 @@
 #
 # Defines environment variables.
 #
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
 
 # OSX
 # tar: Do NOT pack UI configuration file (e.g. .DS_Store)
@@ -22,6 +25,6 @@ export WECHALLTOKEN="AB7E9-C19E8-E99FC-02FD9-E4C59-98D30"
 export GPG_TTY=`tty`
 
 # Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi

@@ -34,9 +34,6 @@ function _rgg () {
 }
 _check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
 
-# Use 'colordiff' instead of 'diff'
-_check_command colordiff && alias diff='colordiff' || _warn "'colordiff' is not installed"
-
 # Use 'neovim' to replace 'vim'
 _check_command nvim && alias vim='nvim' || _warn "'neovim' is not installed"
 
@@ -60,6 +57,9 @@ fi
 
 #
 # Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
 ZCONFIG_DIR="${ZDOTDIR:-$HOME}/.dotfiles/config/zsh"

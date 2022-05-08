@@ -3,13 +3,16 @@
 #
 # Executes commands at login pre-zshrc.
 #
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
 
 #
 # Browser
 #
 
-if [[ "$OSTYPE" == darwin* ]]; then
-    export BROWSER='open'
+if [[ -z "$BROWSER" && "$OSTYPE" == darwin* ]]; then
+  export BROWSER='open'
 fi
 
 #
@@ -50,13 +53,13 @@ export TZ='Asia/Taipei'
 NPM_PACKAGES="${HOME}/.npm-packages"
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 
-# Set the the list of directories that cd searches.
+# Set the list of directories that cd searches.
 # cdpath=(
 #   $cdpath
 # )
 
 # Set the list of directories that Zsh searches for programs.
-# (N) to remove the path when the path is not found
+# (N) to remove the path when the path is not found.
 path=(
     $HOME/bin                       # Customized binary/script managed by git
     $HOME/.cargo/bin                # Rust: Local cargo path
@@ -111,16 +114,18 @@ typeset -gU cdpath fpath mailpath path #manpath
 
 # Set the default Less options.
 # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
-# Remove -X and -F (exit if the content fits on one screen) to enable it.
-export LESS='-F -g -i -M -R -S -w -X -z-4'
+# Remove -X to enable it.
+if [[ -z "$LESS" ]]; then
+  export LESS='-g -i -M -R -S -w -X -z-4'
+fi
 
 # set display charset of less
 export LESSCHARSET=UTF-8
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
-if (( $#commands[(i)lesspipe(|.sh)] )); then
-    export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+if [[ -z "$LESSOPEN" ]] && (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
 #
@@ -134,15 +139,3 @@ export LSCOLORS="Gxfxcxdxbxegedabagacad"
 export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
 # zsh (use Linux format)
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-
-#
-# Temporary Files
-#
-
-if [[ ! -d "$TMPDIR" ]]; then
-    export TMPDIR="/tmp/$LOGNAME"
-    mkdir -p -m 700 "$TMPDIR"
-fi
-
-TMPPREFIX="${TMPDIR%/}/zsh"
