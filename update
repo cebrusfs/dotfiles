@@ -14,14 +14,31 @@ function update_self() {
 }
 
 function update_submodule() {
-    git submodule update --init --remote -f
+    #zprezto-update
+
+    # Sync URL change from upstream
+    git submodule sync --recursive
+    # Pull submodule
+    git submodule update --init --remote
+
+    # Reset submodule of submodule to pinned commit
+    #git submodule foreach git submodule update --init
+
+    # backup
+    #git submodule update --init --remote -f
 }
+
+function restore_submodule() {
+    git submodule sync --recursive
+    git submodule update --init --recursive
+}
+
 
 function main() {
     pushd "${BASEDIR}"
 
     update_self
-    #update_submodule
+    update_submodule
 
     # update vim plugin
     . "config/vim/update"
