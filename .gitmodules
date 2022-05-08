@@ -1,12 +1,16 @@
 [submodule "modules/dotbot"]
 	path = modules/dotbot
 	url = https://github.com/anishathalye/dotbot
+	branch = master
 [submodule "modules/prezto"]
 	path = modules/prezto
 	url = https://github.com/sorin-ionescu/prezto.git
+	branch = master
 [submodule "modules/fzf"]
 	path = modules/fzf
 	url = https://github.com/junegunn/fzf.git
+	branch = master
 [submodule "modules/diff-so-fancy"]
 	path = modules/diff-so-fancy
 	url = https://github.com/so-fancy/diff-so-fancy.git
+	branch = master
