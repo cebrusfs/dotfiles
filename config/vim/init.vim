@@ -473,6 +473,11 @@ call plug#begin() " {
         \ }
 " }
 
+" Clipboard: {
+    Plug 'ShikChen/osc52.vim'
+    vnoremap Y y:call SendViaOSC52(getreg('"'))<CR>
+" }
+
 call plug#end() " }
 
 
