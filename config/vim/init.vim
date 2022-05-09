@@ -449,7 +449,9 @@ call plug#begin() " {
     " Conceal the links
     let g:pandoc#syntax#conceal#urls = 1
 " }
-
+" Mojom syntax highlight {
+    Plug 'ShikChen/mojom.vim'
+" }
 
 " local-vimrc 'lvimrc': {
     Plug 'coquelicot/local-vimrc'
@@ -551,8 +553,4 @@ autocmd Filetype sh
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
             \ :!sh %<CR>
-
-augroup filetypedetect
-    au! BufRead,BufNewFile *.mojom setfiletype mojom
-augroup END
 " }
