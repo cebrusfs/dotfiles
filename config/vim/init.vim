@@ -503,14 +503,12 @@ call plug#end() " }
 
 " Wrap the long lines and highlight wrap limit {
     set colorcolumn=+1
-    setlocal textwidth=80
-
     " FIXME: color
     highlight ColorColumn guibg=firebrick4
-
 " }
 
 " Programming env {
+autocmd Filetype c,cpp setlocal textwidth=80
 autocmd Filetype c
             \ nnoremap <buffer> <Leader>c
             \ :w<CR>
