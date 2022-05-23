@@ -87,7 +87,8 @@ call plug#begin() " {
 " Color Scheme {
     Plug 'jacoborus/tender.vim'
     Plug 'tomasiser/vim-code-dark'
-    Plug 'Mofiqul/vscode.nvim'
+    Plug 'Mofiqul/vscode.nvim' " Neovim only
+    Plug 'https://gitlab.com/__tpb/monokai-pro.nvim'
 " }
 
 " vim-airline: Powerful status bar {
@@ -496,9 +497,6 @@ call plug#end() " }
     " let g:vscode_disable_nvimtree_bg = v:true
 
     silent! colorscheme vscode
-
-    " Remove the backgroud color of sign column
-    highlight clear SignColumn ctermbg guibg
 " }
 
 " Wrap the long lines and highlight wrap limit {
