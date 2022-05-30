@@ -453,6 +453,9 @@ call plug#begin() " {
 " Mojom syntax highlight {
     Plug 'ShikChen/mojom.vim'
 " }
+" BUILD.gn syntax highlight {
+    Plug 'https://gn.googlesource.com/gn', { 'rtp': 'misc/vim' }
+" }
 
 " local-vimrc 'lvimrc': {
     Plug 'coquelicot/local-vimrc'
