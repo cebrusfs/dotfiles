@@ -6,6 +6,8 @@
 	<true/>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
+	<key>FallbackLCCType</key>
+	<string>en_US.UTF-8</string>
 	<key>HapticFeedbackForEsc</key>
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
