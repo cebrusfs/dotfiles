@@ -41,6 +41,18 @@ Host cs*
     ForwardAgent yes
 # }}}
 
+# Orcale Clouds {{{
+Host amd-micro
+    HostName 152.70.104.204
+    User ubuntu
+Host arm-perf
+    HostName 138.3.221.172
+    User ubuntu
+Host vpn
+    HostName vpn.cerberus.fish
+    User ubuntu
+# }}}
+
 # overthewire
 Host *.labs.overthewire.org
     SendEnv WECHALLTOKEN
