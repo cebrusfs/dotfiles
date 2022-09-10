@@ -54,6 +54,8 @@ function linux_install() {
         return 0
     fi
     log "Trying to install package '$1'"
+    # Using apt-get / dpkg (ubuntu / debian)
     is_pkg_installed "$1" || sudo apt install -y "$1"
+    # TODO: Support using pacman (archlinux)
 }
 
