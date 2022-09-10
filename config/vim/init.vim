@@ -557,4 +557,12 @@ autocmd Filetype sh
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
             \ :!sh %<CR>
+autocmd Filetype rust
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!cargo run<CR>
+autocmd Filetype rust
+            \ nnoremap <buffer> <Leader>c
+            \ :w<CR>
+            \ :!cargo check<CR>
 " }
