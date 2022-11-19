@@ -548,7 +548,7 @@ autocmd Filetype makefile setlocal noexpandtab
 autocmd Filetype python
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
-            \ :!python -W always -tt %<CR>
+            \ :!python3 -W always -tt %<CR>
 
 autocmd Filetype ruby
             \ nnoremap <buffer> <Leader>p
