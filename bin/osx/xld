@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Wrapper and proxy CLI command
+
 #Edit this line to define a path to XLD.app
 XLD_APP="/Applications/XLD.app"
 
