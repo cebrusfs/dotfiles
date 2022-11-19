@@ -19,7 +19,9 @@ function update_submodule() {
     # Sync URL change from upstream
     git submodule sync --recursive
     # Pull submodule
-    git submodule update --init --remote
+    git submodule update --remote
+    # Pull submodule (seems doesn't work)
+    #git submodule update --init --remote
 
     # Reset submodule of submodule to pinned commit
     #git submodule foreach git submodule update --init
