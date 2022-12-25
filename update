@@ -42,8 +42,11 @@ function main() {
     update_self
     update_submodule
 
+    # Reinstall fzf
+    ./modules/fzf/install --all
+
     # update vim plugin
-    . "config/vim/update"
+    . config/vim/update
 
     popd
 }

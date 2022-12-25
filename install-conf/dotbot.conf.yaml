@@ -44,12 +44,6 @@
     ~/.ssh/config: config/ssh/config
     ~/.ssh/authorized_keys: config/ssh/authorized_keys
 
-# fzf
-# TODO: move to post install script
-- shell:
-    - command: modules/fzf/install --all
-      description: Installing fzf
-      stdout: false
 
 # vim
 - link:
