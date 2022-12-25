@@ -26,6 +26,9 @@ scriptencoding utf-8
     " Encoding
     set fileencoding=utf-8
     set fileencodings=ucs-bom,utf-8,big5,cp936,gb18030,latin1
+
+    " Disable mouse reporting which will block pasteboard
+    set mouse-=a
 " }
 
 " User Interface {
