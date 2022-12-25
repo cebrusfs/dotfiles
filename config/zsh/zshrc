@@ -70,7 +70,7 @@ if [[ -r "${ZPREZTO_DIR}/init.zsh" ]]; then
   source "${ZPREZTO_DIR}/init.zsh"
 fi
 
-bindkey "^R" history-incremental-pattern-search-backward
+bindkey '^R' history-incremental-pattern-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward
 
 # overwrite when using file redirect (>) to existed file
