@@ -81,4 +81,6 @@ cask "clip-studio-paint"    # painting
 cask "slack"
 cask "discord"
 
-cask "lastpass"
+#cask "lastpass"
+cask "bitwarden"
+#brew "bitwarden-cli"
