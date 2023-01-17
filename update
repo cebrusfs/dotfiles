@@ -24,7 +24,7 @@ function update_submodule() {
     #git submodule update --init --remote
 
     # Reset submodule of submodule to pinned commit
-    #git submodule foreach git submodule update --init
+    git submodule foreach git submodule update --init
 
     # backup
     #git submodule update --init --remote -f
