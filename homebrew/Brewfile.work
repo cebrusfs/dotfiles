@@ -38,5 +38,8 @@ brew "dos2unix"
 # App
 #
 
+cask "bettertouchtool"            # UI enhancement
+cask "keka"                       # Uncompressor
+
 cask "google-chrome"
 cask "skype"

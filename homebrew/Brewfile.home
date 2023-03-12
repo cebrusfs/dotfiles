@@ -74,7 +74,8 @@ cask "steam"
 
 cask "vlc"                  # Video player
 
-cask "calibre"              # ebook
+cask "calibre"              # ebook manager
+cask "kindle-previewer"     # Kindle ebook
 
 cask "clip-studio-paint"    # painting
 
@@ -82,3 +83,6 @@ cask "slack"
 cask "discord"
 
 cask "todoist"
+
+cask "cloudflare-warp"      # cloudflare VPN
+cask "parallels"            # Parallels Desktop VM

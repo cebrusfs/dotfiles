@@ -23,14 +23,6 @@ brew "ripgrep"                    # fastest 'grep'
 brew "fd"                         # fastest 'find'
 brew "colordiff"                  # colorful diff used in zpretzo
 
-cask "keka"                       # Uncompressor
-
-#
-# UI enhancement
-#
-
-cask "bettertouchtool"
-
 #
 # Shell and VIM
 #
