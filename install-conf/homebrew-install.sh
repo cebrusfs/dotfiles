@@ -6,7 +6,7 @@ BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 source "${BASEDIR}/utils.sh"
 
 function homebrew_install() {
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     # Fix path temporary. We won't need this when we enter zsh.
     export PATH="/opt/homebrew/bin:/usr/local/bin"
