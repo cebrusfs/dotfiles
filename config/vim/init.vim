@@ -466,6 +466,11 @@ call plug#begin() " {
     Plug 'coquelicot/local-vimrc'
 " }
 
+
+" Github copilot {
+    Plug 'github/copilot.vim'
+" }
+
 " FIXME
 " vim-easymotion: Fast jump {
     " Plug 'easymotion/vim-easymotion'
