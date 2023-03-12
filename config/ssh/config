@@ -53,6 +53,10 @@ Host vpn
     User ubuntu
 # }}}
 
+Host twvpn
+    HostName twvpn.cerberus.fish
+    User pi
+
 # overthewire
 Host *.labs.overthewire.org
     SendEnv WECHALLTOKEN
