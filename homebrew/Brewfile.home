@@ -66,13 +66,13 @@ brew "typescript"
 # Apps
 #
 
-cask "google-drive"
+cask "bitwarden"            # Password manager
+cask "notion"
 
+cask "google-drive"
 cask "steam"
 
-cask "vlc"
-
-cask "notion"               # note
+cask "vlc"                  # Video player
 
 cask "calibre"              # ebook
 
@@ -81,6 +81,4 @@ cask "clip-studio-paint"    # painting
 cask "slack"
 cask "discord"
 
-#cask "lastpass"
-cask "bitwarden"
-#brew "bitwarden-cli"
+cask "todoist"
