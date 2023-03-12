@@ -27,7 +27,7 @@ cask "010-editor"
 brew "irssi"
 
 # GPG tools
-cask "gpg-suite-no-mail"
+#cask "gpg-suite-no-mail"
 
 # lets-encrypt for personal project
 brew "certbot"
@@ -69,20 +69,26 @@ brew "typescript"
 cask "bitwarden"            # Password manager
 cask "notion"
 
-cask "google-drive"
-cask "steam"
-
 cask "vlc"                  # Video player
 
 cask "calibre"              # ebook manager
-cask "kindle-previewer"     # Kindle ebook
-
-cask "clip-studio-paint"    # painting
 
 cask "slack"
 cask "discord"
 
 cask "todoist"
 
+
+#
+# Missing verifying
+#
+
+cask "google-drive"
+cask "steam"
+
 cask "cloudflare-warp"      # cloudflare VPN
 cask "parallels"            # Parallels Desktop VM
+
+cask "clip-studio-paint"    # painting
+
+cask "kindle-previewer"     # Kindle ebook
