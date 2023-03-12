@@ -25,7 +25,10 @@ brew "colordiff"                  # colorful diff used in zpretzo
 
 cask "keka"                       # Uncompressor
 
-cask "karabiner-elements"
+#
+# UI enhancement
+#
+
 cask "bettertouchtool"
 
 #
