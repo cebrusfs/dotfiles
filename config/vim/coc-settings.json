@@ -12,6 +12,8 @@
     "git.topRemovedSign.hlGroup": "GitGutterDelete",
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
 
+    "python.pythonPath": "python3"
+
     "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 
     "solargraph.formatting": true,
