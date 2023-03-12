@@ -6,4 +6,7 @@ cd "$HOME/.dotfiles"
 # Set upstream push
 git remote set-url --push origin git@github.com:cebrusfs/dotfiles.git
 
+# Fetch the latest update if .dotfiles is already cloned
+git pull
+
 . ./install
