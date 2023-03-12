@@ -509,7 +509,7 @@ call plug#end() " }
     " Disable nvim-tree background color
     " let g:vscode_disable_nvimtree_bg = v:true
 
-    silent! colorscheme vscode
+    silent! lua require('vscode').setup({})
 " }
 
 " Wrap the long lines and highlight wrap limit {
