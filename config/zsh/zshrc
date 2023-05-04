@@ -155,4 +155,4 @@ alias gws='gwS'
 #
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f "${ZCONFIG_DIR}/p10k.zsh" ]] || source "${ZCONFIG_DIR}/p10k.zsh"
+[[ ! -f "${HOME}/.p10k.zsh" ]] || source "${HOME}/.p10k.zsh"

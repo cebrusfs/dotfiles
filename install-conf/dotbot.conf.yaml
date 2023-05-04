@@ -36,6 +36,7 @@
     ~/.zshrc: config/zsh/zshrc
     ~/.zlogin: config/zsh/zlogin
     ~/.zlogout: config/zsh/zlogout
+    ~/.p10k.zsh: config/zsh/p10k.zsh
 
     # git
     ~/.gitconfig: config/git/gitconfig
