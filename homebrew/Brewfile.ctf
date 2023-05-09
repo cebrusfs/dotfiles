@@ -10,6 +10,9 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.home").read
 # CTF
 #
 
+# Binary IDE tools
+cask "010-editor"
+
 # Web
 cask "owasp-zap"
 cask "postman"
