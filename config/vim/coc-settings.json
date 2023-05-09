@@ -1,5 +1,6 @@
 {
     // Enable semantic tokens highlight feature
+    "semanticTokens.enable": true,
     "semanticTokens.filetypes": ["*"],
 
     "coc.preferences.extensionUpdateCheck": "daily",
@@ -12,7 +13,7 @@
     "git.topRemovedSign.hlGroup": "GitGutterDelete",
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
 
-    "python.pythonPath": "python3"
+    "python.pythonPath": "python3",
 
     "clangd.fallbackFlags": ["-std=gnu++20", "-Wall", "-Wextra", "-Wshadow", "-Wno-deprecated"],
 
