@@ -504,12 +504,11 @@ call plug#end() " }
     " Fallback for vim
     silent! colorscheme codedark
 
-    " For dark theme
-    let g:vscode_style = "dark"
     " Disable nvim-tree background color
     " let g:vscode_disable_nvimtree_bg = v:true
 
     silent! lua require('vscode').setup({})
+    silent! lua require('vscode').load()
 " }
 
 " Wrap the long lines and highlight wrap limit {
