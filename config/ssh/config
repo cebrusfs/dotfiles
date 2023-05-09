@@ -12,18 +12,6 @@ Host ws*
     #ControlPath ~/.ssh/ctrl-%r@%h-%p
     ControlPersist 600
 
-# local vms on MBP2015 {{{
-# Host: 10.211.55.2
-# Host win7
-    # HostName 172.25.1.201
-Host u18
-    HostName ubuntu-18.04
-    ForwardAgent yes
-Host u20
-    HostName ubuntu-20.04
-    ForwardAgent yes
-# }}}
-
 # TFcis {{{
 Host phantom
     HostName phantom.tfcis.org
