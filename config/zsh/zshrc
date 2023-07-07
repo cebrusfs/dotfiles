@@ -84,6 +84,8 @@ setopt clobber
 alias rm='rm -r'
 alias cp='cp -rv'
 alias objdump='objdump -M intel'
+#Fixing remote desktop screen sharing
+alias fixrdp='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist &&  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist'
 
 # Use 'tmx2' instead of 'tmux' when available
 _check_command tmx2 && alias tmux='tmx2'
