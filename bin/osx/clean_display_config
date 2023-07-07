@@ -1,4 +1,0 @@
-#!/bin/sh
-sudo rm /Library/Preferences/com.apple.windowserver.plist
-rm $HOME/Library/Preferences/ByHost/com.apple.windowserver.*.plist
-

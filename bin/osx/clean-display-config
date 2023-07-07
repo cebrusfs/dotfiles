@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+#sudo rm -f /Library/Preferences/com.apple.windowserver.plist
+sudo rm -f /Library/Preferences/com.apple.windowserver.displays.plist
+
+rm -f "$HOME/Library/Preferences/ByHost/com.apple.windowserver.*.plist"
+
