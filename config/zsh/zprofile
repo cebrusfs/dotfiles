@@ -62,6 +62,7 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 # (N) to remove the path when the path is not found.
 path=(
     $HOME/bin                       # Customized binary/script managed by git
+    $HOME/docker-bin
     $HOME/.cargo/bin                # Rust: Local cargo path
 
     $HOME/Library/Python/*/bin(N)   # Python: Local pip path for OSX
