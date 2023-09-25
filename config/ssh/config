@@ -17,7 +17,6 @@ Host phantom
     HostName phantom.tfcis.org
     User yuscvscv
     Port 9527
-    ForwardAgent yes
 # }}}
 
 # Work stations @ NTU.CSIE {{{
@@ -26,7 +25,6 @@ Host cs*
     User r04922033
     # cs\d -> linux\d.csie.org
     ProxyCommand nc "linux$(echo "%h" | sed 's/cs//').csie.org" %p
-    ForwardAgent yes
 # }}}
 
 # Orcale Clouds {{{
