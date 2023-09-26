@@ -20,11 +20,18 @@ Host phantom
 # }}}
 
 # Work stations @ NTU.CSIE {{{
+Host ws*.csie.ntu.edu.tw
+    User r04922033
+    ForwardAgent yes
+
 # cs[1-20]
 Host cs*
     User r04922033
     # cs\d -> linux\d.csie.org
     ProxyCommand nc "linux$(echo "%h" | sed 's/cs//').csie.org" %p
+
+Host nslab
+    HostName 140.112.31.100
 # }}}
 
 # Orcale Clouds {{{
@@ -38,10 +45,6 @@ Host vpn
     HostName vpn.cerberus.fish
     User ubuntu
 # }}}
-
-Host twvpn
-    HostName twvpn.cerberus.fish
-    User pi
 
 # overthewire
 Host *.labs.overthewire.org
