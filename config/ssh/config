@@ -13,6 +13,7 @@ Host ws*
     ControlPersist 600
 
 # TFcis {{{
+# TODO: Not active
 Host phantom
     HostName phantom.tfcis.org
     User yuscvscv
