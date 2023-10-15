@@ -471,9 +471,8 @@ call plug#begin() " {
     Plug 'github/copilot.vim'
 " }
 
-" FIXME
 " vim-easymotion: Fast jump {
-    " Plug 'easymotion/vim-easymotion'
+    Plug 'easymotion/vim-easymotion'
 " }
 
 " Grammar checker: {
