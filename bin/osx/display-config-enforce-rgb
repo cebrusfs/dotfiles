@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Enforce RGB color
+# https://gist.github.com/GetVladimir/c89a26df1806001543bef4c8d90cc2f8?permalink_comment_id=4117597
+/usr/libexec/PlistBuddy -c "add DisplaySets:Configs:DisplayConfig:DisplayConfig:DisplayConfig:LinkDescription:BitDepth integer" ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
+/usr/libexec/PlistBuddy -c "set DisplaySets:Configs:DisplayConfig:DisplayConfig:DisplayConfig:LinkDescription:BitDepth 8" ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
+/usr/libexec/PlistBuddy -c "add DisplaySets:Configs:DisplayConfig:DisplayConfig:DisplayConfig:LinkDescription:EOTF integer" ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
+/usr/libexec/PlistBuddy -c "add DisplaySets:Configs:DisplayConfig:DisplayConfig:DisplayConfig:LinkDescription:PixelEncoding integer" ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
+/usr/libexec/PlistBuddy -c "add DisplaySets:Configs:DisplayConfig:DisplayConfig:DisplayConfig:LinkDescription:Range integer" ~/Library/Preferences/ByHost/com.apple.windowserver.displays.*.plist
