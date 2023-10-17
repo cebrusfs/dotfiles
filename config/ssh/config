@@ -21,15 +21,10 @@ Host phantom
 # }}}
 
 # Work stations @ NTU.CSIE {{{
-Host ws*.csie.ntu.edu.tw
-    User r04922033
-    ForwardAgent yes
-
-# cs[1-20]
-Host cs*
+Host ws*
     User r04922033
     # cs\d -> linux\d.csie.org
-    ProxyCommand nc "linux$(echo "%h" | sed 's/cs//').csie.org" %p
+    ProxyCommand nc "$(echo "%h").csie.org" %p
 
 Host nslab
     HostName 140.112.31.100
@@ -39,11 +34,11 @@ Host nslab
 Host amd-micro
     HostName 152.70.104.204
     User ubuntu
-Host arm-perf
-    HostName 138.3.221.172
-    User ubuntu
 Host vpn
     HostName vpn.cerberus.fish
+    User ubuntu
+Host arm-perf
+    HostName 138.3.221.172
     User ubuntu
 # }}}
 
