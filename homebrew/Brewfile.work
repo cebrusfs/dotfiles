@@ -39,6 +39,7 @@ brew "dos2unix"
 #
 
 cask "bettertouchtool"            # UI enhancement
+cask "monitorcontrol"             # Control monitor setting in UI
 cask "keka"                       # Uncompressor
 
 cask "google-chrome"

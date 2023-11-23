@@ -70,7 +70,7 @@ cask "notion"
 
 cask "vlc"                  # Video player
 
-cask "calibre"              # ebook manager
+#cask "calibre"              # ebook manager
 
 cask "slack"
 cask "discord"
@@ -85,7 +85,7 @@ cask "todoist"
 cask "google-drive"
 cask "steam"
 
-cask "cloudflare-warp"      # cloudflare VPN
+#cask "cloudflare-warp"      # cloudflare VPN
 cask "parallels"            # Parallels Desktop VM
 
 cask "clip-studio-paint"    # painting
