@@ -8,8 +8,6 @@ cask_args appdir: "~/Applications", require_sha: true
 #
 # Taps
 #
-tap "homebrew/core"
-tap "homebrew/cask"
 tap "homebrew/bundle"
 
 tap "homebrew/command-not-found"  # brew command not found
