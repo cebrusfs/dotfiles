@@ -5,7 +5,7 @@
 Compression yes
 
 # SSH Multiplexing
-Host ws*
+Host corp*
     ControlMaster auto
     ControlPath ~/.ssh/ctrl-%C
     #For ssh < 6.7
@@ -21,7 +21,7 @@ Host phantom
 # }}}
 
 # Work stations @ NTU.CSIE {{{
-Host ws*
+Host ws1 ws2 ws3 ws4 ws5
     User r04922033
     # cs\d -> linux\d.csie.org
     ProxyCommand nc "$(echo "%h").csie.org" %p
