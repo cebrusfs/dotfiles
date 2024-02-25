@@ -128,6 +128,8 @@ function zsh_deps_main() {
 
 
 function main() {
+    umask 022
+
     pushd "${BASEDIR}"
 
     dotbot_main
