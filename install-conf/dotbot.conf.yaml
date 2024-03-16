@@ -1,5 +1,7 @@
 # vim: set shiftwidth=4 tabstop=4:
 - defaults:
+    create:
+        mode: 0755
     link:
         relink: true
         create: true
@@ -13,8 +15,9 @@
     - [git submodule update --init --recursive, "Installing submodules"]
 
 - create:
-    - ~/working
-    - ~/Applications
+    ~/working:
+    ~/Applications:
+        if: '[[ "$OSTYPE" == darwin* ]]'
 
 - link:
     # tmux
