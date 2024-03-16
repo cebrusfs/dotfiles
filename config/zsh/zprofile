@@ -43,7 +43,8 @@ fi
 # Locale
 #
 
-export TZ='Asia/Taipei'
+# Use system default timezone
+#export TZ='Asia/Taipei'
 
 #
 # Paths
