@@ -44,6 +44,7 @@ function main() {
 
     # Remove fzf configs
     rm -f ~/.fzf.bash ~/.fzf.zsh
+    rm -rf modules/fzf/
 
     # update vim plugin
     . config/vim/update
