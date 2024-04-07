@@ -1,4 +1,4 @@
-# vim: syntax=zsh:
+# vim: syntax=sh:
 
 #
 # Executes commands at login pre-zshrc.

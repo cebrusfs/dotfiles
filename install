@@ -1,5 +1,5 @@
 #!/bin/bash
-# vim: syntax=sh:
+# vim: syntax=bash:
 
 set -e
 
