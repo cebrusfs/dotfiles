@@ -1,3 +1,5 @@
+# vim: syntax=brewfile:
+
 #
 # Mac at home
 # All stuff without CTF tools
@@ -22,17 +24,13 @@ cask "mactex"
 # IDE tools
 cask "visual-studio-code"
 
-# IRC client
-brew "irssi"
-
 # GPG tools
 #cask "gpg-suite-no-mail"
-
-# lets-encrypt for personal project
-brew "certbot"
+#brew "gnupg"
 
 # VPN client
-brew "wireguard-tools"
+# Wireguard via App store
+# Tailscale via App store
 
 #
 # Programming Language
@@ -61,6 +59,13 @@ brew "pandoc"
 # node is in neovim deps
 brew "typescript"
 
+# Media tools
+brew "ffmpeg"
+brew "yt-dlp"
+
+# 7z CLI
+brew "p7zip"
+
 #
 # Apps
 #
@@ -77,6 +82,9 @@ cask "discord"
 
 cask "todoist"
 
+#cask "anki"                 # Language learning
+#cask "resilio-sync"         # P2P sync
+
 
 #
 # Missing verifying
@@ -85,8 +93,7 @@ cask "todoist"
 cask "google-drive"
 cask "steam"
 
-#cask "cloudflare-warp"      # cloudflare VPN
-cask "parallels"            # Parallels Desktop VM
+cask "parallels"
 
 cask "clip-studio-paint"    # painting
 
