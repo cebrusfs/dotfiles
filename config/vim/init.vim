@@ -1,4 +1,5 @@
-" vim: set ts=4 ts=4 sts=4 et foldmarker={,} foldlevel=0 foldmethod=marker:
+" vim: ts=4 ts=4 sts=4
+" vim: foldmarker={,} foldlevel=0 foldmethod=marker:
 
 scriptencoding utf-8
 

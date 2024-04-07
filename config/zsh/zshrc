@@ -1,8 +1,11 @@
-# vim: syntax=zsh: ts=2: sts=2: sw=2
+# vim: syntax=sh: ts=2: sts=2: sw=2:
 
 #
 # Util functions
 #
+
+# `command` is POSIX standard and prefered over `which`.
+# However, zsh implemented both as buildin command, so no difference here.
 function _check_command () {
   command -v $1 >/dev/null
 }
@@ -18,10 +21,11 @@ function _warn() {
 # Alias (enable warning)
 #
 
-# Better 'find'
+# Better 'find', as known as 'fd'
 if _check_command fd ; then
   export FZF_DEFAULT_COMMAND="$(which fd) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Debian/Ubuntu use 'fdfind' binary name instead, use 'fdfind' as ballback
 elif _check_command fdfind ; then
   export FZF_DEFAULT_COMMAND="$(which fdfind) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -84,16 +88,12 @@ setopt clobber
 alias rm='rm -r'
 alias cp='cp -rv'
 alias objdump='objdump -M intel'
-#Fixing remote desktop screen sharing
+
+# Fixing remote desktop screen sharing
 alias fixrdp='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist &&  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist'
 
 # Use 'tmx2' instead of 'tmux' when available
 _check_command tmx2 && alias tmux='tmx2'
-
-# Irssi
-# TODO: remove this, given I'm using screen-256color in tmux now
-# irssi under 'xterm-256color' (used by tmux) will refresh only half of screen, set to screen-256color to fix this
-#alias irssi='TERM=screen-256color irssi'
 
 # SSH
 # Hook ssh to change tmux window name
