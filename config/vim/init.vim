@@ -468,7 +468,7 @@ call plug#begin() " {
 
 
 " Github copilot {
-    Plug 'github/copilot.vim'
+    " Plug 'github/copilot.vim'
 " }
 
 " vim-easymotion: Fast jump {
