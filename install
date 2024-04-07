@@ -118,16 +118,10 @@ function package_manager_main() {
     fi
 }
 
-function zsh_fzf_install() {
-    # Following script wiil change PWD, execute as new command
-    ./modules/fzf/install --all
-}
-
 function zsh_deps_main() {
     linux_install ripgrep
     linux_install fd-find
-
-    zsh_fzf_install
+    linux_install fzf
 }
 
 

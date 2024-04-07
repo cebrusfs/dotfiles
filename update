@@ -42,8 +42,8 @@ function main() {
     update_self
     update_submodule
 
-    # Reinstall fzf
-    ./modules/fzf/install --all
+    # Remove fzf configs
+    rm -f ~/.fzf.bash ~/.fzf.zsh
 
     # update vim plugin
     . config/vim/update

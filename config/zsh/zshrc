@@ -149,8 +149,7 @@ alias gws='gwS'
 # fzf initialize
 #
 
-[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
-
+_check_command fzf && eval "$(fzf --zsh)" || _warn "'fzf' is not installed"
 
 #
 # Powerlevel10k
