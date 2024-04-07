@@ -64,24 +64,27 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 path=(
     $HOME/bin                       # Customized binary/script managed by git
     $HOME/docker-bin
-    $HOME/.cargo/bin                # Rust: Local cargo path
 
+    $HOME/.cargo/bin(N)             # Rust: Local install path
     $HOME/Library/Python/*/bin(N)   # Python: Local pip path for OSX
-    $HOME/.gem/ruby/*/bin(N)        # Ruby: Local gem path
     $NPM_PACKAGES/bin(N)            # Node: Local npm path
+
+    /opt/homebrew/opt/ruby/bin(N)       # Ruby: Homebrew Ruby
+    /opt/homebrew/lib/ruby/gems/*/bin   # Ruby: Homebrew Gem path
+    $HOME/.gem/ruby/*/bin(N)            # Ruby: Local gem path
+
 
     # Homebrew binary
     /usr/local/{bin,sbin}(N)        # Default homebrew for Intel
     /opt/homebrew/{bin,sbin}(N)     # Default homebrew for Apple Silicon
-    $HOME/homebrew/{bin,sbin}(N)    # Customized Homebrew path
 
     # Latex
     /Library/TeX/texbin(N)          # Mactex
     /usr/texbin(N)
 
     # Work related
+    $HOME/homebrew/{bin,sbin}(N)    # Customized Homebrew path
     $HOME/working/cros_script/bin(N)
-    #$HOME/chromiumos/src/config/bin(N)
     $HOME/depot_tools(N)
     $HOME/crosfleet(N)
     $HOME/local_build/bin(N)        # for local build binary

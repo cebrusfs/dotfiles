@@ -55,6 +55,7 @@ function zsh_main() {
 
 function vim_install_deps_linux() {
     # coc.nvim deps
+    # FIXME: Ubuntu 22.04 has too old node version. Need >16.
     linux_install nodejs
 
     # vim / neovim
@@ -66,12 +67,12 @@ function vim_install_dev_tools() {
     log "Install packages for neovim languages"
 
     # CoC: Python
-    # OSX has ruby by default
+    # OSX has Python by default
     linux_install python3-dev
     linux_install python3-pip
 
     # CoC: Ruby
-    # OSX has ruby by default
+    # OSX install Ruby via Homebrew
     linux_install ruby-dev
     gem install --user-install solargraph rubocop
 
