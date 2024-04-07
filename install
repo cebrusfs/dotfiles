@@ -3,20 +3,24 @@
 
 set -e
 
-BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${BASEDIR}/install-conf/utils.sh"
 
 
 DOTBOT_DIR="modules/dotbot"
 
 function dotbot_install() {
+    CONFIG="install-conf/dotbot.conf.yaml"
+    DOTBOT_BIN="bin/dotbot"
+
     log "Install with dotbot config"
-    "${DOTBOT_DIR}/bin/dotbot" -d "${BASEDIR}" -c "install-conf/dotbot.conf.yaml" "${@}"
+    "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
     echo ""
 }
 
 function dotbot_init() {
     log "Initialize dotbot module"
+    git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
     git submodule update --init --recursive "${DOTBOT_DIR}"
     echo ""
 }
