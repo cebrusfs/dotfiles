@@ -21,7 +21,7 @@ Host phantom
 # }}}
 
 # Work stations @ NTU.CSIE {{{
-Host ws1 ws2 ws3 ws4 ws5
+Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     User r04922033
     # cs\d -> linux\d.csie.org
     ProxyCommand nc "$(echo "%h").csie.org" %p
