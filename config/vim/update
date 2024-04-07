@@ -2,13 +2,15 @@
 
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 
-# git pull
-# curl -fLo "$BASEDIR/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 function update() {
     # Use command to bypass alias
     command "$1" +PlugClean +PlugUpdate +CocUpdateSync +qa
 }
+
+# git pull
+# git submodule update
+
 
 update vim
 update nvim
