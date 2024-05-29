@@ -58,9 +58,12 @@
     # lint configs
     ~/.rubocop.yml: config/vim/lint-config/rubocop.yml
 - create:
-    - ~/.vimfiles/backup
-    - ~/.vimfiles/swap
-    - ~/.vimfiles/undo
+    ~/.vimfiles/backup:
+        mode: 0700
+    ~/.vimfiles/swap:
+        mode: 0700
+    ~/.vimfiles/undo:
+        mode: 0700
 
 # nvim
 - link:
