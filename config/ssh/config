@@ -24,7 +24,7 @@ Host phantom
 Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     User r04922033
     # cs\d -> linux\d.csie.org
-    ProxyCommand nc "$(echo "%h").csie.org" %p
+    ProxyCommand nc "$(echo "%h").csie.ntu.edu.tw" %p
 
 Host nslab
     HostName 140.112.31.100
