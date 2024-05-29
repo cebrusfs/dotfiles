@@ -394,7 +394,9 @@ call plug#begin() " {
 " vim-easy-align: align tool {
     Plug 'junegunn/vim-easy-align'
 
+    " Start interactive EasyAlign in visual mode (e.g. vipga)
     xmap <Leader>- <Plug>(EasyAlign)
+    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
     nmap <Leader>- <Plug>(EasyAlign)
 " }
 " vim-pasta: Auto align when pasting code {

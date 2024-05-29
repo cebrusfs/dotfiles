@@ -62,32 +62,32 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 # Set the list of directories that Zsh searches for programs.
 # (N) to remove the path when the path is not found.
 path=(
-    $HOME/bin                       # Customized binary/script managed by git
+    $HOME/bin                            # Customized binary/script managed by git
     $HOME/docker-bin
 
-    $HOME/.cargo/bin(N)             # Rust: Local install path
-    $HOME/Library/Python/*/bin(N)   # Python: Local pip path for OSX
-    $NPM_PACKAGES/bin(N)            # Node: Local npm path
+    $HOME/.cargo/bin(N)                  # Rust: Local install path
+    $HOME/Library/Python/*/bin(N)        # Python: Local pip path for OSX
+    $NPM_PACKAGES/bin(N)                 # Node: Local npm path
 
-    /opt/homebrew/opt/ruby/bin(N)       # Ruby: Homebrew Ruby
-    /opt/homebrew/lib/ruby/gems/*/bin   # Ruby: Homebrew Gem path
-    $HOME/.gem/ruby/*/bin(N)            # Ruby: Local gem path
+    /opt/homebrew/opt/ruby/bin(N)        # Ruby: Homebrew Ruby
+    /opt/homebrew/lib/ruby/gems/*/bin(N) # Ruby: Homebrew Gem path
+    $HOME/.gem/ruby/*/bin(N)             # Ruby: Local gem path
 
 
     # Homebrew binary
-    /usr/local/{bin,sbin}(N)        # Default homebrew for Intel
-    /opt/homebrew/{bin,sbin}(N)     # Default homebrew for Apple Silicon
+    /usr/local/{bin,sbin}(N)             # Default homebrew for Intel
+    /opt/homebrew/{bin,sbin}(N)          # Default homebrew for Apple Silicon
 
     # Latex
-    /Library/TeX/texbin(N)          # Mactex
+    /Library/TeX/texbin(N)               # Mactex
     /usr/texbin(N)
 
     # Work related
-    $HOME/homebrew/{bin,sbin}(N)    # Customized Homebrew path
+    $HOME/homebrew/{bin,sbin}(N)         # Customized Homebrew path
     $HOME/working/cros_script/bin(N)
     $HOME/depot_tools(N)
     $HOME/crosfleet(N)
-    $HOME/local_build/bin(N)        # for local build binary
+    $HOME/local_build/bin(N)             # for local build binary
 
     $path
 )
