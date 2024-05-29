@@ -27,6 +27,7 @@ Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     ProxyCommand nc "$(echo "%h").csie.ntu.edu.tw" %p
 
 Host nslab
+    User cebrusfs
     HostName 140.112.31.100
 # }}}
 
