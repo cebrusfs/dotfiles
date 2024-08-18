@@ -20,21 +20,26 @@ function update_submodule() {
     git submodule sync --recursive
 
     # Pull submodule
-    # Got error
-    # fatal: Needed a single revision
-    # fatal: Unable to find current origin/next revision in submodule path 'modules/diff-so-fancy'
-    #
-    # git submodule update --remote
+    # >= git 1.8.2
+    if (! git submodule update --remote); then
+        # Got error for broken .git clone
+        # fatal: Needed a single revision
+        # fatal: Unable to find current origin/next revision in submodule path 'modules/diff-so-fancy'
+        rm -rf "${BASEDIR}/modules/diff-so-fancy" "${BASEDIR}/.git/modules/modules/diff-so-fancy"
+        git submodule update --remote
+    fi
+
 
     # Pull submodule
     # seems doesn't work, might update local copy
-    #git submodule update --init --remote
+    # git submodule update --init --remote
 
     # Pull submodule
-    git pull --recurse-submodules
+    # seems doesn't work, might update local copy
+    # git pull --recurse-submodules
 
     # Reset submodule of submodule to pinned commit
-    git submodule foreach git submodule update --init
+    # git submodule foreach git submodule update --init
 
     # backup
     #git submodule update --init --remote -f
