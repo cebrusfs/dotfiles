@@ -152,7 +152,15 @@ alias gws='gwS'
 # fzf initialize
 #
 
-_check_command fzf && eval "$(fzf --zsh)"
+# This is only for fzf >= 0.48.0. It doesn't work for ubuntu <= 22.04
+if _check_command fzf; then
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  else
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+    source /usr/share/doc/fzf/examples/completion.zsh
+  fi
+fi
 
 #
 # Powerlevel10k
