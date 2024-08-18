@@ -17,7 +17,7 @@ function update_submodule() {
     #zprezto-update
 
     # Sync URL change from upstream
-    git submodule sync --recursive
+    # git submodule sync --recursive
 
     # Pull submodule
     # >= git 1.8.2
@@ -29,7 +29,6 @@ function update_submodule() {
         git submodule update --remote
     fi
 
-
     # Pull submodule
     # seems doesn't work, might update local copy
     # git submodule update --init --remote
@@ -40,6 +39,7 @@ function update_submodule() {
 
     # Reset submodule of submodule to pinned commit
     # git submodule foreach git submodule update --init
+    restore_submodule
 
     # backup
     #git submodule update --init --remote -f
