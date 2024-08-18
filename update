@@ -18,10 +18,20 @@ function update_submodule() {
 
     # Sync URL change from upstream
     git submodule sync --recursive
+
     # Pull submodule
-    git submodule update --remote
-    # Pull submodule (seems doesn't work)
+    # Got error
+    # fatal: Needed a single revision
+    # fatal: Unable to find current origin/next revision in submodule path 'modules/diff-so-fancy'
+    #
+    # git submodule update --remote
+
+    # Pull submodule
+    # seems doesn't work, might update local copy
     #git submodule update --init --remote
+
+    # Pull submodule
+    git pull --recurse-submodules
 
     # Reset submodule of submodule to pinned commit
     git submodule foreach git submodule update --init
