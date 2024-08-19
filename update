@@ -59,7 +59,7 @@ function main() {
 
     # Remove fzf configs
     rm -f ~/.fzf.bash ~/.fzf.zsh
-    rm -rf "{$BASEDIR}/modules/fzf/"
+    rm -rf "${BASEDIR}/modules/fzf/"
 
     # update vim plugin
     . config/vim/update
