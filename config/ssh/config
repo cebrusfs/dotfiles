@@ -7,9 +7,7 @@ Compression yes
 # SSH Multiplexing
 Host corp*
     ControlMaster auto
-    ControlPath ~/.ssh/controlmasters/ctrl-%C
-    #For ssh < 6.7
-    #ControlPath ~/.ssh/controlmasters/ctrl-%r@%h-%p
+    ControlPath /tmp/ctrlmasters-%C
     ControlPersist 600
 
 # TFcis {{{
