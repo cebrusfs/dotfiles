@@ -2,7 +2,6 @@
 [user]
 	name = Meng-Huan Yu
 	email = 2252236+cebrusfs@users.noreply.github.com
-	signingKey = 3B5AF3173D713B0C
 [push]
 	default = simple
 [filter "lfs"]
