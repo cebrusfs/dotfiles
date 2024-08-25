@@ -542,7 +542,7 @@ call plug#end() " }
 " Wrap the long lines and highlight wrap limit {
     set colorcolumn=+1
     " FIXME: color
-    highlight ColorColumn guibg=firebrick4
+    highlight ColorColumn guibg=firebrick4 ctermbg=52
 " }
 
 " Programming env {
