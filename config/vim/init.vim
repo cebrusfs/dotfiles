@@ -92,7 +92,10 @@ call plug#begin() " {
 " Color Scheme {
     Plug 'tomasiser/vim-code-dark'
     Plug 'Mofiqul/vscode.nvim' " Neovim only
-    Plug 'https://gitlab.com/__tpb/monokai-pro.nvim'
+
+    " Other theme, still trying
+    " Plug 'loctvl842/monokai-pro.nvim'
+    " Plug 'folke/tokyonight.nvim'
 " }
 
 " vim-airline: Powerful status bar {
@@ -409,6 +412,7 @@ call plug#begin() " {
     nnoremap <silent> <Plug>(key-fzf)qf     :<C-u>CocCommand fzf-preview.QuickFix<CR>
 " }
 " vim-fugitive: git integration {
+    " TODO: compare neogit or lazygit?
     Plug 'tpope/vim-fugitive'
 
     nnoremap <silent> <Plug>(key-git)s      :<C-u>Gstatus<CR>
