@@ -415,8 +415,10 @@ call plug#begin() " {
     " TODO: compare neogit or lazygit?
     Plug 'tpope/vim-fugitive'
 
-    nnoremap <silent> <Plug>(key-git)s      :<C-u>Gstatus<CR>
+    nnoremap <silent> <Plug>(key-git)s      :<C-u>Git<CR>
     nnoremap <silent> <Plug>(key-git)d      :<C-u>Gdiff<CR>
+    " nnoremap <silent> <Plug>(key-git)dp      :<C-u>diffput<CR>
+    " nnoremap <silent> <Plug>(key-git)dg      :<C-u>diffget<CR>
     nnoremap <silent> <Plug>(key-git)b      :<C-u>Git blame<CR>
     nnoremap <silent> <Plug>(key-git)m      :<C-u>Git mergetool<CR>
 " }
