@@ -90,7 +90,6 @@ scriptencoding utf-8
 call plug#begin() " {
 
 " Color Scheme {
-    Plug 'jacoborus/tender.vim'
     Plug 'tomasiser/vim-code-dark'
     Plug 'Mofiqul/vscode.nvim' " Neovim only
     Plug 'https://gitlab.com/__tpb/monokai-pro.nvim'
@@ -98,16 +97,20 @@ call plug#begin() " {
 
 " vim-airline: Powerful status bar {
     Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
 
-    " Note: airline integration with another vim plugins
-    "   git-branch: tpope/vim-fugitive
-    "   git-status: coc-git
-
+    " airline themes
+    " Plug 'vim-airline/vim-airline-themes'
+    Plug 'jacoborus/tender.vim'
     let g:airline_theme = 'tender'
 
     " Enable power line fonts
     let g:airline_powerline_fonts = 1
+
+
+    " Note: airline integration with another vim plugins
+    "   coc:        integration is default on. No more config is needed.
+    "   git-branch: tpope/vim-fugitive
+    "   git-status: coc-git
 " }
 
 " vim-indent-guides: Show indent space and tab with colors {
