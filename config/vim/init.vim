@@ -116,11 +116,14 @@ call plug#begin() " {
 " vim-indent-guides: Show indent space and tab with colors {
     Plug 'nathanaelkane/vim-indent-guides'
 
-    " FIXME: color
+    " Self-define color for layers
     let g:indent_guides_auto_colors=0
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey30   ctermbg=234
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey15   ctermbg=236
+    autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey27   ctermbg=238
+    autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey42   ctermbg=242
+
+    " Width only 1
     let g:indent_guides_guide_size=1
+
     let g:indent_guides_enable_on_vim_startup=1
 " }
 " vim-ShowTrailingWhitespace: Show trailing whitespace {
