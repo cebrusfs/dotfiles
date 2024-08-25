@@ -532,11 +532,10 @@ call plug#end() " }
     " Fallback for vim
     silent! colorscheme codedark
 
-    " Disable nvim-tree background color
+    " Load lua to setup the colorscheme on neovim
+    silent! lua require('config')
+    " Disable nvim-tree background color (already in lua config)
     " let g:vscode_disable_nvimtree_bg = v:true
-
-    silent! lua require('vscode').setup({})
-    silent! lua require('vscode').load()
 " }
 
 " Wrap the long lines and highlight wrap limit {
