@@ -7,7 +7,7 @@ Compression yes
 # SSH Multiplexing
 Host corp*
     ControlMaster auto
-    ControlPath /tmp/ctrlmasters-%C
+    ControlPath ~/.ssh/controlmaster-%C
     ControlPersist 600
 
 # TFcis {{{
@@ -29,7 +29,9 @@ Host nslab
     HostName 140.112.31.100
 # }}}
 
-# Orcale Clouds {{{
+# VPS {{{
+
+# Oracle
 Host amd-micro
     HostName 152.70.104.204
     User ubuntu
@@ -39,6 +41,14 @@ Host vpn
 Host arm-perf
     HostName 138.3.221.172
     User ubuntu
+
+# GCP
+Host free-us
+    HostName 34.23.13.111
+    User cebrusfs
+
+# Layerstack
+
 # }}}
 
 # overthewire
