@@ -43,5 +43,4 @@ brew "dos2unix"
 cask "monitorcontrol"             # Control monitor setting in UI
 cask "keka"                       # Uncompressor
 
-cask "google-chrome"
 cask "skype"

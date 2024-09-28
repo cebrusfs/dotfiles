@@ -81,15 +81,15 @@ brew "p7zip"
 
 cask "notion"
 
-cask "vlc"                  # Video player
+cask "vlc"                      # Video player
 
-#cask "calibre"              # ebook manager
+#cask "calibre"                 # ebook manager
 
 cask "slack"
 cask "discord"
 
-#cask "anki"                 # Language learning
-#cask "resilio-sync"         # P2P sync
+#cask "anki"                    # Language learning
+#cask "resilio-sync"            # P2P sync
 
 
 #
@@ -97,6 +97,7 @@ cask "discord"
 #   Need manually install
 #
 
+cask "google-chrome"            # No need in work profile as it is installed by default
 #cask "google-drive"
 #cask "steam"
 #cask "kindle-previewer"     # Kindle ebook
