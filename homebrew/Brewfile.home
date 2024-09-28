@@ -16,6 +16,11 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
 #cask "xquartz"
 #cask "mactex"
 
+#cask "bitwarden"            # Password manager # Use App Store
+
+cask "parallels"
+
+cask "clip-studio-paint"    # painting
 
 #
 # Developing
@@ -59,6 +64,10 @@ brew "pandoc"
 # node is in neovim deps
 brew "typescript"
 
+# Python
+brew "autopep8"
+brew "ipython"
+
 # Media tools
 brew "ffmpeg"
 brew "yt-dlp"
@@ -70,7 +79,6 @@ brew "p7zip"
 # Apps
 #
 
-cask "bitwarden"            # Password manager
 cask "notion"
 
 cask "vlc"                  # Video player
@@ -80,21 +88,15 @@ cask "vlc"                  # Video player
 cask "slack"
 cask "discord"
 
-cask "todoist"
-
 #cask "anki"                 # Language learning
 #cask "resilio-sync"         # P2P sync
 
 
 #
 # Missing verifying
+#   Need manually install
 #
 
-cask "google-drive"
-cask "steam"
-
-cask "parallels"
-
-cask "clip-studio-paint"    # painting
-
-cask "kindle-previewer"     # Kindle ebook
+#cask "google-drive"
+#cask "steam"
+#cask "kindle-previewer"     # Kindle ebook
