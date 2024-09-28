@@ -13,8 +13,8 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
 # sudo required
 #
 
-cask "xquartz"
-cask "mactex"
+#cask "xquartz"
+#cask "mactex"
 
 
 #

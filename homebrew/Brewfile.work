@@ -40,7 +40,6 @@ brew "dos2unix"
 # App
 #
 
-cask "bettertouchtool"            # UI enhancement
 cask "monitorcontrol"             # Control monitor setting in UI
 cask "keka"                       # Uncompressor
 
