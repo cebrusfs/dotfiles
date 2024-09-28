@@ -116,18 +116,21 @@ call plug#begin() " {
     "   git-status: coc-git
 " }
 
-" vim-indent-guides: Show indent space and tab with colors {
+" Indent: Show indent space and tab with colors {
+    Plug 'lukas-reineke/indent-blankline.nvim' " Neovim only
     Plug 'nathanaelkane/vim-indent-guides'
 
-    " Self-define color for layers
-    let g:indent_guides_auto_colors=0
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey27   ctermbg=238
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey42   ctermbg=242
+    if !has('nvim')
+        " Self-define color for layers
+        let g:indent_guides_auto_colors=0
+        autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey27   ctermbg=238
+        autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey42   ctermbg=242
 
-    " Width only 1
-    let g:indent_guides_guide_size=1
+        " Width only 1
+        let g:indent_guides_guide_size=1
 
-    let g:indent_guides_enable_on_vim_startup=1
+        let g:indent_guides_enable_on_vim_startup=1
+    endif
 " }
 " vim-ShowTrailingWhitespace: Show trailing whitespace {
     Plug 'inkarkat/vim-ingo-library' " Dependancy of ShowTrailingWhitespace
@@ -240,9 +243,9 @@ call plug#begin() " {
     endfunction
 
     " Note: (cebrusfs) manually trigger completion is not useful, disabled.
-    " Use <c-space> to trigger completion
+    " Use <c-leader> to trigger completion
     " if has('nvim')
-      " inoremap <silent><expr> <c-space> coc#refresh()
+      " inoremap <silent><expr> <c-leader> coc#refresh()
     " else
       " inoremap <silent><expr> <c-@> coc#refresh()
     " endif
@@ -368,21 +371,21 @@ call plug#begin() " {
 
     " Mappings for CoCList
     " Show all diagnostics
-    nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+    nnoremap <silent><nowait> <leader>a  :<C-u>CocList diagnostics<cr>
     " Manage extensions
-    nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+    nnoremap <silent><nowait> <leader>e  :<C-u>CocList extensions<cr>
     " Show commands
-    nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+    nnoremap <silent><nowait> <leader>c  :<C-u>CocList commands<cr>
     " Find symbol of current document
-    nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+    nnoremap <silent><nowait> <leader>o  :<C-u>CocList outline<cr>
     " Search workspace symbols
-    nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+    nnoremap <silent><nowait> <leader>s  :<C-u>CocList -I symbols<cr>
     " Do default action for next item
-    nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+    nnoremap <silent><nowait> <leader>]  :<C-u>CocNext<CR>
     " Do default action for previous item
-    nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+    nnoremap <silent><nowait> <leader>[  :<C-u>CocPrev<CR>
     " Resume latest coc list
-    nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+    nnoremap <silent><nowait> <leader>p  :<C-u>CocListResume<CR>
 " }
 " Fzf {
     Plug '~/.dotfiles/modules/fzf'

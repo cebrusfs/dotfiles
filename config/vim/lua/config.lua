@@ -1,3 +1,4 @@
+-- setup colorscheme {
 local c = require('vscode.colors').get_colors()
 require('vscode').setup({
     -- Alternatively set style in setup
@@ -19,3 +20,8 @@ require('vscode').setup({
 
 -- require('vscode').load()
 vim.cmd.colorscheme "vscode"
+-- }
+
+-- lukas-reineke/indent-blankline {
+require("ibl").setup()
+-- }

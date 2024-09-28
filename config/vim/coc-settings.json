@@ -23,6 +23,9 @@
 
     // Python (pyright)
     "python.venvPath": "venv", // Load ./venv if possible
+    // Disable inlay hint which is a bit annoy
+    "pyright.inlayHints.variableTypes": false,
+    "pyright.inlayHints.parameterTypes": false,
     "python.formatting.autopep8Args": [
         // Disable line wraping
         "--ignore=E501",
