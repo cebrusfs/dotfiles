@@ -43,3 +43,5 @@
 [format]
 	# show full information in `git log`
 	pretty = fuller
+[pull]
+	rebase = true
