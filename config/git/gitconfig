@@ -14,17 +14,31 @@
 [mergetool]
 	prompt = false
 	keepBackup = false
+
+# Use rebase instead of merge when pull
+[pull]
+	rebase = true
 [branch]
-	# Use rebase instead of merge when pull
 	autosetuprebase = always
+
 # UI
-[color]
-	ui = true
 [core]
-	pager = ~/.dotfiles/modules/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
+	# Use vim as default editor
 	editor = vim
+	# Fancy diff
+	pager = ~/.dotfiles/modules/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
 	autocrlf = false
 	excludesfile = ~/.dotfiles/config/git/gitignore_default
+[stash]
+	# show file diff in `git stash show`
+	showPatch = true
+[format]
+	# show full information in `git log`
+	pretty = fuller
+
+# Default to auto since 1.8.4
+# [color]
+#	ui = auto
 [color "diff-highlight"]
 	oldNormal = red bold
 	oldHighlight = red bold 52
@@ -37,11 +51,3 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
-[stash]
-	# show file diff in `git stash show`
-	showPatch = true
-[format]
-	# show full information in `git log`
-	pretty = fuller
-[pull]
-	rebase = true
