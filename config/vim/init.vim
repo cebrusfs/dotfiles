@@ -87,7 +87,8 @@ scriptencoding utf-8
 " }
 
 
-call plug#begin() " {
+" Enable plugins {
+call plug#begin()
 
 " Color Scheme {
     Plug 'tomasiser/vim-code-dark'
@@ -426,6 +427,10 @@ call plug#begin() " {
     nnoremap <silent> <Plug>(key-git)m      :<C-u>Git mergetool<CR>
 " }
 
+" Github copilot {
+    Plug 'github/copilot.vim'
+" }
+
 " vim-easy-align: align tool {
     Plug 'junegunn/vim-easy-align'
 
@@ -529,7 +534,8 @@ call plug#begin() " {
     vnoremap Y y:call SendViaOSC52(getreg('"'))<CR>
 " }
 
-call plug#end() " }
+call plug#end()
+" }
 
 
 " Colorscheme settings {
