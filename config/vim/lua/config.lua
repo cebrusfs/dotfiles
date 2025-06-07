@@ -25,3 +25,5 @@ vim.cmd.colorscheme "vscode"
 -- lukas-reineke/indent-blankline {
 require("ibl").setup()
 -- }
+
+require("supermaven-nvim").setup({})

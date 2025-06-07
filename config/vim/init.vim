@@ -427,10 +427,6 @@ call plug#begin()
     nnoremap <silent> <Plug>(key-git)m      :<C-u>Git mergetool<CR>
 " }
 
-" Github copilot {
-    Plug 'github/copilot.vim'
-" }
-
 " vim-easy-align: align tool {
     Plug 'junegunn/vim-easy-align'
 
@@ -510,7 +506,8 @@ call plug#begin()
 " }
 
 
-" Github copilot {
+" AI integration {
+    Plug 'supermaven-inc/supermaven-nvim'
     " Plug 'github/copilot.vim'
 " }
 
