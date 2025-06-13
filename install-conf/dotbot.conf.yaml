@@ -91,6 +91,14 @@
         path: bin/osx
         if: '[[ "$OSTYPE" == darwin* ]]'
 
+    # Windsurf
+    ~/Library/Application Support/Windsurf/User/settings.json:
+        path: config/Windsurf/settings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+    ~/Library/Application Support/Windsurf/User/keybindings.json:
+        path: config/Windsurf/keybindings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
     # ~/.config/karabiner:
         # path: config/karabiner
         # if: '[[ "$OSTYPE" == darwin* ]]'

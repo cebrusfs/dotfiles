@@ -63,6 +63,8 @@ path=(
     $HOME/bin                            # Customized binary/script managed by git
     $HOME/docker-bin
 
+    $HOME/.codeium/windsurf/bin          # Windsurf
+
     $HOME/.cargo/bin(N)                  # Rust: Local install path
     $HOME/Library/Python/*/bin(N)        # Python: Local pip path for OSX
     $NPM_PACKAGES/bin(N)                 # Node: Local npm path
