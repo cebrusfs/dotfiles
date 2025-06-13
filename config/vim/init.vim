@@ -29,8 +29,8 @@ scriptencoding utf-8
     " default "ucs-bom,utf-8,default,latin1"
     set fileencodings=ucs-bom,utf-8,big5,cp936,gb18030,default,latin1
 
-    " Disable mouse reporting which will block pasteboard
-    set mouse-=a
+    " Enable mouse support (Don't use Cmd+C to copy in OSX)
+    set mouse=a
 " }
 
 " User Interface {
