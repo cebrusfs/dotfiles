@@ -9,40 +9,21 @@ source "${BASEDIR}/install-conf/utils.sh"
 function update_self() {
     log "Pull/update dotfiles"
 
-    # "git pull --autostash" doesn't support in old git version.
-    git pull --autostash 2>/dev/null || git pull
+    # git parameters might not be supported by older Git versions
+    # autostash is Git 2.6.0 or later.
+    # recurse-submodules is Git 2.14 or later.
+    git pull --autostash --recurse-submodules 2>/dev/null || git pull --autostash 2>/dev/null || git pull
 }
 
 function update_submodule() {
     #zprezto-update
 
-    # Sync URL change from upstream
-    # git submodule sync --recursive
+    # Pull remote submodule
+    # This will also update the nested submodules, we will need to restore them back
+    git submodule update --remote
 
-    # Pull submodule
-    # >= git 1.8.2
-    if (! git submodule update --remote); then
-        # Got error for broken .git clone
-        # fatal: Needed a single revision
-        # fatal: Unable to find current origin/next revision in submodule path 'modules/diff-so-fancy'
-        rm -rf "${BASEDIR}/modules/diff-so-fancy" "${BASEDIR}/.git/modules/modules/diff-so-fancy"
-        git submodule update --remote
-    fi
-
-    # Pull submodule
-    # seems doesn't work, might update local copy
-    # git submodule update --init --remote
-
-    # Pull submodule
-    # seems doesn't work, might update local copy
-    # git pull --recurse-submodules
-
-    # Reset submodule of submodule to pinned commit
-    # git submodule foreach git submodule update --init
-    restore_submodule
-
-    # backup
-    #git submodule update --init --remote -f
+    # For each nested submodule, we need to enforce them to use pinned commit
+    git submodule foreach --recursive git submodule update --init
 }
 
 function restore_submodule() {
