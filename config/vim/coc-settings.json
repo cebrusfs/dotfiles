@@ -1,5 +1,5 @@
 {
-    "coc.preferences.extensionUpdateCheck": "daily",
+    "extensions.updateCheck": "daily",
 
     // Enable semantic tokens highlight feature
     "semanticTokens.enable": true,
@@ -26,6 +26,9 @@
     // Disable inlay hint which is a bit annoy
     "pyright.inlayHints.variableTypes": false,
     "pyright.inlayHints.parameterTypes": false,
+    // Linter: ruff
+    "python.linting.ruffEnabled": true,
+    // Formatter: autopep8
     "python.formatting.autopep8Args": [
         // Disable line wraping
         "--ignore=E501",
