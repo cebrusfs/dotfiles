@@ -1,0 +1,29 @@
+{
+  // Replace default shell config
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.profiles.osx": {
+      "zsh": {
+          "path": "/bin/zsh",
+          "args": ["-l"],
+          "overrideName": true
+      }
+  },
+  // UI
+  "workbench.colorTheme": "Monokai",
+  "editor.minimap.enabled": false,
+
+  "files.trimTrailingWhitespace": true,
+  "git.autofetch": true,
+
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+
+  "windsurfPyright.analysis.inlayHints.functionReturnTypes": true,
+  "windsurfPyright.analysis.typeCheckingMode": "standard",
+}

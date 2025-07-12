@@ -1,0 +1,55 @@
+# vim: syntax=sshconfig
+
+# Adding compression to help speed up remote Vim.
+# https://stackoverflow.com/a/34206244/358069
+Compression yes
+
+# SSH Multiplexing
+Host corp*
+    ControlMaster auto
+    ControlPath ~/.ssh/controlmaster-%C
+    ControlPersist 600
+
+# TFcis {{{
+# TODO: Not active
+Host phantom
+    HostName phantom.tfcis.org
+    User yuscvscv
+    Port 9527
+# }}}
+
+# Work stations @ NTU.CSIE {{{
+Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
+    User r04922033
+    # ws\d -> ws\d.csie.ntu.edu.tw
+    CanonicalizeHostname yes
+    CanonicalDomains csie.ntu.edu.tw
+
+Host nslab
+    User cebrusfs
+    HostName 140.112.31.100
+# }}}
+
+# VPS {{{
+
+# Oracle
+Host amd-micro
+    HostName 152.70.104.204
+    User ubuntu
+Host vpn
+    HostName vpn.cerberus.fish
+    User ubuntu
+Host arm-perf
+    HostName 138.3.221.172
+    User ubuntu
+
+# GCP
+Host free-us
+    HostName 34.23.13.111
+    User cebrusfs
+
+# Layerstack
+
+# }}}
+
+# Work

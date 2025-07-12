@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Clean download caches
+sudo apt clean
+
+# Remove usused dependencies and configs (--purge)
+sudo apt autoremove --purge
+# Remove configs of removed packages
+sudo apt purge --yes `dpkg -l | grep "^rc" | awk '{ print $2 }'`
+
+
+# Remove vim temp files
+find ~/.vimfiles -type f -delete
+rm -f ~/.viminfo
+
+# Remove history files
+rm -f ~/.lesshst ~/.zhistory ~/.bash_history
+
+# Cleanup zsh cache
+rm -rf ~/.zcompcache ~/.zcompdump ~/.zcompdump.zwc
+
+rm -rf ~/.cache
+

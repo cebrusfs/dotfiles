@@ -1,0 +1,16 @@
+#!/bin/bash
+
+BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+
+
+function update() {
+    # Use command to bypass alias
+    command "$1" +PlugClean +PlugUpdate +CocUpdateSync +qa
+}
+
+# git pull
+# git submodule update
+
+
+update vim
+update nvim

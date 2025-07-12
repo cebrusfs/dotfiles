@@ -1,0 +1,24 @@
+#
+# Defines environment variables.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+# OSX
+# tar: Do NOT pack UI configuration file (e.g. .DS_Store)
+export COPYFILE_DISABLE=true
+# Homebrew: cask: Change default app install directory
+export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
+
+# sdk paths
+export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+
+# GPG
+export GPG_TTY=`tty`
+
+# Ensure that a non-login, non-interactive shell has a defined environment.
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
+fi

@@ -1,0 +1,51 @@
+#!/bin/bash
+# vim: syntax=sh:
+
+set -e
+
+BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+source "${BASEDIR}/install-conf/utils.sh"
+
+function update_self() {
+    log "Pull/update dotfiles"
+
+    # git parameters might not be supported by older Git versions
+    # autostash is Git 2.6.0 or later.
+    # recurse-submodules is Git 2.14 or later.
+    git pull --autostash --recurse-submodules 2>/dev/null || git pull --autostash 2>/dev/null || git pull
+}
+
+function update_submodule() {
+    #zprezto-update
+
+    # Pull remote submodule
+    # This will also update the nested submodules, we will need to restore them back
+    git submodule update --remote
+
+    # For each nested submodule, we need to enforce them to use pinned commit
+    git submodule foreach --recursive git submodule update --init
+}
+
+function restore_submodule() {
+    git submodule sync --recursive
+    git submodule update --init --recursive
+}
+
+
+function main() {
+    pushd "${BASEDIR}"
+
+    update_self
+    update_submodule
+
+    # Remove fzf configs
+    rm -f ~/.fzf.bash ~/.fzf.zsh
+    rm -rf "${BASEDIR}/modules/fzf/"
+
+    # update vim plugin
+    . config/vim/update
+
+    popd
+}
+
+main

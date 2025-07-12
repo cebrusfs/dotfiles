@@ -1,0 +1,160 @@
+#!/bin/bash
+# vim: syntax=bash:
+
+set -e
+
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${BASEDIR}/install-conf/utils.sh"
+
+
+DOTBOT_DIR="modules/dotbot"
+
+function dotbot_install() {
+    CONFIG="install-conf/dotbot.conf.yaml"
+    DOTBOT_BIN="bin/dotbot"
+
+    log "Install with dotbot config"
+    "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
+    echo ""
+}
+
+function dotbot_init() {
+    log "Initialize dotbot module"
+    git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
+    git submodule update --init --recursive "${DOTBOT_DIR}"
+    echo ""
+}
+
+function dotbot_main() {
+    dotbot_init
+    dotbot_install
+}
+
+
+function zsh_main() {
+    if ! check_command zsh; then
+        # OSX should have zsh by default
+        if is_linux; then
+            linux_install zsh
+        else
+            error "No zsh is installed"
+        fi
+    fi
+
+    if [[ "$SHELL" != *zsh ]]; then
+        log "Current shell is not zsh, switch default shell to zsh"
+        chsh -s $(which zsh)
+
+        log "Enable the setting in zsh before process the following steps"
+        if [[ "$SHELL" != *zsh ]]; then
+            exec zsh --login -c "$BASEDIR/install post"
+        fi
+    fi
+}
+
+
+function vim_install_deps_linux() {
+    # coc.nvim deps
+    # FIXME: Ubuntu 22.04 has too old node version. Need >16.
+    linux_install nodejs
+
+    # vim / neovim
+    linux_install vim
+    linux_install neovim
+}
+
+function vim_install_dev_tools() {
+    log "Install packages for neovim languages"
+
+    # CoC: Python
+    # OSX has Python by default
+    linux_install python3-dev
+    linux_install python3-pip
+
+    # CoC: Ruby
+    # OSX install Ruby via Homebrew
+    linux_install ruby-dev
+    gem install --user-install solargraph rubocop
+
+    # CoC: javascript
+    # linux_install npm
+    # linux_install node-typescript
+    # FIXME: brew install typescript
+
+    # CoC: golang
+    # gopls will be auto installed by coc
+    # linux_install golang
+    # FIXME: brew install go
+
+    # CoC: rust
+    # Use rustup. Avoid "apt" or "homebrew" to avoid potencial issue.
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+}
+
+function vim_main() {
+    log "Install VIM dependancies"
+    # We don't need to handle OSX since packages are installed by homebrew bundle
+    if is_osx; then
+        :
+    elif is_linux; then
+        vim_install_deps_linux
+    else
+        error "Unkown OSTYPE: $OSTYPE"
+    fi
+
+    vim_install_dev_tools
+
+    # install vim plugin
+    . config/vim/update
+}
+
+function package_manager_main() {
+    log "Install OS package manager"
+    if is_osx; then
+        . install-conf/homebrew-install.sh
+    elif is_linux; then
+        :
+    else
+        error "Unkown OSTYPE: $OSTYPE"
+    fi
+}
+
+function zsh_deps_main() {
+    linux_install ripgrep
+    linux_install fd-find
+    linux_install fzf
+}
+
+
+function main() {
+    umask 022
+
+    pushd "${BASEDIR}"
+
+    dotbot_main
+    zsh_main
+    post_main
+
+    popd
+}
+
+function post_main() {
+    pushd "${BASEDIR}"
+
+    log "Post main"
+
+    package_manager_main
+    zsh_deps_main
+    vim_main
+
+    log "Completed!"
+
+    popd
+}
+
+
+if [ "$1" = "post" ]; then
+    post_main
+else
+    main
+fi
