@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# 140.112.8.166:1688 is NTU KMS server
+# kms.cc.ntu.edu.tw is NTU KMS server
+ssh -v -N -L 0.0.0.0:1688:kms.cc.ntu.edu.tw:1688 cs5

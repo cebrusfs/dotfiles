@@ -1,0 +1,6 @@
+ycm_extra_conf.pyc
+plugged/*
+haskellmode.config
+
+# sign key of coquelicot/local-vimrc plugin
+.local-vimrc-key

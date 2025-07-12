@@ -1,0 +1,109 @@
+# vim: shiftwidth=4 tabstop=4:
+- defaults:
+    create:
+        mode: 0755
+    link:
+        relink: true
+        create: true
+    shell:
+        stdout: true
+        stderr: true
+    clean:
+        force: true
+
+# Cleanup broken links
+- clean: ["~", "~/.ssh", "~/.irssi", "~/.config"]
+
+- shell:
+    - [git submodule update --init --recursive, "Installing submodules"]
+
+- create:
+    ~/working:
+    ~/Applications:
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+- link:
+    # tmux
+    ~/.tmux.conf: config/tmux/tmux.conf
+
+    # irc
+    ~/.irssi/default.theme: config/irssi/default.theme
+    ~/.irssi/config: config/irssi/config
+    ~/.irssi/scripts: config/irssi/scripts
+    ~/.irssi/gen_client_cert.sh: config/irssi/gen_client_cert.sh
+
+    # pandoc
+    ~/.pandoc: config/pandoc
+
+    # zsh
+    ~/.zshenv: config/zsh/zshenv
+    ~/.zprofile: config/zsh/zprofile
+    ~/.zpreztorc: config/zsh/zpreztorc
+    ~/.zshrc: config/zsh/zshrc
+    ~/.zlogin: config/zsh/zlogin
+    ~/.zlogout: config/zsh/zlogout
+    ~/.p10k.zsh: config/zsh/p10k.zsh
+
+    # git
+    ~/.gitconfig: config/git/gitconfig
+
+    # ssh
+    ~/.ssh/config: config/ssh/config
+    ~/.ssh/authorized_keys: config/ssh/authorized_keys
+
+
+# vim
+- link:
+    ~/.vim: config/vim
+    # lint configs
+    ~/.rubocop.yml: config/vim/lint-config/rubocop.yml
+- create:
+    ~/.vimfiles/backup:
+        mode: 0700
+    ~/.vimfiles/swap:
+        mode: 0700
+    ~/.vimfiles/undo:
+        mode: 0700
+
+# nvim
+- link:
+    ~/.config/nvim: config/vim
+    ~/.local/share/nvim/site/autoload/plug.vim: config/vim/autoload/plug.vim
+
+# npm
+- create:
+    - ~/.npm-packages/lib
+- link:
+    ~/.npmrc: config/npmrc
+
+# Linux specific links
+- link:
+    ~/bin:
+        path: bin/x86_64
+        if: '[[ "$OSTYPE" == linux* ]]'
+    ~/.fonts.conf:
+        path: config/fonts.conf
+        if: '[[ "$OSTYPE" == linux* ]]'
+
+# OSX specific links
+- link:
+    ~/bin:
+        path: bin/osx
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+    # Windsurf
+    ~/Library/Application Support/Windsurf/User/settings.json:
+        path: config/Windsurf/settings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+    ~/Library/Application Support/Windsurf/User/keybindings.json:
+        path: config/Windsurf/keybindings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
+    # ~/.config/karabiner:
+        # path: config/karabiner
+        # if: '[[ "$OSTYPE" == darwin* ]]'
+
+    # ~/.btt_autoload_preset.json:
+        # path: config/BetterTouchTool.bttpreset
+        # if: '[[ "$OSTYPE" == darwin* ]]'
+

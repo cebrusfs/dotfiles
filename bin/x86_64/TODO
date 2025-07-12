@@ -1,0 +1,2 @@
+remove rg binary, use apt-get install ripgrep for ubuntu 18.10+
+or install rust and then cargo install ripgrep

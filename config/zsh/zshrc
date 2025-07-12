@@ -1,0 +1,170 @@
+# vim: syntax=sh: ts=2: sts=2: sw=2:
+
+#
+# Util functions
+#
+
+# `command` is POSIX standard and prefered over `which`.
+# However, zsh implemented both as buildin command, so no difference here.
+function _check_command () {
+  command -v $1 >/dev/null
+}
+
+function _warn() {
+  local COLOR='\033[1;31m'
+  local NO_COLOR='\033[0m'
+  printf "${COLOR}[WARN] ${1}${NO_COLOR}\n"
+}
+
+
+#
+# Alias (enable warning)
+#
+
+# Better 'find', as known as 'fd'
+if _check_command fd ; then
+  export FZF_DEFAULT_COMMAND="$(which fd) --type file"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Debian/Ubuntu use 'fdfind' binary name instead, use 'fdfind' as ballback
+elif _check_command fdfind ; then
+  export FZF_DEFAULT_COMMAND="$(which fdfind) --type file"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+_check_command fdfind && alias fd='fdfind'
+_check_command fd || _warn "'fd' is not installed"
+
+function _rgg () {
+  rg --colors=path:none --files -g "*$1*"
+}
+_check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
+
+# Use 'neovim' to replace 'vim'
+_check_command nvim && alias vim='nvim' || _warn "'neovim' is not installed"
+
+# Warning if fzf is installed
+_check_command fzf || _warn "'fzf' is not installed"
+
+# Warning for old zprezto configuration path
+if [[ -r "$HOME/.zprezto/init.zsh" ]]; then
+  echo "[WARN] $HOME/.zprezto is exists, use the following command to delete it"
+  echo "    rm -rf $HOME/.zprezto"
+fi
+
+# ---------------------------- No stdout output below ---------------------------
+
+# Disable ctrl-s for stop output by terminal.
+stty -ixon
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+ZCONFIG_DIR="${ZDOTDIR:-$HOME}/.dotfiles/config/zsh"
+
+# Source Prezto.
+ZPREZTO_DIR="${ZPREZTO_DIR:-${ZDOTDIR:-$HOME}/.dotfiles/modules/prezto}"
+if [[ -r "${ZPREZTO_DIR}/init.zsh" ]]; then
+  source "${ZPREZTO_DIR}/init.zsh"
+fi
+
+bindkey '^R' history-incremental-pattern-search-backward
+bindkey -M vicmd '/' history-incremental-pattern-search-backward
+
+# overwrite when using file redirect (>) to existed file
+setopt clobber
+
+
+#
+# Alias (silent)
+#
+
+alias rm='rm -r'
+alias cp='cp -rv'
+alias objdump='objdump -M intel'
+
+# Fixing remote desktop screen sharing
+alias fixrdp='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist &&  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist'
+
+# Use 'tmx2' instead of 'tmux' when available
+_check_command tmx2 && alias tmux='tmx2'
+
+# SSH
+# Hook ssh to change tmux window name
+function ssh() {
+  local window_name
+  window_name="$1"
+
+  if [[ "$#" != 1 || "${window_name:0:1}" == "-"  ]]; then
+    window_name="ssh"
+  fi
+
+    # set window name to hostname if we are in the tmux
+    if [[ -n "$TMUX" ]]; then
+      tmux rename-window -t${TMUX_PANE} "${window_name}"
+    fi
+
+    local err_count=0
+    while true; do
+      local start_time=$(date +%s)
+
+      /usr/bin/env ssh "$@"
+
+        # break if no error
+        local return_code=$?
+        [[ $return_code -ne 255 ]] && break
+
+        local end_time=$(date +%s)
+
+        local time_diff=$(( $end_time - $start_time ))
+        if (( $time_diff < 10 )); then
+          ((err_count += 1))
+        else
+          err_count=0
+        fi
+        [[ $err_count -gt 10 ]] && break
+
+        echo "\r\e[1;33m[Disconnected. Retry ssh at $(date '+%F %T')...]\e[0m"
+        sleep 1
+      done
+
+    # reset window name if we are in the tmux
+    if [[ -n "$TMUX" ]]; then
+      tmux set-window-option -t${TMUX_PANE} automatic-rename
+    fi
+    return $return_code
+  }
+
+# Git
+alias gws='gwS'
+
+
+#
+# fzf initialize
+#
+
+# This is only for fzf >= 0.48.0. It doesn't work for ubuntu <= 22.04
+if _check_command fzf; then
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  else
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+    source /usr/share/doc/fzf/examples/completion.zsh
+  fi
+fi
+
+#
+# Powerlevel10k
+#
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f "${HOME}/.p10k.zsh" ]] || source "${HOME}/.p10k.zsh"

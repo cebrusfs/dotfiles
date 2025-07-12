@@ -1,0 +1,13 @@
+[submodule "modules/dotbot"]
+	path = modules/dotbot
+	url = https://github.com/anishathalye/dotbot
+	shallow = True
+[submodule "modules/prezto"]
+	path = modules/prezto
+	url = https://github.com/sorin-ionescu/prezto.git
+	shallow = True
+[submodule "modules/diff-so-fancy"]
+	path = modules/diff-so-fancy
+	url = https://github.com/so-fancy/diff-so-fancy.git
+	branch = next
+	shallow = True

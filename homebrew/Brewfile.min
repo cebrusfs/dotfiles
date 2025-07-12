@@ -1,0 +1,41 @@
+# vim: syntax=brewfile:
+
+#
+# Minimal dependancy for dotfile
+#
+
+cask_args appdir: "~/Applications", require_sha: true
+
+
+#
+# Taps
+#
+tap "homebrew/bundle"
+
+tap "homebrew/command-not-found"  # brew command not found
+
+#
+# Shell / System Util Core
+#
+
+# Use by zsh
+brew "ripgrep"                    # fastest 'grep'
+brew "fd"                         # fastest 'find'
+brew "fzf"                        # command-line fuzzy finder
+brew "colordiff"                  # colorful diff used in zpretzo
+
+# NVIM: CoC dependancies
+# OSX buildin Ruby is 2.6. CoC needs Ruby 3
+brew "ruby"
+
+#
+# Shell and VIM
+#
+
+cask "iterm2"
+
+brew "neovim"
+brew "node"                       # coc.nvim deps
+
+# Font support ligatures
+cask "font-fira-code"

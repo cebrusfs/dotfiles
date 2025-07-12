@@ -1,0 +1,71 @@
+# vim: syntax=brewfile:
+
+#
+# Personal Mac
+#
+
+# Load Brewfile.min
+instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.home").read
+
+
+#
+# CTF
+#
+
+# Binary IDE tools
+cask "010-editor"
+
+# Web
+cask "owasp-zap"
+cask "postman"
+
+# DB
+#brew "mongodb"
+#brew "mysql"
+#brew "redis"
+
+# DB tools
+brew "sqlmap"
+#cask "db-browser-for-sqlite"
+#cask "sqlitebrowser"
+
+# Binary
+brew "binutils"
+brew "binutils-mips"
+#brew "capstone"
+#brew "upx"
+#brew "exiftool"
+
+#brew "z3"
+
+# Crypto
+#cask "sage"
+
+# Forensic
+brew "binwalk"
+brew "imagemagick"
+brew "pngcheck"
+#brew "volatility"
+
+# Misc
+brew "qrencode"
+brew "aircrack-ng"
+brew "fcrackzip"
+brew "john-jumbo"
+
+# Android / Java decompier
+brew "dex2jar"
+cask "jd-gui"
+#brew "apktool"
+#cask "android-sdk"
+
+# Emulator
+#brew "qemu"
+#brew "wine"
+
+# Network
+#brew "tcpflow"
+brew "nmap"
+
+# Audio
+#cask "audacity"

@@ -1,0 +1,103 @@
+# vim: syntax=brewfile:
+
+#
+# Mac at home
+# All stuff without CTF tools
+#
+
+# Load Brewfile.min
+instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
+
+
+#
+# sudo required
+#
+
+#cask "xquartz"
+#cask "mactex"
+
+#cask "bitwarden"            # Password manager # Use App Store
+
+cask "parallels"
+
+cask "clip-studio-paint"    # painting
+
+#
+# Developing
+#
+
+# IDE tools
+cask "visual-studio-code"
+
+# GPG tools
+#cask "gpg-suite-no-mail"
+#brew "gnupg"
+
+# VPN client
+# Wireguard via App store
+# Tailscale via App store
+
+#
+# Programming Language
+#
+
+brew "cmake"
+
+# C / C++
+brew "gcc"
+brew "clang-format"
+
+# Haskell
+brew "ghc"
+brew "cabal-install"
+
+# Javascript
+brew "node"
+
+# Golang
+brew "go"
+
+# Markdown
+brew "pandoc"
+
+# Javascript / Typescript
+# node is in neovim deps
+brew "typescript"
+
+# Python
+brew "autopep8"
+brew "ipython"
+
+# Media tools
+brew "ffmpeg"
+brew "yt-dlp"
+
+# 7z CLI
+brew "p7zip"
+
+#
+# Apps
+#
+
+cask "notion"
+
+cask "vlc"                      # Video player
+
+#cask "calibre"                 # ebook manager
+
+cask "slack"
+cask "discord"
+
+#cask "anki"                    # Language learning
+#cask "resilio-sync"            # P2P sync
+
+
+#
+# Missing verifying
+#   Need manually install
+#
+
+cask "google-chrome"            # No need in work profile as it is installed by default
+#cask "google-drive"
+#cask "steam"
+#cask "kindle-previewer"     # Kindle ebook
