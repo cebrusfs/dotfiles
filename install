@@ -88,7 +88,15 @@ function vim_install_dev_tools() {
 
     # CoC: rust
     # Use rustup. Avoid "apt" or "homebrew" to avoid potencial issue.
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+    if ! check_command rustup; then
+        # sh -s: read script from stdin
+        # --no-modify-path: avoid modify shell config for adding PATH. It is already set.
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+    else
+        # Use update instead of install again.
+        rustup update
+    fi
+
 }
 
 function vim_main() {
