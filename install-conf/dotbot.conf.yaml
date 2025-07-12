@@ -99,6 +99,14 @@
         path: config/Windsurf/keybindings.json
         if: '[[ "$OSTYPE" == darwin* ]]'
 
+    # Cursor
+    ~/Library/Application Support/Cursor/User/settings.json:
+        path: config/Cursor/settings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+    ~/Library/Application Support/Cursor/User/keybindings.json:
+        path: config/Cursor/keybindings.json
+        if: '[[ "$OSTYPE" == darwin* ]]'
+
     # ~/.config/karabiner:
         # path: config/karabiner
         # if: '[[ "$OSTYPE" == darwin* ]]'
