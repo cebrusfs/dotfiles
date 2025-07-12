@@ -16,8 +16,9 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.home").read
 cask "010-editor"
 
 # Web
-cask "owasp-zap"
-cask "postman"
+cask "burp-suite"
+#cask "owasp-zap"
+#cask "postman"
 
 # DB
 #brew "mongodb"
@@ -31,7 +32,6 @@ brew "sqlmap"
 
 # Binary
 brew "binutils"
-brew "binutils-mips"
 #brew "capstone"
 #brew "upx"
 #brew "exiftool"
