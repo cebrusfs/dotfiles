@@ -18,7 +18,7 @@ function homebrew_install() {
 }
 
 function homebrew_install_pkgs() {
-    brew bundle -v --no-lock --file="homebrew/Brewfile.min"
+    brew bundle install -v --file="homebrew/Brewfile.min"
 }
 
 function main() {

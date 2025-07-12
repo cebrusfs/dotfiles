@@ -28,6 +28,8 @@ cask "clip-studio-paint"    # painting
 
 # IDE tools
 cask "visual-studio-code"
+cask "cursor"
+cask "windsurf"
 
 # GPG tools
 #cask "gpg-suite-no-mail"
@@ -65,8 +67,8 @@ brew "pandoc"
 brew "typescript"
 
 # Python
-brew "autopep8"
 brew "ipython"
+brew "uv"
 
 # Media tools
 brew "ffmpeg"
@@ -98,6 +100,7 @@ cask "discord"
 #
 
 cask "google-chrome"            # No need in work profile as it is installed by default
-#cask "google-drive"
+cask "google-drive"
+
 #cask "steam"
 #cask "kindle-previewer"     # Kindle ebook

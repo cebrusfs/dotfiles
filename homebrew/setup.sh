@@ -22,7 +22,7 @@ do
             ;;
     esac
 
-    brew bundle cleanup -v --no-lock --file="$file" --force
-    brew bundle -v --no-lock --file="$file"
+    brew bundle cleanup -v --file="$file" --force
+    brew bundle upgrade -v --file="$file"
     break
 done
