@@ -4,6 +4,18 @@
 <dict>
 	<key>AllowClipboardAccess</key>
 	<true/>
+	<key>AlwaysOpenWindowAtStartup</key>
+	<true/>
+	<key>AutoHideTmuxClientSession</key>
+	<true/>
+	<key>ClosingTmuxTabKillsTmuxWindows</key>
+	<true/>
+	<key>ClosingTmuxTabKillsTmuxWindows_selection</key>
+	<integer>1</integer>
+	<key>ClosingTmuxWindowKillsTmuxWindows</key>
+	<true/>
+	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
+	<integer>1</integer>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
 	<key>FallbackLCCType</key>
@@ -333,6 +345,14 @@
 			<integer>0</integer>
 		</dict>
 	</array>
+	<key>OpenArrangementAtStartup</key>
+	<false/>
+	<key>OpenNoWindowsAtStartup</key>
+	<false/>
+	<key>OpenTmuxDashboardIfHiddenWindows</key>
+	<true/>
+	<key>OpenTmuxWindowsIn</key>
+	<integer>1</integer>
 	<key>PointerActions</key>
 	<dict>
 		<key>Button,1,1,,</key>
@@ -374,6 +394,8 @@
 	<false/>
 	<key>SoundForEsc</key>
 	<false/>
+	<key>TmuxSyncClipboard</key>
+	<true/>
 	<key>VisualIndicatorForEsc</key>
 	<false/>
 	<key>findMode_iTerm</key>
