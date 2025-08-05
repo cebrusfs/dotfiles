@@ -51,3 +51,14 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+
+# chromeOS Internal repo setting
+# https://www.chromium.org/chromium-os/developer-guide/gerrit-guide/#googlers-partners-to-get-access-to-the-internal-chrome-gerrit-instance
+[depot-tools]
+	useNewAuthStack = 1
+[url "sso://chromium"]
+	insteadOf = https://chromium.googlesource.com
+	insteadOf = https://chromium-review.googlesource.com
+[url "sso://chrome-internal"]
+	insteadOf = https://chrome-internal.googlesource.com
+	insteadOf = https://chrome-internal-review.googlesource.com
