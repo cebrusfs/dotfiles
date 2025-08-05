@@ -1,9 +1,10 @@
+# vim: ts=2: sts=2: sw=2:
+
 #
 # Sets Prezto options.
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
-#   Meng-Huan Yu <cebrusfs@gmail.com>
 #
 
 #
@@ -44,6 +45,7 @@ zstyle ':prezto:load' pmodule \
   'directory' \
   'spectrum' \
   'utility' \
+  'homebrew' \
   'osx' \
   'python' \
   'git' \
@@ -78,6 +80,9 @@ zstyle ':completion:*' ignored-patterns '\*\*'
 #
 # Editor
 #
+
+# Set the characters that are considered to be part of a word.
+# zstyle ':prezto:module:editor' wordchars '*?_-.[]~&;!#$%^(){}<>'
 
 # Set the key mapping style to 'emacs' or 'vi'.
 zstyle ':prezto:module:editor' key-bindings 'emacs'
@@ -127,6 +132,18 @@ zstyle ':prezto:module:editor' key-bindings 'emacs'
 
 # Set the search globbing flags.
 # zstyle ':prezto:module:history-substring-search' globbing-flags ''
+
+# Enable search case-sensitivity.
+# zstyle ':prezto:module:history-substring-search' case-sensitive 'yes'
+
+# Enable search for fuzzy matches.
+# zstyle ':prezto:module:history-substring-search' fuzzy 'yes'
+
+# Enable search uniqueness.
+# zstyle ':prezto:module:history-substring-search' unique 'yes'
+
+# Enable prefixed search.
+# zstyle ':prezto:module:history-substring-search' prefixed 'yes'
 
 #
 # macOS
@@ -229,7 +246,7 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 # zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
 
 # Set the tab title format.
-# zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
+zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 
 # Set the terminal multiplexer title format.
 # zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
@@ -258,3 +275,10 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 # before deleting or overwriting files. Set to 'no' to disable this safer
 # behavior.
 # zstyle ':prezto:module:utility' safe-ops 'yes'
+
+#
+# Homebrew
+#
+#
+# Only load "brew shellenv"
+zstyle ':prezto:module:homebrew:alias' skip 'yes'
