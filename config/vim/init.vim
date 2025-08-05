@@ -13,10 +13,10 @@ scriptencoding utf-8
     set autoread
 
     " Directory of swap files
-    set directory^=~/.vimfiles/swap,/tmp2
+    set directory^=~/.vimfiles/swap,/tmp
 
     " Directory of undo files
-    set undodir^=~/.vimfiles/undo,/tmp2
+    set undodir^=~/.vimfiles/undo,/tmp
     set undofile
 
     " clipboard: Use both * and + registers clipboard buffer. (OSX, Windows,
@@ -34,9 +34,9 @@ scriptencoding utf-8
 " }
 
 " User Interface {
-    set number            " line number
+    set number              " line number
 
-    set virtualedit=onemore             " Allow for cursor beyond last character
+    set virtualedit=onemore " Allow for cursor beyond last character
 
     set foldmethod=marker   " fold
     set foldlevel=1
