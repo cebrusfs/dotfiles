@@ -7,7 +7,7 @@ Compression yes
 # SSH Multiplexing
 Host corp*
     # tmux with iterm2 integration
-    RemoteCommand tmux -CC new -A -s tmux-main
+    RemoteCommand tmx2 -CC new -A -s tmux-main
     RequestTTY yes
 
     # SSH Multiplexing
