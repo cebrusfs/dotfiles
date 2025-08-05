@@ -1,5 +1,9 @@
+# vim: ts=2: sts=2: sw=2:
+
 #
 # Defines environment variables.
+# This file is sourced by all instances of Zsh, and thus,
+# it should be kept as small as possible and should only define environment variables.
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>

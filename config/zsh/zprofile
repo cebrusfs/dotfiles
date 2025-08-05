@@ -1,5 +1,9 @@
+# vim: ts=2: sts=2: sw=2:
+
 #
 # Executes commands at login pre-zshrc.
+# This file is similar to zlogin, but it is sourced before zshrc. It was added for KornShell fans. See the description of zlogin below for what it may contain.
+# zprofile and zlogin are not meant to be used together but can be done so.
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
@@ -21,96 +25,85 @@ function check_command () {
     command -v $1 >/dev/null
 }
 
-if ( check_command nvim ); then
-    export EDITOR='nvim'
-elif ( check_command vim ); then
-    export EDITOR='vim'
+if [[ -z "$EDITOR" ]]; then
+    if ( check_command nvim ); then
+        export EDITOR='nvim'
+    elif ( check_command vim ); then
+        export EDITOR='vim'
+    fi
 fi
-export VISUAL="$EDITOR"
-export PAGER='less'
+
+if [[ -z "$VISUAL" ]]; then
+  export VISUAL="$EDITOR"
+fi
+if [[ -z "$PAGER" ]]; then
+  export PAGER='less'
+fi
 
 #
 # Language
 #
 
 if [[ -z "$LANG" ]]; then
-    export LANG='en_US.UTF-8'
+  export LANG='en_US.UTF-8'
 fi
 
 #
-# Locale
+# Timezone
+# Use system default timezone
 #
 
-# Use system default timezone
-#export TZ='Asia/Taipei'
 
 #
 # Paths
 #
 
-# Node
-NPM_PACKAGES="${HOME}/.npm-packages"
-NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that cd searches.
 # cdpath=(
 #   $cdpath
 # )
 
+# Node
+NPM_PACKAGES="${HOME}/.npm-packages"
+export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
 # Set the list of directories that Zsh searches for programs.
 # (N) to remove the path when the path is not found.
 path=(
-    $HOME/bin                            # Customized binary/script managed by git
-    $HOME/docker-bin
+  $HOME/{,s}bin                         # Customized binary/script managed by git
+  $HOME/docker-bin(N)
 
-    $HOME/.codeium/windsurf/bin          # Windsurf
+  $HOME/.codeium/windsurf/bin           # Windsurf
 
-    $HOME/.cargo/bin(N)                  # Rust: Local install path
-    $HOME/Library/Python/*/bin(N)        # Python: Local pip path for OSX
-    $NPM_PACKAGES/bin(N)                 # Node: Local npm path
+  # Programing Language and packages
+  $HOME/.cargo/bin(N)                   # Rust: Local install path
+  $HOME/Library/Python/*/bin(N)         # Python: Local pip path for OSX
+  $NPM_PACKAGES/bin(N)                  # Node: Local npm packages path
 
-    /opt/homebrew/opt/ruby/bin(N)        # Ruby: Homebrew Ruby
-    /opt/homebrew/lib/ruby/gems/*/bin(N) # Ruby: Homebrew Gem path
-    $HOME/.gem/ruby/*/bin(N)             # Ruby: Local gem path
+  /opt/homebrew/opt/ruby/bin(N)         # Ruby: Homebrew Ruby
+  /opt/homebrew/lib/ruby/gems/*/bin(N)  # Ruby: Homebrew Gem path
+  $HOME/.gem/ruby/*/bin(N)              # Ruby: Local gem path
 
+  # Homebrew binary
+  /opt/homebrew/{,s}bin(N)              # Default homebrew for Apple Silicon
 
-    # Homebrew binary
-    /usr/local/{bin,sbin}(N)             # Default homebrew for Intel
-    /opt/homebrew/{bin,sbin}(N)          # Default homebrew for Apple Silicon
+  # Latex
+  /Library/TeX/texbin(N)                # Mactex
+  /usr/texbin(N)                        # Linux latex
 
-    # Latex
-    /Library/TeX/texbin(N)               # Mactex
-    /usr/texbin(N)
+  # Work related
+  $HOME/working/cros_script/bin(N)
+  $HOME/depot_tools(N)
+  $HOME/crosfleet(N)
 
-    # Work related
-    $HOME/homebrew/{bin,sbin}(N)         # Customized Homebrew path
-    $HOME/working/cros_script/bin(N)
-    $HOME/depot_tools(N)
-    $HOME/crosfleet(N)
-    $HOME/local_build/bin(N)             # for local build binary
-
-    $path
+  $path
 )
-
-# Set the list of directories that Zsh searches for completions.
-fpath=(
-    # User writable zsh completion
-    # (for symbolic links of installed packages and homebrew)
-    /usr/local/share/zsh/site-functions
-    $fpath
-)
-
-# TODO: setup general path for MANPATH
-#manpath=(
-#    # Customized Homebrew path
-#    /usr/local/brew/share/man
-#    /opt/homebrew/share/man
-#
-#    $manpath
-#)
 
 # Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path #manpath
+typeset -gU path
 
 
 #
@@ -125,7 +118,7 @@ if [[ -z "$LESS" ]]; then
 fi
 
 # set display charset of less
-export LESSCHARSET=UTF-8
+export LESSCHARSET="UTF-8"
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.

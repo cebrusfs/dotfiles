@@ -1,4 +1,12 @@
-# vim: syntax=sh: ts=2: sts=2: sw=2:
+# vim: ts=2: sts=2: sw=2:
+
+#
+# Executes commands at the start of an interactive session.
+# This file is sourced by interactive shells. It should define aliases, functions, shell options, and key bindings.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
 
 #
 # Util functions
@@ -18,7 +26,7 @@ function _warn() {
 
 
 #
-# Alias (enable warning)
+# Alias (has warning)
 #
 
 # Better 'find', as known as 'fd'
@@ -39,7 +47,7 @@ function _rgg () {
 _check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
 
 # Use 'neovim' to replace 'vim'
-_check_command nvim && alias vim='nvim' || _warn "'neovim' is not installed"
+_check_command nvim && alias vim='nvim' && vimdiff='nvim -d' || _warn "'neovim' is not installed"
 
 # Warning if fzf is installed
 _check_command fzf || _warn "'fzf' is not installed"
@@ -62,14 +70,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
-
-ZCONFIG_DIR="${ZDOTDIR:-$HOME}/.dotfiles/config/zsh"
 
 # Source Prezto.
 ZPREZTO_DIR="${ZPREZTO_DIR:-${ZDOTDIR:-$HOME}/.dotfiles/modules/prezto}"
