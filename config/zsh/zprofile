@@ -73,10 +73,7 @@ export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 # Set the list of directories that Zsh searches for programs.
 # (N) to remove the path when the path is not found.
 path=(
-  $HOME/{,s}bin                         # Customized binary/script managed by git
-  $HOME/docker-bin(N)
-
-  $HOME/.codeium/windsurf/bin           # Windsurf
+  $HOME/bin                             # Customized binary/script managed by git
 
   # Programing Language and packages
   $HOME/.cargo/bin(N)                   # Rust: Local install path
@@ -86,6 +83,8 @@ path=(
   /opt/homebrew/opt/ruby/bin(N)         # Ruby: Homebrew Ruby
   /opt/homebrew/lib/ruby/gems/*/bin(N)  # Ruby: Homebrew Gem path
   $HOME/.gem/ruby/*/bin(N)              # Ruby: Local gem path
+
+  $HOME/.codeium/windsurf/bin(N)        # Windsurf
 
   # Homebrew binary
   /opt/homebrew/{,s}bin(N)              # Default homebrew for Apple Silicon
