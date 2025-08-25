@@ -15,14 +15,6 @@ Host corp*
     ControlPath ~/.ssh/controlmaster-%C
     ControlPersist 600
 
-# TFcis {{{
-# TODO: Not active
-Host phantom
-    HostName phantom.tfcis.org
-    User yuscvscv
-    Port 9527
-# }}}
-
 # Work stations @ NTU.CSIE {{{
 Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     User r04922033
