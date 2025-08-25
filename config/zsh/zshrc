@@ -152,8 +152,8 @@ alias gws='gwS'
 # fzf initialize
 #
 
-# This is only for fzf >= 0.48.0. It doesn't work for ubuntu <= 22.04
 if _check_command fzf; then
+  # This is only for fzf >= 0.48.0. Detain 0.44+. It only work for ubuntu 24.10+.
   if fzf --zsh >/dev/null 2>&1; then
     source <(fzf --zsh)
   else
