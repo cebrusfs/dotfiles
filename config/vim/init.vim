@@ -160,6 +160,8 @@ call plug#begin()
 " }
 
 " coc: Intellisense engine for Vim8 & Neovim, full language server protocol support as VSCode {
+" TODO: switch to nvim native lsp to reduce the depednancy? cons: lose lsp
+" support on tranditional vim.
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
     " Programming language extensions
