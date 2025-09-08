@@ -63,12 +63,15 @@ brew "go"
 brew "pandoc"
 
 # Javascript / Typescript
-# node is in neovim deps
+# node is in neovim deps, so already put in .min
 brew "typescript"
 
 # Python
 brew "ipython"
 brew "uv"
+
+# Ruby
+brew "rv"
 
 # Media tools
 brew "ffmpeg"

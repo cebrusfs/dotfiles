@@ -55,7 +55,6 @@ function zsh_main() {
 
 function vim_install_deps_linux() {
     # coc.nvim deps
-    # FIXME: Ubuntu 22.04 has too old node version. Need >16.
     linux_install nodejs
 
     # vim / neovim
@@ -64,15 +63,17 @@ function vim_install_deps_linux() {
 }
 
 function vim_install_dev_tools() {
-    log "Install packages for neovim languages"
+    log "Install packages for later neovim dev environment setup"
 
     # CoC: Python
     # OSX has Python by default
+    # TODO: replace this setup by "uv"
     linux_install python3-dev
     linux_install python3-pip
 
     # CoC: Ruby
-    # OSX install Ruby via Homebrew
+    # OSX has Ruby via Homebrew bundle install
+    # TODO: replace this setup by "rv"
     linux_install ruby-dev
     gem install --user-install solargraph rubocop
 
@@ -87,13 +88,13 @@ function vim_install_dev_tools() {
     # FIXME: brew install go
 
     # CoC: rust
-    # Use rustup. Avoid "apt" or "homebrew" to avoid potencial issue.
+    # Use rustup. Avoid using package manager like "apt" or "homebrew" to avoid potencial issue.
     if ! check_command rustup; then
         # sh -s: read script from stdin
         # --no-modify-path: avoid modify shell config for adding PATH. It is already set.
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
     else
-        # Use update instead of install again.
+        # Use update for toolchain and self-update, instead of installing again.
         rustup update
     fi
 

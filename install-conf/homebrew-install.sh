@@ -1,4 +1,4 @@
-# vim: syntax=sh:
+# vim: syntax=bash:
 
 set -e
 
@@ -8,7 +8,8 @@ source "${BASEDIR}/utils.sh"
 function homebrew_install() {
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Fix path temporary. We won't need this when we enter zsh.
+    # Fix path temporary for current running shell.
+    # We won't need this after we enter zsh.
     export PATH="/opt/homebrew/bin:/usr/local/bin"
 
     # Fix app path
