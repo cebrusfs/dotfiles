@@ -67,7 +67,6 @@ brew "pandoc"
 brew "typescript"
 
 # Python
-brew "ipython"
 brew "uv"
 
 # Ruby
