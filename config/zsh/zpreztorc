@@ -37,6 +37,7 @@ zstyle ':prezto:*:*' color 'yes'
 # ssh: ssh-add is slow
 # TODO:
 #   * customize pyenv, rbenv wrapper which is loaded when needed
+#   * don't use tmux as tmux iterm integration doesn't work "https://github.com/sorin-ionescu/prezto/issues/1071"
 zstyle ':prezto:load' pmodule \
   'environment' \
   'terminal' \
@@ -49,7 +50,6 @@ zstyle ':prezto:load' pmodule \
   'osx' \
   'python' \
   'git' \
-  'tmux' \
   'command-not-found' \
   'syntax-highlighting' \
   'autosuggestions' \
@@ -260,10 +260,10 @@ zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 # zstyle ':prezto:module:tmux:auto-start' local 'yes'
 
 # Auto start a session when Zsh is launched in a SSH connection.
-zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+# zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Integrate with iTerm2.
-zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+# zstyle ':prezto:module:tmux:iterm' integrate 'yes'
 
 # Set the default session name:
 # zstyle ':prezto:module:tmux:session' name 'YOUR DEFAULT SESSION NAME'

@@ -4,18 +4,6 @@
 # https://stackoverflow.com/a/34206244/358069
 Compression yes
 
-Host corp*
-    # tmux with iterm2 integration
-    RemoteCommand tmx2 -CC new -A -s tmux-main
-    RequestTTY yes
-
-    # SSH Multiplexing
-    #   Prevent 2FA everytime. Faster re-connection.
-    #   But new config (e.g. tunneling) won't take effect immediately other than first connection.
-    ControlMaster auto
-    ControlPath ~/.ssh/controlmaster-%C
-    ControlPersist 600
-
 # Work stations @ NTU.CSIE {{{
 Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     User r04922033
@@ -51,3 +39,22 @@ Host free-us
 # }}}
 
 # Work
+Host corp*
+    # tmux with iterm2 integration
+    RemoteCommand tmx2 -CC new -A -s tmux-main
+    RequestTTY yes
+
+    # SSH Multiplexing
+    #   Prevent 2FA everytime. Faster re-connection.
+    #   But new config (e.g. tunneling) won't take effect immediately other than first connection.
+    ControlMaster auto
+    ControlPath ~/.ssh/controlmaster-%C
+    ControlPersist 600
+
+
+# Default
+Host * !github.com
+    # enable tmux with iterm integration
+    RemoteCommand tmux -CC new -A -s tmux-main
+    # TTY is require to support tmux control command
+    RequestTTY yes
