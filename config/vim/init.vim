@@ -159,11 +159,36 @@ call plug#begin()
         \}
 " }
 
+" Programming integration (Neovim only) {
+if has('nvim')
+    Plug 'neovim/nvim-lspconfig'            " LSP configuration
+
+    " LSP/Formatter/Linter management via Mason
+    Plug 'mason-org/mason-lspconfig.nvim'   " mason-lspconfig bridges mason.nvim with the lspconfig plugin
+    Plug 'mason-org/mason.nvim'
+
+    " Autocompletion engine: nvim-cmp
+    Plug 'hrsh7th/cmp-nvim-lsp'             " Auto completing from LSP
+    Plug 'hrsh7th/cmp-buffer'               " Word completing from current opened buffer
+    Plug 'hrsh7th/cmp-path'                 " Path auto completing
+    Plug 'hrsh7th/cmp-cmdline'              " Vim command line completing
+    Plug 'hrsh7th/nvim-cmp'
+
+    " Fuzzy Finding
+    " Plug 'nvim-lua/plenary.nvim' " Common utilities, dependency for telescope
+    " Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
+
+    " Git Integration
+    Plug 'lewis6991/gitsigns.nvim'
+endif
+" }
+
 " coc: Intellisense engine for Vim8 & Neovim, full language server protocol support as VSCode {
 " TODO: switch to nvim native lsp to reduce the depednancy? cons: lose lsp
 " support on tranditional vim.
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+if 0
     " Programming language extensions
     let g:coc_global_extensions = [
         "\ C/C++/Objective-C
@@ -203,6 +228,7 @@ call plug#begin()
     let g:coc_filetype_map = {
         \'pandoc': 'markdown'
     \}
+endif
 
     " ==============================================================
     " Offcial references settings of coc
@@ -225,6 +251,7 @@ call plug#begin()
     " diagnostics appear/become resolved
     " set signcolumn=yes
 
+if 0
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
     " no select by `"suggest.noselect": true` in your configuration file
@@ -390,6 +417,7 @@ call plug#begin()
     nnoremap <silent><nowait> <leader>[  :<C-u>CocPrev<CR>
     " Resume latest coc list
     nnoremap <silent><nowait> <leader>p  :<C-u>CocListResume<CR>
+endif
 " }
 " Fzf {
     Plug '~/.dotfiles/modules/fzf'
