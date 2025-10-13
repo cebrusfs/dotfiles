@@ -44,7 +44,7 @@ require("mason-lspconfig").setup({
     -- Golang
     'gopls',
     -- Typescript
-    'tsserver',
+    'ts_ls',
     -- Rust
     'rust_analyzer',
     -- Bash
