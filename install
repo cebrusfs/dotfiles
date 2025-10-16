@@ -45,7 +45,7 @@ function zsh_main() {
         log "Current shell is not zsh, switch default shell to zsh"
         chsh -s $(which zsh)
 
-        log "Enable the setting in zsh before process the following steps"
+        log "Enable the setting in zsh before starting the later steps"
         if [[ "$SHELL" != *zsh ]]; then
             exec zsh --login -c "$BASEDIR/install post"
         fi
@@ -63,31 +63,10 @@ function vim_install_deps_linux() {
 }
 
 function vim_install_dev_tools() {
-    log "Install packages for later neovim dev environment setup"
+    # Use Mason that will auto download and install dev tools. We don't need to manually install stuff now.
 
-    # CoC: Python
-    # OSX has Python by default
-    # TODO: replace this setup by "uv"
-    linux_install python3-dev
-    linux_install python3-pip
-
-    # CoC: Ruby
-    # OSX has Ruby via Homebrew bundle install
-    # TODO: replace this setup by "rv"
-    linux_install ruby-dev
-    gem install --user-install solargraph rubocop
-
-    # CoC: javascript
-    # linux_install npm
-    # linux_install node-typescript
-    # FIXME: brew install typescript
-
-    # CoC: golang
-    # gopls will be auto installed by coc
-    # linux_install golang
-    # FIXME: brew install go
-
-    # CoC: rust
+    # Rust
+    # TODO: move outside from vim deps
     # Use rustup. Avoid using package manager like "apt" or "homebrew" to avoid potencial issue.
     if ! check_command rustup; then
         # sh -s: read script from stdin
