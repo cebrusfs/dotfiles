@@ -77,12 +77,14 @@ path=(
 
   # Programing Language and packages
   $HOME/.cargo/bin(N)                   # Rust: Local install path
+
+  $HOME/.local/bin                      # Python: uv path
   $HOME/Library/Python/*/bin(N)         # Python: Local pip path for OSX
+
   $NPM_PACKAGES/bin(N)                  # Node: Local npm packages path
 
-  /opt/homebrew/opt/ruby/bin(N)         # Ruby: Homebrew Ruby
-  /opt/homebrew/lib/ruby/gems/*/bin(N)  # Ruby: Homebrew Gem path
-  $HOME/.gem/ruby/*/bin(N)              # Ruby: Local gem path
+  $HOME/.data/rv/rubies/ruby-*/bin(N)   # Ruby: rv path
+  $HOME/.gem/ruby/*/bin(N)              # Ruby: rv gem path
 
   $HOME/.codeium/windsurf/bin(N)        # Windsurf
 
