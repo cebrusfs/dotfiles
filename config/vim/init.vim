@@ -31,6 +31,11 @@ scriptencoding utf-8
 
     " Enable mouse support (Don't use Cmd+C to copy in OSX)
     set mouse=a
+
+    " Disable provider of nvim
+    let g:loaded_perl_provider = 0
+    let g:loaded_ruby_provider = 0
+    let g:loaded_node_provider = 0
 " }
 
 " User Interface {
