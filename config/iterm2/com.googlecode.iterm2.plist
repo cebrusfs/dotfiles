@@ -9,15 +9,17 @@
 	<key>AutoHideTmuxClientSession</key>
 	<true/>
 	<key>ClosingTmuxTabKillsTmuxWindows</key>
-	<true/>
+	<false/>
 	<key>ClosingTmuxTabKillsTmuxWindows_selection</key>
 	<integer>1</integer>
 	<key>ClosingTmuxWindowKillsTmuxWindows</key>
-	<true/>
+	<false/>
 	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
 	<integer>1</integer>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
+	<key>DisableTmuxWindowResizing</key>
+	<false/>
 	<key>FallbackLCCType</key>
 	<string>en_US.UTF-8</string>
 	<key>HapticFeedbackForEsc</key>
@@ -389,7 +391,7 @@
 	<key>PreferSpeedToFullLigatureSupport</key>
 	<true/>
 	<key>ShowFullScreenTabBar</key>
-	<true/>
+	<false/>
 	<key>ShowMetalFPSmeter</key>
 	<false/>
 	<key>SoundForEsc</key>
