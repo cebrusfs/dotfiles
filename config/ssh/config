@@ -53,7 +53,7 @@ Host corp*
 
 
 # Default
-Host * !github.com
+Host amd-micro vpn arm-perf free-us ws* !github.com
     # enable tmux with iterm integration
     RemoteCommand tmux -CC new -A -s tmux-main
     # TTY is require to support tmux control command
