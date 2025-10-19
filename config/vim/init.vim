@@ -188,52 +188,6 @@ if has('nvim')
 endif
 " }
 
-" coc: Intellisense engine for Vim8 & Neovim, full language server protocol support as VSCode {
-" TODO: switch to nvim native lsp to reduce the depednancy? cons: lose lsp
-" support on tranditional vim.
-    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-if 0
-    " Programming language extensions
-    let g:coc_global_extensions = [
-        "\ C/C++/Objective-C
-        \'coc-clangd',
-        "\ Python3
-        \'coc-pyright',
-        "\ \'@yaegassy/coc-ruff',
-        "\ Ruby
-        \'coc-solargraph',
-        "\ Golang
-        \'coc-go',
-        "\ Javascript/TypeScript
-        \'coc-tsserver',
-        "\ Rust
-        \'coc-rust-analyzer',
-        "\ sh
-        \'coc-sh',
-        "\ JSON
-        \'coc-json',
-        "\ YAML
-        \'coc-yaml',
-        "\ formater: 'prettier': JavaScript/TypeScript/Flow/JSX/JSON/CSS/SCSS/Less
-        "\   HTML/Vue/Angular/GraphQL/Markdown/YAML
-        \'coc-prettier',
-    \]
-
-    " User Interface extensions
-    let g:coc_global_extensions += [
-        "\ Fzf integration
-        \'coc-fzf-preview',
-        "\ Git integration
-        \'coc-git',
-        "\ Highlight API
-        \'coc-highlight',
-    \]
-
-    let g:coc_filetype_map = {
-        \'pandoc': 'markdown'
-    \}
-endif
 
     " ==============================================================
     " Offcial references settings of coc
