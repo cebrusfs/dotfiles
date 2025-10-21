@@ -54,8 +54,10 @@ function zsh_main() {
 
 
 function vim_install_deps_linux() {
-    # coc.nvim deps
+    # vim modules deps
+    # * linter/formatter installation of Mason)
     linux_install nodejs
+    linux_install npm
 
     # vim / neovim
     linux_install vim
