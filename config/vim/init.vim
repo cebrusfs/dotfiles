@@ -598,12 +598,13 @@ autocmd Filetype sh
             \ nnoremap <buffer> <Leader>p
             \ :w<CR>
             \ :!sh %<CR>
-autocmd Filetype rust
-            \ nnoremap <buffer> <Leader>p
-            \ :w<CR>
-            \ :!RUST_BACKTRACE=1 cargo run<CR>
+
 autocmd Filetype rust
             \ nnoremap <buffer> <Leader>c
             \ :w<CR>
             \ :!cargo check<CR>
+autocmd Filetype rust
+            \ nnoremap <buffer> <Leader>p
+            \ :w<CR>
+            \ :!RUST_BACKTRACE=1 cargo run<CR>
 " }
