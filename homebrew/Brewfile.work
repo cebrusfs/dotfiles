@@ -30,7 +30,6 @@ brew "wget"
 
 # Version control
 brew "git"
-brew "mercurial"                    # hg
 
 # Misc
 brew "md5sha1sum"

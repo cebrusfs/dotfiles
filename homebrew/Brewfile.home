@@ -43,9 +43,12 @@ cask "windsurf"
 # Programming Language
 #
 
-brew "cmake"
+
+# Version contrl
+brew "mercurial"            # Don't put hg in work profile as it will conflict with corp version.
 
 # C / C++
+brew "cmake"
 brew "gcc"
 brew "clang-format"
 
