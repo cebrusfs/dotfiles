@@ -52,6 +52,7 @@
 
     # git
     ~/.gitconfig: config/git/gitconfig
+    ~/.config/git/ignore: config/git/gitignore_default
 
     # ssh
     ~/.ssh/config: config/ssh/config
