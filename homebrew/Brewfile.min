@@ -17,6 +17,9 @@ brew "fd"                         # fastest 'find'
 brew "fzf"                        # command-line fuzzy finder
 brew "colordiff"                  # colorful diff used in zpretzo
 
+# General package manager
+brew "mise"
+
 # Next-gen of version control system
 brew "jj"
 

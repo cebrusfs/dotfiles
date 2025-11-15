@@ -1,0 +1,13 @@
+[tools]
+bun = "latest"
+node = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
+"npm:@google/gemini-cli" = "latest"
+"npm:@openai/codex" = "latest"
+ruby = "latest"
+uv = "latest"
+
+[settings]
+
+[settings.npm]
+bun = true

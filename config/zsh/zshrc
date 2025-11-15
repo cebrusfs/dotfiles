@@ -162,6 +162,11 @@ if _check_command fzf; then
   fi
 fi
 
+# Mise initialize
+if _check_command mise; then
+  eval "$(mise activate)"
+fi
+
 # Dynamic completion for jj
 if _check_command jj; then
   source <(COMPLETE=zsh jj)

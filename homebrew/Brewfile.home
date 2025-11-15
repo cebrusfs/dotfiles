@@ -65,12 +65,6 @@ brew "pandoc"
 # node is in neovim deps, so already put in .min
 brew "typescript"
 
-# Python
-brew "uv"
-
-# Ruby
-brew "rv"
-
 # Media tools
 brew "ffmpeg"
 brew "yt-dlp"

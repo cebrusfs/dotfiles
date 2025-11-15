@@ -44,6 +44,9 @@
     ~/.zlogout: config/zsh/zlogout
     ~/.p10k.zsh: config/zsh/p10k.zsh
 
+    # mise
+    ~/.config/mise: config/mise
+
     # jj
     ~/.config/jj: config/jj
 
@@ -72,12 +75,6 @@
 - link:
     ~/.config/nvim: config/vim
     ~/.local/share/nvim/site/autoload/plug.vim: config/vim/autoload/plug.vim
-
-# npm
-- create:
-    - ~/.npm-packages/lib
-- link:
-    ~/.npmrc: config/npmrc
 
 # Linux specific links
 - link:
