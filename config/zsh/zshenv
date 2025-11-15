@@ -22,10 +22,6 @@ export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 # GPG
 export GPG_TTY=`tty`
 
-# OpenAI
-# Grant Key from https://platform.openai.com/api-keys
-# export OPENAI_API_KEY="sk-proj-xxxxx"
-
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
