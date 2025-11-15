@@ -17,9 +17,6 @@ brew "fd"                         # fastest 'find'
 brew "fzf"                        # command-line fuzzy finder
 brew "colordiff"                  # colorful diff used in zpretzo
 
-# NVIM: CoC dependancies
-# OSX build-in Ruby is 2.6. CoC needs Ruby 3+
-brew "ruby"
 # Next-gen of version control system
 brew "jj"
 
@@ -30,7 +27,6 @@ brew "jj"
 cask "iterm2"
 
 brew "neovim"
-brew "node"                       # coc.nvim deps
 
 # Font support ligatures
 cask "font-fira-code"
