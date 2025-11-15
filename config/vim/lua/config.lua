@@ -53,6 +53,8 @@ require("mason-lspconfig").setup({
     'jsonls',
     -- YAML
     'yamlls',
+    -- Toml
+    'taplo',
   }
 })
 
