@@ -97,7 +97,9 @@ call plug#begin()
 
 " Color Scheme {
     Plug 'tomasiser/vim-code-dark'
-    Plug 'Mofiqul/vscode.nvim' " Neovim only
+    if has('nvim')
+        Plug 'Mofiqul/vscode.nvim' " Neovim only
+    endif
 
     " Other theme, still trying
     " Plug 'loctvl842/monokai-pro.nvim'
@@ -123,7 +125,9 @@ call plug#begin()
 " }
 
 " Indent: Show indent space and tab with colors {
-    Plug 'lukas-reineke/indent-blankline.nvim' " Neovim only
+    if has('nvim')
+        Plug 'lukas-reineke/indent-blankline.nvim' " Neovim only
+    endif
     Plug 'nathanaelkane/vim-indent-guides'
 
     if !has('nvim')
@@ -377,9 +381,9 @@ if 0
     " Resume latest coc list
     nnoremap <silent><nowait> <leader>p  :<C-u>CocListResume<CR>
 endif
-" }
+
 " Fzf {
-    Plug '~/.dotfiles/modules/fzf'
+    Plug 'junegunn/fzf.vim'
 
     " Git
     nnoremap <silent> <Plug>(key-git)s      :<C-u>CocCommand fzf-preview.GitStatus<CR>
