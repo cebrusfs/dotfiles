@@ -25,6 +25,8 @@ brew "colordiff"                  # colorful diff used in zpretzo
 # NVIM: CoC dependancies
 # OSX build-in Ruby is 2.6. CoC needs Ruby 3+
 brew "ruby"
+# Next-gen of version control system
+brew "jj"
 
 #
 # Shell and VIM

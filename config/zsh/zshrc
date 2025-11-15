@@ -162,6 +162,11 @@ if _check_command fzf; then
   fi
 fi
 
+# Dynamic completion for jj
+if _check_command jj; then
+  source <(COMPLETE=zsh jj)
+fi
+
 #
 # Powerlevel10k
 #
