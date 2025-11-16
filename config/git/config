@@ -1,7 +1,9 @@
 # vim: set noet:
+
 [user]
 	name = Meng-Huan Yu
 	email = 2252236+cebrusfs@users.noreply.github.com
+
 [push]
 	default = simple
 [filter "lfs"]
@@ -29,10 +31,11 @@
 	pager = ~/.dotfiles/modules/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
 	autocrlf = false
 [stash]
-	# show file diff in `git stash show`
+	# Show file diff in `git stash show`
 	showPatch = true
+
 [format]
-	# show full information in `git log`
+	# Show all commit metadata in `git log`
 	pretty = fuller
 
 # Default to auto since 1.8.4
