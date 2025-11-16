@@ -4,6 +4,8 @@
 <dict>
 	<key>AllowClipboardAccess</key>
 	<true/>
+	<key>AlternateMouseScroll</key>
+	<false/>
 	<key>AlwaysOpenWindowAtStartup</key>
 	<true/>
 	<key>AutoHideTmuxClientSession</key>
@@ -20,6 +22,8 @@
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
 	<key>DisableTmuxWindowResizing</key>
 	<false/>
+	<key>DoubleReportScrollWheel</key>
+	<false/>
 	<key>FallbackLCCType</key>
 	<string>en_US.UTF-8</string>
 	<key>HapticFeedbackForEsc</key>
@@ -35,6 +39,8 @@
 			<true/>
 			<key>ASCII Ligatures</key>
 			<true/>
+			<key>Allow Alternate Mouse Scroll</key>
+			<false/>
 			<key>Allow Title Reporting</key>
 			<false/>
 			<key>Ambiguous Double Width</key>
