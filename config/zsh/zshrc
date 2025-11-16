@@ -47,7 +47,7 @@ function _rgg () {
 _check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
 
 # Use 'neovim' to replace 'vim'
-_check_command nvim && alias vim='nvim' && vimdiff='nvim -d' || _warn "'neovim' is not installed"
+_check_command nvim && alias vim='nvim' && alias vimdiff='nvim -d' || _warn "'neovim' is not installed"
 
 # Warning if fzf is installed
 _check_command fzf || _warn "'fzf' is not installed"
