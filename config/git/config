@@ -61,3 +61,7 @@
 [url "sso://chrome-internal"]
 	insteadOf = https://chrome-internal.googlesource.com
 	insteadOf = https://chrome-internal-review.googlesource.com
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	defaultKeyCommand = ssh-add -L
