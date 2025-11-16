@@ -13,6 +13,8 @@
 
 [merge]
 	tool = vimdiff
+	conflictStyle = zdiff3 # TODO: don't know what's for
+
 [mergetool]
 	prompt = false
 	keepBackup = false
@@ -27,9 +29,31 @@
 [core]
 	# Use vim as default editor
 	editor = vim
+
 	# Fancy diff
-	pager = ~/.dotfiles/modules/diff-so-fancy/diff-so-fancy | less --tabs=4 -RFX
-	autocrlf = false
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+# Delta configurations
+[include]
+	path = ~/.config/git/themes.gitconfig
+[delta]
+	dark = true
+	navigate = true  # use n and N to move between diff sections
+	side-by-side = true # side-by-side diff
+
+	features = gruvmax-fang
+
+	# Slightly lighter
+	plus-style = syntax "#001c00"
+	# ??
+	commit-decoration-style = normal yellow box
+
+	# disable the line numbers in side-by-side view, but keep a vertical delimiter line between the left and right panels, use the line-numbers format options. For example:
+	# line-numbers-right-format = "│ "
+
 [stash]
 	# Show file diff in `git stash show`
 	showPatch = true
@@ -38,21 +62,6 @@
 	# Show all commit metadata in `git log`
 	pretty = fuller
 
-# Default to auto since 1.8.4
-# [color]
-#	ui = auto
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
-[color "diff"]
-	meta = yellow
-	frag = magenta bold
-	commit = yellow bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
 
 # chromeOS Internal repo setting
 # https://www.chromium.org/chromium-os/developer-guide/gerrit-guide/#googlers-partners-to-get-access-to-the-internal-chrome-gerrit-instance

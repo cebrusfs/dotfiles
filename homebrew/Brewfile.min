@@ -20,8 +20,9 @@ brew "colordiff"                  # colorful diff used in zpretzo
 # General package manager
 brew "mise"
 
-# Next-gen of version control system
+# Next-gen of version control system (VCS)
 brew "jj"
+brew "git-delta" # beautiful colorful tool for VCS
 
 #
 # Shell and VIM
