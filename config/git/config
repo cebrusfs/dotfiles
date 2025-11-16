@@ -11,6 +11,10 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 
+[diff]
+	# Git built-in moved blocks detection
+	colorMoved = default
+
 [merge]
 	tool = vimdiff
 	conflictStyle = zdiff3 # TODO: don't know what's for
