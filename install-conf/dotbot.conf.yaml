@@ -51,8 +51,7 @@
     ~/.config/jj: config/jj
 
     # git
-    ~/.gitconfig: config/git/gitconfig
-    ~/.config/git/ignore: config/git/gitignore_default
+    ~/.config/git: config/git
 
     # ssh
     ~/.ssh/config: config/ssh/config
