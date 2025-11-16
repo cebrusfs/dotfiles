@@ -14,3 +14,10 @@ pager = "delta"
 # Editors
 diff-editor = ":builtin"
 merge-editor = "vimdiff"
+
+[git]
+# When jj imports a new remote-tracking bookmark from Git, it can also create a local bookmark with the same name.
+auto-local-bookmark = true
+
+# jj git push does not push newly-created bookmarks by default. If you do not want to specify --allow-new
+push-new-bookmarks = true
