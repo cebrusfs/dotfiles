@@ -21,3 +21,7 @@ auto-local-bookmark = true
 
 # jj git push does not push newly-created bookmarks by default. If you do not want to specify --allow-new
 push-new-bookmarks = true
+
+#[signing]
+#backend = "ssh"
+#key = "~/.ssh/id_ed25519.pub"

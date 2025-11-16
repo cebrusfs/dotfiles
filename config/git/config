@@ -66,10 +66,10 @@
 	# Show all commit metadata in `git log`
 	pretty = fuller
 
-[gpg]
-	format = ssh
-[gpg "ssh"]
-	defaultKeyCommand = ssh-add -L
+#[gpg]
+#	format = ssh
+#[gpg "ssh"]
+#	defaultKeyCommand = ssh-add -L
 
 # chromeOS Internal repo setting
 # https://www.chromium.org/chromium-os/developer-guide/gerrit-guide/#googlers-partners-to-get-access-to-the-internal-chrome-gerrit-instance
