@@ -46,7 +46,6 @@ scriptencoding utf-8
     set foldmethod=marker   " fold
     set foldlevel=1
 
-    "set autoindent         " auto indentation
     set copyindent          " copy the previous indentation on autoindenting
     set smarttab            " insert tabs on the start of a line according to context
     set expandtab           " use spaces instead of tabs
@@ -55,18 +54,6 @@ scriptencoding utf-8
     set tabstop=4
     set shiftwidth=4
     set softtabstop=4
-
-    " Auto complete menu {
-    " " disable preview window when completing (default: menu,preview)
-    " set completeopt-=preview
-    " set wildmenu            " use menu when completing
-    " set wildchar=<TAB>        " start wild expansion in the command line using
-
-    " set wildignore^=*.o,*.class,*.pyc " ignore these files while expanding wild chars
-    " }
-
-    " Linebreaking Settings {
-    " }
 " }
 
 " General Key mapping {
@@ -97,9 +84,7 @@ call plug#begin()
 
 " Color Scheme {
     Plug 'tomasiser/vim-code-dark'
-    if has('nvim')
-        Plug 'Mofiqul/vscode.nvim' " Neovim only
-    endif
+    Plug 'Mofiqul/vscode.nvim' " Neovim only
 
     " Other theme, still trying
     " Plug 'loctvl842/monokai-pro.nvim'
@@ -125,9 +110,6 @@ call plug#begin()
 " }
 
 " Indent: Show indent space and tab with colors {
-    if has('nvim')
-        Plug 'lukas-reineke/indent-blankline.nvim' " Neovim only
-    endif
     Plug 'nathanaelkane/vim-indent-guides'
 
     if !has('nvim')
@@ -141,6 +123,8 @@ call plug#begin()
 
         let g:indent_guides_enable_on_vim_startup=1
     endif
+
+    Plug 'lukas-reineke/indent-blankline.nvim' " Neovim only
 " }
 " vim-ShowTrailingWhitespace: Show trailing whitespace {
     Plug 'inkarkat/vim-ingo-library' " Dependancy of ShowTrailingWhitespace
@@ -534,17 +518,18 @@ call plug#end()
 
 " Colorscheme settings {
     " True-color support
-    if (has("termguicolors"))
+    if has("termguicolors")
         set termguicolors
     endif
 
-    " Fallback for vim
-    silent! colorscheme codedark
 
     " Load lua to setup the colorscheme on neovim
-    silent! lua require('config')
-    " Disable nvim-tree background color (already in lua config)
-    " let g:vscode_disable_nvimtree_bg = v:true
+    if has("nvim")
+        lua require('config')
+    else
+        " Fallback for vim
+        colorscheme codedark
+    endif
 " }
 
 " Wrap the long lines and highlight wrap limit {

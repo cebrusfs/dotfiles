@@ -1,4 +1,7 @@
--- setup colorscheme {
+-- vim: ts=4 ts=4 sts=4
+-- vim: foldmarker={,} foldlevel=0 foldmethod=marker:
+
+-- Colorscheme {
 local c = require('vscode.colors').get_colors()
 require('vscode').setup({
     -- Alternatively set style in setup
@@ -15,7 +18,6 @@ require('vscode').setup({
 
     -- Disable nvim-tree background color
     disable_nvimtree_bg = true,
-
 })
 
 -- require('vscode').load()
@@ -23,12 +25,21 @@ vim.cmd.colorscheme "vscode"
 -- }
 
 -- lukas-reineke/indent-blankline {
+
+-- Show space when there are multispace
+vim.opt.list = true
+vim.opt.listchars:append({ multispace = "·" })
+vim.opt.listchars:remove('space')
+vim.opt.listchars:remove('trail') -- We don't need this as we have another plugin to show trail space
+
 require("ibl").setup()
 -- }
 
--- =============================================================================
--- LSP, Autocompletion and other programming enhancements
--- =============================================================================
+-- Gitsigns {
+require('gitsigns').setup()
+-- }
+
+-- LSP, Autocompletion and other programming enhancements {
 
 -- Setup Mason and lspconfig.
 require("mason").setup()
@@ -143,9 +154,6 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 --vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>', { desc = "Find buffers" })
 --vim.keymap.set('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', { desc = "Help tags" })
 
--- Gitsigns setup
-require('gitsigns').setup()
-
 -- General key mappings for LSP features
 -- NOTE: These mappings will only be active in buffers where an LSP client is attached.
 -- vim.api.nvim_create_autocmd('LspAttach', {
@@ -200,4 +208,4 @@ require('gitsigns').setup()
     -- })
   -- end,
 -- })
--- 
+-- }
