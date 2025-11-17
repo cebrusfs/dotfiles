@@ -66,10 +66,13 @@
 	# Show all commit metadata in `git log`
 	pretty = fuller
 
-#[gpg]
-#	format = ssh
-#[gpg "ssh"]
-#	defaultKeyCommand = ssh-add -L
+#[commit]
+#	gpgsign = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	# workaround to support "ecdsa-sha2-nistp256" key type
+	defaultKeyCommand = sh -c 'echo key::$(ssh-add -L | head -n 1)'
 
 # chromeOS Internal repo setting
 # https://www.chromium.org/chromium-os/developer-guide/gerrit-guide/#googlers-partners-to-get-access-to-the-internal-chrome-gerrit-instance
