@@ -124,16 +124,6 @@ function main() {
 
     dotbot_main
     zsh_main
-    post_main
-
-    popd
-}
-
-function post_main() {
-    pushd "${BASEDIR}"
-
-    log "Post main"
-
     package_manager_main
     zsh_deps_main
     vim_main
@@ -143,9 +133,4 @@ function post_main() {
     popd
 }
 
-
-if [ "$1" = "post" ]; then
-    post_main
-else
-    main
-fi
+main
