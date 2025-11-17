@@ -12,10 +12,15 @@
 # Util functions
 #
 
-# `command` is POSIX standard and prefered over `which`.
-# However, zsh implemented both as buildin command, so no difference here.
 function _check_command () {
-  command -v $1 >/dev/null
+  # The standard POSIX way to check for a command
+  # `command` -v "$1" >/dev/null 2>&1
+  #
+  # `command` is POSIX standard and prefered over `which`.
+  # However, zsh implemented both as buildin command, so no difference here.
+
+  # Use zsh syntax instead
+  (( $+commands[$1] ))
 }
 
 function _warn() {
@@ -41,6 +46,7 @@ fi
 _check_command fdfind && alias fd='fdfind'
 _check_command fd || _warn "'fd' is not installed"
 
+# ripgrep alias
 function _rgg () {
   rg --colors=path:none --files -g "*$1*"
 }
