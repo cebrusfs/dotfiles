@@ -77,82 +77,90 @@ Ref: [tmux.conf](./config/tmux/tmux.conf)
 - `<Space>` is set as the leader key
 
 #### Tab Control
-| Action          | Key            | Description       |
-|-----------------|----------------|-------------------|
-| New tab         | `<C-t>n`       | Create new tab    |
-| Previous tab    | `<C-t><Left>`  | Go to previous tab|
-| Next tab        | `<C-t><Right>` | Go to next tab    |
+| Action       | Key            | Description        |
+|--------------|----------------|--------------------|
+| New tab      | `<C-t>n`       | Create new tab     |
+| Previous tab | `<C-t><Left>`  | Go to previous tab |
+| Next tab     | `<C-t><Right>` | Go to next tab     |
 
 #### Split Control
-| Action          | Key            | Description       |
-|-----------------|----------------|-------------------|
-| Vertical split  | `:vsp`         | Split vertically  |
-| Horizontal split| `:sp`          | Split horizontally|
-| Move between    | `C-w <arrow>`  | Move between splits|
+| Action           | Key           | Description         |
+|------------------|---------------|---------------------|
+| Vertical split   | `:vsp`        | Split vertically    |
+| Horizontal split | `:sp`         | Split horizontally  |
+| Move between     | `C-w <arrow>` | Move between splits |
 
-#### Code Navigation (CoC)
-| Action               | Key            | Description                   |
-|----------------------|----------------|-------------------------------|
-| Go to definition     | `<Space>jd`    | Go to definition              |
-| Go to type def       | `<Space>jt`    | Go to type definition         |
-| Go to implementation | `<Space>ji`    | Go to implementation          |
-| Go to references     | `<Space>jr`    | Find references               |
-| Show documentation   | `K`            | Show documentation in preview |
-| Rename symbol        | `<Space>rn`    | Rename symbol                 |
-| Format code          | `<Space>=`     | Format selected code          |
-| Code action          | `<Space>a`     | Show code actions             |
-| Code action cursor   | `<Space>ac`    | Show code actions at cursor   |
-| Code action buffer   | `<Space>as`    | Show code actions for buffer  |
-| Quick fix            | `<Space>qf`    | Apply quick fix               |
-| Refactor             | `<Space>re`    | Show refactor options         |
-| Code lens            | `<Space>cl`    | Run code lens action          |
+#### Autocompletion (Neovim nvim-cmp)
+
+Neovim uses nvim-cmp for intelligent autocompletion with multiple sources:
+
+| Action             | Key         | Description                      |
+|--------------------|-------------|----------------------------------|
+| Trigger completion | `<C-Space>` | Show completion menu             |
+| Scroll up docs     | `<C-b>`     | Scroll documentation up          |
+| Scroll down docs   | `<C-f>`     | Scroll documentation down        |
+| Abort completion   | `<C-e>`     | Close completion menu            |
+| Confirm selection  | `<CR>`      | Accept selected completion item  |
+
+#### Code Navigation (Neovim LSP Defaults)
+
+Neovim with LSP provides these built-in keybindings:
+
+| Action               | Key     | Description                    |
+|----------------------|---------|--------------------------------|
+| Go to definition     | `gd`    | Go to definition               |
+| Go to references     | `gr`    | Find all references            |
+| Go to implementation | `gri`   | Go to implementation           |
+| Rename symbol        | `grn`   | Rename symbol                  |
+| Type definition      | `grt`   | Go to type definition          |
+| Code action          | `gra`   | Show code actions              |
+| Document symbol      | `gO`    | Show document symbols          |
+| Show documentation   | `K`     | Show documentation in preview  |
+| Signature help       | `<C-S>` | Show signature help (Insert)   |
 
 #### Search and Navigation
-| Action                    | Key                | Description                    |
-|--------------------------|-------------------|-------------------------------|
-| Search in buffer         | `<Space>/`        | Search in current buffer      |
-| Search word in buffer    | `<Space><Space>/` | Search current word in buffer |
-| Search in all buffers    | `<Space>.`        | Search in all open buffers    |
-| Search word in buffers   | `<Space><Space>.` | Search current word in buffers|
-| Project grep             | `<Space>r`        | Search in project files       |
-| Project grep word        | `<Space><Space>r` | Search current word in project|
-| Find files              | `<Space>fo`       | Find files in project         |
-| List directories        | `<Space>fls`      | List directories              |
+| Action                   | Key               | Description                     |
+|--------------------------|-------------------|---------------------------------|
+| Search in buffer         | `<Space>/`        | Search in current buffer        |
+| Search word in buffer    | `<Space><Space>/` | Search current word in buffer   |
+| Search in all buffers    | `<Space>.`        | Search in all open buffers      |
+| Search word in buffers   | `<Space><Space>.` | Search current word in buffers  |
+| Project grep             | `<Space>r`        | Search in project files         |
+| Project grep word        | `<Space><Space>r` | Search current word in project  |
+| Find files               | `<Space>fo`       | Find files in project           |
+| List directories         | `<Space>fls`      | List directories                |
 
-#### Git Integration
-| Action              | Key            | Description                    |
-|--------------------|----------------|-------------------------------|
-| Git status         | `<Space>gs`    | Show git status               |
-| Git diff           | `<Space>gd`    | Show git diff                 |
-| Git blame          | `<Space>gb`    | Show git blame                |
-| Git mergetool      | `<Space>gm`    | Open git mergetool            |
-| Git actions        | `<Space>ga`    | Show git actions              |
-| Previous conflict  | `[g`           | Go to previous git conflict   |
-| Next conflict      | `]g`           | Go to next git conflict       |
-| Show commit        | `<Space>gbc`   | Show commit at current pos    |
+#### Git Integration (vim-fugitive)
+| Action        | Key         | Description        |
+|---------------|-------------|--------------------|
+| Git status    | `<Space>gs` | Show git status    |
+| Git diff      | `<Space>gd` | Show git diff      |
+| Git blame     | `<Space>gb` | Show git blame     |
+| Git mergetool | `<Space>gm` | Open git mergetool |
 
-#### Diagnostics
-| Action              | Key            | Description                    |
-|--------------------|----------------|-------------------------------|
-| Previous diagnostic| `[d`           | Go to previous diagnostic     |
-| Next diagnostic    | `]d`           | Go to next diagnostic         |
-| Show diagnostics   | `<Space>a`     | Show all diagnostics          |
-| Show commands      | `<Space>c`     | Show available commands       |
-| Show outline       | `<Space>o`     | Show file outline             |
-| Show symbols       | `<Space>s`     | Search workspace symbols      |
+#### Diagnostics (Neovim LSP Defaults)
+Neovim with LSP provides these built-in diagnostic navigation keybindings:
+
+| Action              | Key      | Description                  |
+|---------------------|----------|------------------------------|
+| Previous diagnostic | `[d`     | Jump to previous diagnostic  |
+| Next diagnostic     | `]d`     | Jump to next diagnostic      |
+| First diagnostic    | `[D`     | Jump to first diagnostic     |
+| Last diagnostic     | `]D`     | Jump to last diagnostic      |
+| Show diagnostic     | `<C-w>d` | Show diagnostic in float     |
 
 #### Comments
-| Action          | Key    | Description                    |
-|----------------|--------|-------------------------------|
-| Toggle comment | `\`    | Toggle comment for line/selection|
+| Action         | Key | Description                  |
+|----------------|-----|------------------------------|
+| Toggle comment | `\` | Toggle comment for selection |
 
 #### Alignment
-| Action          | Key         | Description                    |
-|----------------|-------------|-------------------------------|
-| Easy align     | `<Space>-`  | Start interactive alignment   |
+| Action     | Key        | Description           |
+|------------|------------|-----------------------|
+| Easy align | `<Space>-` | Interactive alignment |
 
 #### Language-specific
-| Action          | Key         | Description                    |
-|----------------|-------------|-------------------------------|
-| Run program    | `<Space>p`  | Run current file (C/C++, Go, JavaScript, Python, Ruby, Shell, Rust) |
-| Check program  | `<Space>c`  | Check/compile current file (C/C++, Rust) |
+| Action        | Key        | Description                                             |
+|---------------|------------|---------------------------------------------------------|
+| Run program   | `<Space>p` | Run file (C/C++, Go, JS, Python, Ruby, Shell, Rust)     |
+| Check program | `<Space>c` | Check/compile (C/C++, Rust)                             |
