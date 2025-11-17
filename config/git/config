@@ -54,11 +54,9 @@
 
 	# Slightly lighter
 	plus-style = syntax "#001c00"
-	# ??
-	commit-decoration-style = normal yellow box
 
-	# disable the line numbers in side-by-side view, but keep a vertical delimiter line between the left and right panels, use the line-numbers format options. For example:
-	# line-numbers-right-format = "│ "
+	# Use yellow for filename to match diff-so-fancy default style
+	file-style = yellow bold
 
 [stash]
 	# Show file diff in `git stash show`
