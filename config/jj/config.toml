@@ -22,6 +22,20 @@ auto-local-bookmark = true
 # jj git push does not push newly-created bookmarks by default. If you do not want to specify --allow-new
 push-new-bookmarks = true
 
+# Prevent upload
+private-commits = 'blacklist()'
+
+[aliases]
+blame = ["file", "annotate"]
+bl = ["blame"]
+
+[revset-aliases]
+# Private and WIP commits that should never be pushed anywhere. Often part of
+# work-in-progress merge stacks.
+'wip()' = 'description(glob:"wip:*")'
+'private()' = 'description(glob:"private:*") | description(glob:"DO.?NOT.?SUBMIT:*")'
+'blacklist()' = 'wip() | private()'
+
 #[signing]
 #backend = "ssh"
 #key = "~/.ssh/id_ed25519.pub"
