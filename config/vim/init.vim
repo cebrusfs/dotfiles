@@ -19,9 +19,17 @@ scriptencoding utf-8
     set undodir^=~/.vimfiles/undo,/tmp
     set undofile
 
-    " clipboard: Use both * and + registers clipboard buffer. (OSX, Windows,
-    " Linux)
-    " Known issue: https://github.com/neovim/neovim/issues/1822
+    " Clipboard: Use both * and + registers clipboard buffer (OSX, Windows, Linux)
+    "
+    " clipboard^=unnamed,unnamedplus means:
+    "   unnamed  = Link unnamed register to * (primary selection)
+    "   unnamedplus = Link unnamed register to + (system clipboard)
+    "   ^= operator = Prepend to the list (higher priority than existing values)
+    "
+    " This ensures both clipboard selections sync with Vim on X11/Linux.
+    " On macOS, * and + point to the same clipboard, so both have same effect.
+    "
+    " Known issue (Neovim over SSH/tmux): https://github.com/neovim/neovim/issues/1822
     set clipboard^=unnamed,unnamedplus
 
     " Encoding
