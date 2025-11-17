@@ -113,6 +113,7 @@ function zsh_deps_main() {
     linux_install ripgrep
     linux_install fd-find
     linux_install fzf
+    linux_install git-delta
 }
 
 
