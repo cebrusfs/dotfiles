@@ -35,7 +35,9 @@
 	editor = vim
 
 	# Fancy diff
-	pager = delta
+	# Use delta pager but rely on zsh env setup to detect if delta is installed for a fallback
+	# $GIT_PAGER -> core.pager -> $PAGER
+	#pager = delta
 
 [interactive]
 	diffFilter = delta --color-only
