@@ -101,12 +101,23 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({
+    -- Primary sources
     { name = 'nvim_lsp' },
+    {
+      name = 'path',
+      option = {
+        -- Specify if completed directory names should include a trailing slash. Enabling this option makes this source behave like Vim's built-in path completion.
+        trailing_slash = true,
+      },
+    }
     -- { name = 'vsnip' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
+    -- Secondary sources
+
+    -- From current buffer
     { name = 'buffer' },
   })
 })
