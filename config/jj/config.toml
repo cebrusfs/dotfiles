@@ -9,7 +9,9 @@ default-command = "log"
 
 # Use diff format and diff-so-facny as pager
 diff-formatter = ":git"
-pager = "delta"
+
+# Don't set pager explicitly, $PAGER will handle that
+# pager = "delta"
 
 # Editors
 diff-editor = ":builtin"
