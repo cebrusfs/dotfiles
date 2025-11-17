@@ -2,11 +2,26 @@
 
 ## Issues
 
-* https://github.com/neovim/neovim/issues/1822
+* Neovim lsp plugins only support 0.11+. Even latest Ubuntu 25.10 don't have it
+   ```
+   sudo add-apt-repository ppa:neovim-ppa/unstable
+   sudo apt update
+   ```
+* Neovim Mason can't install clangd on ARM as they don't have prebuild.
+   * https://github.com/mason-org/mason.nvim/issues/1578
+   * https://github.com/clangd/clangd/issues/514
+* Neovim doesn't work on clipboard sync (seems resolve?)
+   * https://github.com/neovim/neovim/issues/1822
    * Maybe https://github.com/bfredl/nvim-miniyank
+* Mouse scroll not smooth.
+   * Vim: good
+   * other pager: slow
+   * over tmux?
 
-## TODOs
-* Fill key mappings
+### TODOs
+
+* Migrated to neovim built-in package management system
+
 
 ## INSTALL
 
