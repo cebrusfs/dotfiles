@@ -73,6 +73,7 @@
 [gpg "ssh"]
 	# workaround to support "ecdsa-sha2-nistp256" key type
 	defaultKeyCommand = sh -c 'echo key::$(ssh-add -L | head -n 1)'
+	allowedSignersFile = ~/.config/git/allowed_signers
 
 # chromeOS Internal repo setting
 # https://www.chromium.org/chromium-os/developer-guide/gerrit-guide/#googlers-partners-to-get-access-to-the-internal-chrome-gerrit-instance
