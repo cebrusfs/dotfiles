@@ -52,8 +52,6 @@ require("mason-lspconfig").setup({
     'pyright',
     -- Ruby
     'solargraph',
-    -- Golang
-    'gopls',
     -- Typescript
     'ts_ls',
     -- Rust
