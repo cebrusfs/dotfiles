@@ -1,1 +1,3 @@
 *.lvimrc
+
+**/.claude/settings.local.json
