@@ -1003,6 +1003,8 @@
 	<true/>
 	<key>SoundForEsc</key>
 	<false/>
+	<key>TmuxSyncClipboard</key>
+	<true/>
 	<key>TmuxUsesDedicatedProfile</key>
 	<false/>
 	<key>VisualIndicatorForEsc</key>
