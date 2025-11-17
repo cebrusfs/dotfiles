@@ -24,6 +24,12 @@
 	<integer>32768</integer>
 	<key>AitermURL</key>
 	<string>https://api.openai.com/v1/responses</string>
+	<key>AutoHideTmuxClientSession</key>
+	<true/>
+	<key>ClosingTmuxWindowKillsTmuxWindows</key>
+	<true/>
+	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
+	<integer>1</integer>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
 	<key>FallbackLCCType</key>
@@ -996,6 +1002,8 @@
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
 	<key>SoundForEsc</key>
+	<false/>
+	<key>TmuxUsesDedicatedProfile</key>
 	<false/>
 	<key>VisualIndicatorForEsc</key>
 	<false/>
