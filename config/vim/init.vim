@@ -508,6 +508,9 @@ endif
 " }
 
 " Clipboard: {
+    " Currently Vim could access clipboard on remote over tmux.
+    " We fetch the clipboard via tmux integration. Alought it is not actively
+    " used, this is still useful if we directly connect over SSH.
     Plug 'ShikChen/osc52.vim'
     vnoremap Y y:call SendViaOSC52(getreg('"'))<CR>
 " }
