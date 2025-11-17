@@ -11,17 +11,17 @@ cask_args appdir: "~/Applications", require_sha: true
 # Shell / System Util Core
 #
 
-# Use by zsh
-brew "ripgrep"                    # fastest 'grep'
-brew "fd"                         # fastest 'find'
-brew "fzf"                        # command-line fuzzy finder
-brew "colordiff"                  # colorful diff used in zpretzo
+# Zsh dependancy
+brew "ripgrep"                      # fastest 'grep'
+brew "fd"                           # fastest 'find'
+brew "fzf"                          # command-line fuzzy finder
+brew "colordiff"                    # colorful diff used in zpretzo
+                                    # TODO: use delta instead
 
-# General package manager
+# General binary manager for managing python, ruby, golang...etc
 brew "mise"
 
-# Next-gen of version control system (VCS)
-brew "jj"
+# Git dependancy & some colorful `diff`
 brew "git-delta" # beautiful colorful tool for VCS
 
 #

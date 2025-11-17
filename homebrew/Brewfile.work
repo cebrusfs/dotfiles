@@ -15,7 +15,7 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.min").read
 
 # Remote working
 brew "tmux"
-brew "tmux-mem-cpu-load"            # show mem/cpu load in tmux
+brew "tmux-mem-cpu-load"        # show mem/cpu load in tmux
 brew "mosh"
 
 # System monitor
@@ -28,8 +28,9 @@ brew "httpie"
 brew "netcat"
 brew "wget"
 
-# Version control
+# Version control system (VCS)
 brew "git"
+brew "jj"                       # Next-gen VCS
 
 # Misc
 brew "md5sha1sum"
@@ -39,5 +40,5 @@ brew "dos2unix"
 # App
 #
 
-cask "monitorcontrol"             # Control monitor setting in UI
-cask "keka"                       # Uncompressor
+cask "monitorcontrol"           # Control monitor setting in UI
+cask "keka"                     # Uncompressor
