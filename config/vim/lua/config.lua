@@ -64,6 +64,8 @@ require("mason-lspconfig").setup({
     'yamlls',
     -- Toml
     'taplo',
+    -- Lua (for neovim config)
+    'stylua',
   }
 })
 
