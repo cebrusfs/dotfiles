@@ -53,7 +53,8 @@
 	features = gruvmax-fang
 
 	# Slightly lighter
-	plus-style = syntax "#001c00"
+	plus-style = syntax "#003300"
+	plus-emph-style = syntax "#004d00"
 
 	# Use yellow for filename to match diff-so-fancy default style
 	file-style = yellow bold
