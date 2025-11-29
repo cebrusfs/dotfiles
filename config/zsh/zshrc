@@ -46,13 +46,12 @@ if [[ -z "$VISUAL" ]]; then
   export VISUAL="$EDITOR"
 fi
 
-if [[ -z "$PAGER" ]]; then
-  if _check_command delta; then
-    export PAGER='delta'
-  else
-    export PAGER='less'
-    _warn "'delta' is not installed"
-  fi
+# Force override $PAGER since gLinux have default value
+if _check_command delta; then
+  export PAGER='delta'
+else
+  export PAGER='less'
+  _warn "'delta' is not installed"
 fi
 
 
