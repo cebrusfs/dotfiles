@@ -41,6 +41,13 @@ require('gitsigns').setup()
 
 -- LSP, Autocompletion and other programming enhancements {
 
+-- Display Error/Warning on current line
+vim.diagnostic.config({
+  virtual_lines = {
+    current_line = true
+  },
+})
+
 -- Setup Mason and lspconfig.
 require("mason").setup()
 require("mason-lspconfig").setup({
