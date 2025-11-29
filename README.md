@@ -23,7 +23,6 @@
 * Migrated to neovim built-in package management system
 * Fix linux setup scripts for new deps
 * Mise setup for languages env
-* Remove diff-so-fancy submodule
 * Remove unused coc configs
 
 
