@@ -159,64 +159,46 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 --  capabilities = capabilities
 -- }
 
--- Remap old fzf keybindings to telescope
---vim.keymap.set('n', '<leader>fo', '<cmd>Telescope find_files<cr>', { desc = "Find files" })
---vim.keymap.set('n', '<leader>fr', '<cmd>Telescope live_grep<cr>', { desc = "Live grep" })
---vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>', { desc = "Find buffers" })
---vim.keymap.set('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', { desc = "Help tags" })
+-- fzf-lua {
+require('fzf-lua').setup({
+  defaults = {
+    file_ignore_patterns = { "node_modules", ".git", "__pycache__" }
+  },
+  -- Use fzf's native ripgrep integration for speed
+  files = {
+    fd_opts = "--color=never --type f --hidden --follow --exclude .git",
+  },
+  grep = {
+    rg_opts = "--color=never --hidden --follow",
+  },
+})
 
--- General key mappings for LSP features
--- NOTE: These mappings will only be active in buffers where an LSP client is attached.
--- vim.api.nvim_create_autocmd('LspAttach', {
-  -- group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  -- callback = function(ev)
-    -- -- Enable completion on typing
-    -- vim.api.nvim_buf_set_option(ev.buf, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
--- 
-    -- -- Buffer local mappings.
-    -- -- See `:help vim.lsp.*` for documentation on any of the below functions
-    -- local opts = { buffer = ev.buf }
-    -- -- GoTo code navigation
-    -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    -- vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
--- 
-    -- -- Hover documentation
-    -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
--- 
-    -- -- Signature help
-    -- vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, opts)
--- 
-    -- -- Workspace symbols and renaming
-    -- vim.keymap.set('n', '<leader>ws', vim.lsp.buf.workspace_symbol, opts)
-    -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
--- 
-    -- -- Code actions
-    -- vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
--- 
-    -- -- Diagnostics
-    -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-    -- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-    -- vim.keymap.set('n', '<leader>dl', vim.diagnostic.open_float, opts)
-    -- vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, opts)
--- 
-    -- -- Formatting
-    -- -- Note: We use conform.nvim for formatting, but this is a fallback
-    -- vim.keymap.set({'n', 'v'}, '<leader>=', function()
-      -- vim.lsp.buf.format({ async = true })
-    -- end, opts)
--- 
-    -- -- Highlight symbol on cursor hold
-    -- vim.api.nvim_create_autocmd('CursorHold', {
-      -- buffer = ev.buf,
-      -- callback = vim.lsp.buf.document_highlight,
-    -- })
-    -- vim.api.nvim_create_autocmd('CursorMoved', {
-      -- buffer = ev.buf,
-      -- callback = vim.lsp.buf.clear_references,
-    -- })
-  -- end,
--- })
+local fzf = require('fzf-lua')
+
+-- Keybindings for file/content search
+-- Find files in project
+vim.keymap.set('n', '<leader>fo', fzf.files, { desc = "Find files" })
+
+-- Live grep in project
+vim.keymap.set('n', '<leader>r', fzf.live_grep, { desc = "Live grep in project" })
+vim.keymap.set('n', '<leader><space>r', function()
+  fzf.live_grep({ search = vim.fn.expand('<cword>') })
+end, { desc = "Live grep current word in project" })
+
+-- Search in current buffer
+vim.keymap.set('n', '<leader>/', fzf.blines, { desc = "Search in current buffer" })
+
+-- Search in all open buffers
+vim.keymap.set('n', '<leader>.', fzf.buffers, { desc = "Search in open buffers" })
+
+-- Help tags
+vim.keymap.set('n', '<leader>fh', fzf.help_tags, { desc = "Help tags" })
+
+-- LSP keybindings (using Neovim's default LSP)
+-- Note: gd, gr, gI, etc. are Neovim's built-in LSP keybindings
+-- If you want to use fzf-lua for LSP, uncomment below:
+-- vim.keymap.set('n', 'gd', fzf.lsp_definitions, { desc = "Go to definition" })
+-- vim.keymap.set('n', 'gr', fzf.lsp_references, { desc = "Find references" })
+-- vim.keymap.set('n', 'gI', fzf.lsp_implementations, { desc = "Go to implementation" })
 -- }
+

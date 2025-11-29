@@ -23,7 +23,6 @@
 * Migrated to neovim built-in package management system
 * Fix linux setup scripts for new deps
 * Mise setup for languages env
-* Remove unused coc configs
 
 
 ## INSTALL
@@ -122,31 +121,29 @@ Neovim uses nvim-cmp for intelligent autocompletion with multiple sources:
 
 #### Code Navigation (Neovim LSP Defaults)
 
-Neovim with LSP provides these built-in keybindings:
+Neovim provides these built-in LSP keybindings (no custom config needed):
 
-| Action               | Key     | Description                    |
-|----------------------|---------|--------------------------------|
-| Go to definition     | `gd`    | Go to definition               |
-| Go to references     | `gr`    | Find all references            |
-| Go to implementation | `gri`   | Go to implementation           |
-| Rename symbol        | `grn`   | Rename symbol                  |
-| Type definition      | `grt`   | Go to type definition          |
-| Code action          | `gra`   | Show code actions              |
-| Document symbol      | `gO`    | Show document symbols          |
-| Show documentation   | `K`     | Show documentation in preview  |
-| Signature help       | `<C-S>` | Show signature help (Insert)   |
+| Action                 | Key        | Description                      |
+|------------------------|------------|----------------------------------|
+| Code action            | `gra`      | Code action (Normal & Visual)    |
+| Go to implementation   | `gri`      | Go to implementation             |
+| Rename symbol          | `grn`      | Rename symbol                    |
+| Find references        | `grr`      | Find all references              |
+| Go to type definition  | `grt`      | Go to type definition            |
+| Document symbol        | `gO`       | List document symbols            |
+| Show documentation     | `K`        | Show documentation in preview    |
+| Signature help         | `<C-S>`    | Show signature help (Insert)     |
 
-#### Search and Navigation
-| Action                   | Key               | Description                     |
-|--------------------------|-------------------|---------------------------------|
-| Search in buffer         | `<Space>/`        | Search in current buffer        |
-| Search word in buffer    | `<Space><Space>/` | Search current word in buffer   |
-| Search in all buffers    | `<Space>.`        | Search in all open buffers      |
-| Search word in buffers   | `<Space><Space>.` | Search current word in buffers  |
-| Project grep             | `<Space>r`        | Search in project files         |
-| Project grep word        | `<Space><Space>r` | Search current word in project  |
-| Find files               | `<Space>fo`       | Find files in project           |
-| List directories         | `<Space>fls`      | List directories                |
+#### Search and Navigation (fzf-lua)
+
+| Action                 | Key               | Description                        |
+|------------------------|-------------------|------------------------------------|
+| Find files             | `<Space>fo`       | Find files in project              |
+| Project grep           | `<Space>r`        | Search in project files            |
+| Project grep word      | `<Space><Space>r` | Search current word in project     |
+| Search in buffer       | `<Space>/`        | Fuzzy find in current buffer       |
+| Search in all buffers  | `<Space>.`        | Search in open buffers             |
+| Help tags              | `<Space>fh`       | Search help tags                   |
 
 #### Git Integration (vim-fugitive)
 | Action        | Key         | Description        |
@@ -168,11 +165,13 @@ Neovim with LSP provides these built-in diagnostic navigation keybindings:
 | Show diagnostic     | `<C-w>d` | Show diagnostic in float     |
 
 #### Comments
+
 | Action         | Key | Description                  |
 |----------------|-----|------------------------------|
 | Toggle comment | `\` | Toggle comment for selection |
 
 #### Alignment
+
 | Action     | Key        | Description           |
 |------------|------------|-----------------------|
 | Easy align | `<Space>-` | Interactive alignment |
