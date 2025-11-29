@@ -88,7 +88,7 @@ scriptencoding utf-8
 
 
 " Enable plugins {
-call plug#begin()
+call plug#begin('~/.vim/plugged')
 
 " Color Scheme {
     Plug 'tomasiser/vim-code-dark'
