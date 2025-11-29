@@ -16,6 +16,7 @@ diff-formatter = ":git"
 # Editors
 diff-editor = ":builtin"
 merge-editor = "vimdiff"
+show-cryptographic-signatures = true
 
 [git]
 # When jj imports a new remote-tracking bookmark from Git, it can also create a local bookmark with the same name.
@@ -26,6 +27,9 @@ push-new-bookmarks = true
 
 # Prevent upload
 private-commits = 'blacklist()'
+
+# Sign on push, work together with behavior = "drop"
+# sign-on-push = true
 
 [aliases]
 blame = ["file", "annotate"]
@@ -39,9 +43,9 @@ bl = ["blame"]
 'blacklist()' = 'wip() | private()'
 
 [signing]
-# Change to other things will enable auto signing
-backend = "none"
-#backend = "ssh"
-
 key = "~/.ssh/id_ed25519.pub"
 backends.ssh.allowed-signers = "~/.config/git/allowed_signers"
+
+# Enable signing
+# backend = "ssh"
+# behavior = "own"
