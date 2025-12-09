@@ -30,6 +30,8 @@
 	<true/>
 	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
 	<integer>1</integer>
+	<key>ConvertItalicsToReverseVideoForTmux</key>
+	<false/>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
 	<key>FallbackLCCType</key>
