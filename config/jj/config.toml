@@ -10,8 +10,8 @@ default-command = "log"
 # Use diff format and diff-so-facny as pager
 diff-formatter = ":git"
 
-# Don't set pager explicitly, $PAGER will handle that
-# pager = "delta"
+# On 0.36.0+, the $PAGER is ignored and have to explicitly setup by default.
+pager = "delta"
 
 # Editors
 diff-editor = ":builtin"
@@ -19,17 +19,15 @@ merge-editor = "vimdiff"
 show-cryptographic-signatures = true
 
 [git]
-# When jj imports a new remote-tracking bookmark from Git, it can also create a local bookmark with the same name.
-auto-local-bookmark = true
-
-# jj git push does not push newly-created bookmarks by default. If you do not want to specify --allow-new
-push-new-bookmarks = true
-
 # Prevent upload
 private-commits = 'blacklist()'
 
 # Sign on push, work together with behavior = "drop"
 # sign-on-push = true
+
+# Automatically track all branches/bookmarks on `origin` remote
+[remotes.origin]
+auto-track-bookmarks = "glob:*"
 
 [aliases]
 blame = ["file", "annotate"]
