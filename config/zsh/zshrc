@@ -23,6 +23,11 @@ function _check_command () {
   (( $+commands[$1] ))
 }
 
+function _is_corp () {
+  # Detect if the corp package installer exists
+  [[ -x "/usr/local/bin/mule" ]]
+}
+
 function _warn() {
   local COLOR='\033[1;31m'
   local NO_COLOR='\033[0m'
@@ -195,8 +200,8 @@ if _check_command fzf; then
   fi
 fi
 
-# Mise initialize
-if _check_command mise; then
+# Mise initialize (only on non corp device)
+if _check_command mise && ! _is_corp; then
   eval "$(mise activate)"
 fi
 
