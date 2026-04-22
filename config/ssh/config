@@ -4,6 +4,10 @@
 # https://stackoverflow.com/a/34206244/358069
 Compression yes
 
+# Added by OrbStack: 'orb' SSH host for Linux machines
+# This only works if it's at the top of ssh_config (before any Host blocks).
+Include ~/.orbstack/ssh/config
+
 # Work stations @ NTU.CSIE {{{
 Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
     User r04922033
