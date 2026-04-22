@@ -5,5 +5,8 @@ config/karabiner/automatic_backups/
 # Ignore repo config created in corp env
 config/git/.repo_config.json
 
+# Ignore jj per repo config
+config/jj/repos
+
 # Ignore manually build nvim binary on corp env
 bin/x86_64/nvim
