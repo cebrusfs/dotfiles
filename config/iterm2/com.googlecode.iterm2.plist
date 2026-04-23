@@ -953,6 +953,63 @@
 			<real>0.095242686170212754</real>
 			<key>Treat Option as Alt</key>
 			<false/>
+			<key>Triggers</key>
+			<array>
+				<dict>
+					<key>action</key>
+					<string>iTermHyperlinkTrigger</string>
+					<key>contentregex</key>
+					<string></string>
+					<key>disabled</key>
+					<integer>0</integer>
+					<key>matchType</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>Critique</string>
+					<key>parameter</key>
+					<string>https://critique.corp.google.com/#review/\1</string>
+					<key>partial</key>
+					<false/>
+					<key>regex</key>
+					<string>cl/(\d+)</string>
+				</dict>
+				<dict>
+					<key>action</key>
+					<string>iTermHyperlinkTrigger</string>
+					<key>contentregex</key>
+					<string></string>
+					<key>disabled</key>
+					<integer>0</integer>
+					<key>matchType</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>Buganizer</string>
+					<key>parameter</key>
+					<string>https://b.corp.google.com/issues/\1</string>
+					<key>partial</key>
+					<false/>
+					<key>regex</key>
+					<string>b/(\d+)</string>
+				</dict>
+				<dict>
+					<key>action</key>
+					<string>iTermHyperlinkTrigger</string>
+					<key>contentregex</key>
+					<string></string>
+					<key>disabled</key>
+					<integer>0</integer>
+					<key>matchType</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>Go Links</string>
+					<key>parameter</key>
+					<string>https://goto2.corp.google.com/\1</string>
+					<key>partial</key>
+					<false/>
+					<key>regex</key>
+					<string>go/([^ ().]+)</string>
+				</dict>
+			</array>
 			<key>Unlimited Scrollback</key>
 			<true/>
 			<key>Use Bold Font</key>
