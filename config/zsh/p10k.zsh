@@ -36,6 +36,7 @@
     time                    # current time
     context                 # user@hostname
     dir                     # current directory
+    jj                      # jujutsu status
     vcs                     # git status
     # =========================[ Line #2 ]=========================
     newline                 # \n
@@ -1677,6 +1678,106 @@
   typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
   # typeset -g POWERLEVEL9K_TIME_PREFIX='%248Fat '
+
+  # Jujutsu (jj) prompt segment configuration.
+  # You can customize these variables to change the appearance of the jj segment.
+  typeset -g POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR=177
+  typeset -g POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR=244
+  typeset -g POWERLEVEL9K_JJ_BOOKMARK_COLOR=76
+  typeset -g POWERLEVEL9K_JJ_BOOKMARK_ICON=''
+  typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_COLOR=74
+  typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH=30
+  typeset -g POWERLEVEL9K_JJ_CONFLICT_COLOR=196
+  typeset -g POWERLEVEL9K_JJ_CONFLICT_ICON='💥'
+  typeset -g POWERLEVEL9K_JJ_DIVERGENT_COLOR=178
+  typeset -g POWERLEVEL9K_JJ_DIVERGENT_ICON='⚠'
+  typeset -g POWERLEVEL9K_JJ_STATS_COLOR=178
+  typeset -g POWERLEVEL9K_JJ_STATS_ICON='✎'
+
+  # Custom p10k segment for Jujutsu (jj)
+  function prompt_jj() {
+    # 1. Zero-fork check: use pure zsh to find the .jj directory upwards.
+    local dir="$PWD"
+    local is_jj=0
+    while [[ "$dir" != "/" && "$dir" != "" ]]; do
+      if [[ -d "$dir/.jj" ]]; then
+        is_jj=1
+        break
+      fi
+      dir="${dir:h}"
+    done
+
+    # If not in a jj repository, ensure default VCS is shown and exit.
+    if [[ $is_jj -eq 0 ]]; then
+      p10k display '*/vcs=show'
+      return
+    fi
+
+    # Hide native VCS (Git) to avoid conflicting info in colocated repos.
+    p10k display '*/vcs=hide'
+
+    # 2. Define the jj status template.
+    # Separated by '|':
+    # [1] Change ID Prefix, [2] Change ID Rest, [3] Bookmarks, [4] Conflict, 
+    # [5] Divergent, [6] Empty status, [7] Description, [8] Diff summary
+    local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(empty, "clean", "dirty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
+
+    # Use --ignore-working-copy to prevent filesystem locks and maximize speed.
+    local res
+    res=$(jj --ignore-working-copy log -r @ --no-graph -T "$jj_template" 2>/dev/null)
+    if [[ -z "$res" ]]; then
+      return
+    fi
+
+    # 3. Parse the jj output.
+    local change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary
+    IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary <<< "$res"
+
+    local segments=()
+
+    # --- Section A: Change ID (8 characters) ---
+    segments+=("%F{$POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR}${change_prefix}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR}${change_rest}%f")
+
+    # --- Section B: Bookmarks ---
+    if [[ -n "$bmarks" ]]; then
+      segments+=("%F{$POWERLEVEL9K_JJ_BOOKMARK_COLOR}${POWERLEVEL9K_JJ_BOOKMARK_ICON} ${bmarks}%f")
+    fi
+
+    # --- Section C: Status Indicators ---
+    if [[ -n "$conflict" ]]; then
+      segments+=("%F{$POWERLEVEL9K_JJ_CONFLICT_COLOR}${POWERLEVEL9K_JJ_CONFLICT_ICON}%f")
+    fi
+    if [[ -n "$divergent" ]]; then
+      segments+=("%F{$POWERLEVEL9K_JJ_DIVERGENT_COLOR}${POWERLEVEL9K_JJ_DIVERGENT_ICON}%f")
+    fi
+
+    # --- Section D: Total Files Changed ---
+    local num_changed=0
+    if [[ -n "$diff_summary" ]]; then
+      local lines
+      lines=("${(@f)diff_summary}")
+      num_changed=${#lines[@]}
+    fi
+
+    if [[ $num_changed -gt 0 ]]; then
+      # Use ! prefix to match p10k git style for modified files
+      segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}!${num_changed}%f")
+    elif [[ "$is_empty" == "dirty" ]]; then
+      # Fallback to icon if count is 0 but workspace is dirty
+      segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}${POWERLEVEL9K_JJ_STATS_ICON}%f")
+    fi
+
+    # --- Section E: Commit Description ---
+    if [[ -n "$desc" ]]; then
+      if [[ ${#desc} -gt $POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH ]]; then
+        desc="${desc[1,$((POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH - 3))]}..."
+      fi
+      segments+=("%F{$POWERLEVEL9K_JJ_COMMIT_DESC_COLOR}${desc}%f")
+    fi
+
+    # 4. Render the p10k segment.
+    p10k segment -f 255 -t "${(j: :)segments}"
+  }
 
   # Example of a user-defined prompt segment. Function prompt_example will be called on every
   # prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or
