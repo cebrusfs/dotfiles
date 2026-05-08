@@ -10,3 +10,6 @@ config/jj/repos
 
 # Ignore manually build nvim binary on corp env
 bin/x86_64/nvim
+
+# Ignore private corp fish settings
+config/fish/config.corp.fish
