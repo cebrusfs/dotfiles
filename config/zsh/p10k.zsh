@@ -1718,7 +1718,7 @@
 
     # 2. Define the jj status template.
     # Separated by '|':
-    # [1] Change ID Prefix, [2] Change ID Rest, [3] Bookmarks, [4] Conflict, 
+    # [1] Change ID Prefix, [2] Change ID Rest, [3] Bookmarks, [4] Conflict,
     # [5] Divergent, [6] Empty status, [7] Description, [8] Diff summary
     local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(empty, "clean", "dirty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
 
@@ -1755,7 +1755,7 @@
     local num_changed=0
     if [[ -n "$diff_summary" ]]; then
       local lines
-      lines=("${(@f)diff_summary}")
+      lines=(${(f)diff_summary})
       num_changed=${#lines[@]}
     fi
 
