@@ -13,24 +13,30 @@
 set -euo pipefail
 
 usage() {
-	echo "Usage: $0 <operation> <repo> <issue_num> <other_issue_num>"
+	echo "Usage: $0 <operation> <repo> <issue_num> [<other_issue_num>]"
 	echo ""
-	echo "Operations:"
-	echo "  --add-dependency    <repo> <issue_num> <blocking_issue_num>  Marks issue as blocked by another"
-	echo "  --remove-dependency <repo> <issue_num> <blocking_issue_num>  Removes the 'blocked by' link"
-	echo "  --add-sub-issue     <repo> <parent_num> <child_num>          Sets child as sub-issue of parent"
-	echo "  --remove-sub-issue  <repo> <parent_num> <child_num>          Removes the parent/child link"
+	echo "Read operations (3 args) — structured JSON output:"
+	echo "  --list-blocked-by   <repo> <issue_num>                       Issues blocking this one"
+	echo "  --list-blocking     <repo> <issue_num>                       Issues this one blocks"
+	echo "  --list-sub-issues   <repo> <issue_num>                       Sub-issues of this issue"
+	echo "  --show-parent       <repo> <issue_num>                       Parent number + sub-issue summary"
+	echo ""
+	echo "Write operations (4 args):"
+	echo "  --add-dependency    <repo> <issue_num> <blocking_issue_num>  Mark issue as blocked by another"
+	echo "  --remove-dependency <repo> <issue_num> <blocking_issue_num>  Remove the 'blocked by' link"
+	echo "  --add-sub-issue     <repo> <parent_num> <child_num>          Set child as sub-issue of parent"
+	echo "  --remove-sub-issue  <repo> <parent_num> <child_num>          Remove the parent/child link"
 	exit 1
 }
 
-if [ $# -lt 4 ]; then
+if [ $# -lt 3 ]; then
 	usage
 fi
 
 COMMAND="$1"
 REPO="$2"
 ISSUE_NUM="$3"
-OTHER_ISSUE_NUM="$4"
+OTHER_ISSUE_NUM="${4:-}"
 
 # Helper to check authentication
 check_auth() {
@@ -56,6 +62,30 @@ fetch_issue_id() {
 check_auth
 
 case "${COMMAND}" in
+--list-blocked-by)
+	gh api "repos/${REPO}/issues/${ISSUE_NUM}/dependencies/blocked_by" \
+		-H "Accept: application/vnd.github+json" \
+		--jq '[.[] | {number, title, state}]'
+	;;
+
+--list-blocking)
+	gh api "repos/${REPO}/issues/${ISSUE_NUM}/dependencies/blocking" \
+		-H "Accept: application/vnd.github+json" \
+		--jq '[.[] | {number, title, state}]'
+	;;
+
+--list-sub-issues)
+	gh api "repos/${REPO}/issues/${ISSUE_NUM}/sub_issues" \
+		-H "Accept: application/vnd.github+json" \
+		--jq '[.[] | {number, title, state}]'
+	;;
+
+--show-parent)
+	gh api "repos/${REPO}/issues/${ISSUE_NUM}" \
+		-H "Accept: application/vnd.github+json" \
+		--jq '{parent: .parent.number, sub_issues_summary: .sub_issues_summary}'
+	;;
+
 --add-dependency)
 	BLOCKING_ID=$(fetch_issue_id "${OTHER_ISSUE_NUM}")
 	# TODO: Replace with 'gh issue edit --add-dependency' once cli/cli#10298 is resolved.
