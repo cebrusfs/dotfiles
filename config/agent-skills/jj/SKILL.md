@@ -16,12 +16,41 @@ allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:
 - Don't use `git add`, `git commit`, or `git stash` — in a jj-colocated repo these bypass jj's change tracking and break the history model.
 - Don't run `jj split` or `jj squash -i` — these require an interactive TUI that hangs the agent.
 
+## Skeleton Planning Workflow
+
+For any multi-step assignment, stack empty commits first — this creates named checkpoints you can edit independently, so a mistake in one step doesn't tangle with others.
+
+### Step 1: Draft the Plan (Skeleton Commits)
+Create a chain of empty commits representing logical steps:
+```bash
+jj commit -m "refactor: extract base utility"
+jj commit -m "feat: implement core logic"
+jj commit -m "test: add unit tests for core logic"
+```
+
+### Step 2: Execute the Plan
+Iterate through the skeleton stack to implement code:
+```bash
+jj edit <target-change-id>
+# Implement code... verify compilation/tests
+# Then move on: jj edit <next-change-id>
+```
+`jj edit` is the right tool here because the skeleton commits are still **empty** when you enter them. Once you've filled a commit and moved on, it's now "populated" — don't go back with `jj edit`.
+
+### Step 3: Fixing a Populated Commit
+If you need to revise an already-populated commit:
+- Use `jj new <rev> -m "fixup"` and make your changes, then `jj absorb` to fold them back in.
+- Avoid `jj edit` on populated commits — it repoints the working copy onto an existing change, which can silently mix new edits with old content.
+
+## State Management & Recovery
+- **Mistakes**: `jj undo` is safe for local rollbacks; ask the user before major structural rollbacks.
+- **Amending ancestors**: Use `jj absorb` to distribute changes to the right parent automatically.
+
 ## Routing
 
-Based on the task, read the relevant reference file. For tasks that span multiple areas, read all relevant files.
+For specialized tasks, read the relevant reference file. For tasks spanning multiple areas, read all relevant files.
 
 | Task | Reference file |
 |---|---|
 | Write / apply a commit message | `references/commit.md` |
 | Split a large commit into parts | `references/split.md` |
-| Plan multi-step work, skeleton commits, workspace state | `references/general.md` |
