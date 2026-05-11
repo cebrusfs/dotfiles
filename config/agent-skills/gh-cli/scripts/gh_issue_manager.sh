@@ -2,95 +2,113 @@
 #
 # gh_issue_manager.sh - Advanced issue manipulation for GitHub CLI (gh)
 #
-# Covers operations like safely managing native issue dependencies / sub-issues
-# via the GitHub REST API. Single-repo only (cross-repo intentionally unsupported
-# — callers can hit `gh api` directly if needed).
-#
-# TRACKING: This script is a workaround until native support is added to gh CLI.
-# ISSUE: https://github.com/cli/cli/issues/10298
+# CORE VALUE:
+# 1. Atomic Batch Operations: Uses GraphQL for efficient bulk data retrieval.
+# 2. Relationship Management: Wraps non-native features (Sub-issues, Dependencies).
+# 3. ID Resolution: Maps standard Issue Numbers to internal Database IDs automatically.
 #
 
 set -euo pipefail
 
 usage() {
-	echo "Usage: $0 <operation> <repo> <issue_num> <other_issue_num>"
-	echo ""
+	echo "Usage: $0 <operation> <args...>"
 	echo "Operations:"
-	echo "  --add-dependency    <repo> <issue_num> <blocking_issue_num>  Marks issue as blocked by another"
-	echo "  --remove-dependency <repo> <issue_num> <blocking_issue_num>  Removes the 'blocked by' link"
-	echo "  --add-sub-issue     <repo> <parent_num> <child_num>          Sets child as sub-issue of parent"
-	echo "  --remove-sub-issue  <repo> <parent_num> <child_num>          Removes the parent/child link"
+	echo "  --relations         <issue_nums...>          Fetch relations with details (state, title)"
+	echo "  --report            [limit=20]               Generate a Markdown summary table"
+	echo "  --add-dependency    <issue> <blockers...>    Mark issue as blocked by others"
+	echo "  --remove-dependency <issue> <blockers...>    Remove dependency links"
+	echo "  --add-sub-issue     <parent> <children...>   Set issues as sub-issues of parent"
+	echo "  --remove-sub-issue  <parent> <children...>   Unlink sub-issues from parent"
 	exit 1
 }
 
-if [ $# -lt 4 ]; then
-	usage
-fi
+[ $# -eq 0 ] && usage
 
-COMMAND="$1"
-REPO="$2"
-ISSUE_NUM="$3"
-OTHER_ISSUE_NUM="$4"
+OP="$1"
+shift
 
-# Helper to check authentication
-check_auth() {
-	if ! gh auth status &>/dev/null; then
-		echo "Error: gh CLI is not authenticated. Please run 'gh auth login'."
-		exit 1
-	fi
+# Helper: Resolve multiple Issue Numbers to their internal Database IDs in one call.
+# Returns a JSON map: {"number": databaseId}
+resolve_ids() {
+    local nums_json
+    nums_json=$(printf '%s\n' "$@" | jq -R 'tonumber' | jq -s -c .)
+    gh api graphql -F owner="{owner}" -F name="{repo}" -F nums="$nums_json" -f query='
+        query($owner: String!, $name: String!, $nums: [Int!]!) {
+            repository(owner: $owner, name: $name) {
+                issues(numbers: $nums) {
+                    nodes { number databaseId }
+                }
+            }
+        }' --jq '[.data.repository.issues.nodes[] | {key: (.number|as_string), value: .databaseId}] | from_entries'
 }
 
-# Helper to fetch the global integer ID for an issue in ${REPO}
-fetch_issue_id() {
-	local num="$1"
-	local id
-	id=$(gh api "repos/${REPO}/issues/${num}" --jq '.id')
-
-	if [ -z "${id}" ] || [ "${id}" == "null" ]; then
-		echo "Error: Could not retrieve issue ID for ${REPO}#${num}." >&2
-		exit 1
-	fi
-	echo "${id}"
-}
-
-check_auth
-
-case "${COMMAND}" in
---add-dependency)
-	BLOCKING_ID=$(fetch_issue_id "${OTHER_ISSUE_NUM}")
-	# TODO: Replace with 'gh issue edit --add-dependency' once cli/cli#10298 is resolved.
-	gh api -X POST "repos/${REPO}/issues/${ISSUE_NUM}/dependencies/blocked_by" \
-		-H "Accept: application/vnd.github+json" \
-		-F issue_id="${BLOCKING_ID}" --silent
-	echo "Dependency added: ${REPO}#${ISSUE_NUM} blocked by ${REPO}#${OTHER_ISSUE_NUM}"
+case "$OP" in
+--relations)
+	[ $# -eq 0 ] && usage
+	NUMS_JSON=$(printf '%s\n' "$@" | jq -R 'tonumber' | jq -s -c .)
+	
+	QUERY='query($owner: String!, $name: String!, $nums: [Int!]!) {
+        repository(owner: $owner, name: $name) {
+            issues(numbers: $nums) {
+                nodes {
+                    number
+                    state
+                    title
+                    parent { number state title }
+                    subIssues(first: 20) { nodes { number state title } }
+                    blockedBy(first: 20) { nodes { number state title } }
+                }
+            }
+        }
+    }'
+	gh api graphql -F owner="{owner}" -F name="{repo}" -F nums="$NUMS_JSON" -f query="$QUERY" \
+		--jq '.data.repository.issues.nodes[] | 
+            "- #\(.number) [\(.state)] \(.title)\n" +
+            "  Parent: " + (if .parent then "#\(.parent.number) [\(.parent.state)] \(.parent.title)" else "None" end) + "\n" +
+            "  Sub-issues:\n" + (if .subIssues.nodes | length > 0 then ([.subIssues.nodes[] | "    - #\(.number) [\(.state)] \(.title)"] | join("\n")) else "    - None" end) + "\n" +
+            "  Blocked By:\n" + (if .blockedBy.nodes | length > 0 then ([.blockedBy.nodes[] | "    - #\(.number) [\(.state)] \(.title)"] | join("\n")) else "    - None" end) + "\n"'
 	;;
 
---remove-dependency)
-	BLOCKING_ID=$(fetch_issue_id "${OTHER_ISSUE_NUM}")
-	gh api -X DELETE "repos/${REPO}/issues/${ISSUE_NUM}/dependencies/blocked_by/${BLOCKING_ID}" \
-		-H "Accept: application/vnd.github+json" --silent
-	echo "Dependency removed: ${REPO}#${ISSUE_NUM} no longer blocked by ${REPO}#${OTHER_ISSUE_NUM}"
+--report)
+	LIMIT="${1:-20}"
+	echo -e "| ID | State | Title | Labels | Assignees |\n|---|---|---|---|---|"
+	gh issue list -L "$LIMIT" --json number,state,title,labels,assignees --jq '.[] | "| \(.number) | \(.state) | \(.title) | \(.labels | map(.name) | join(", ")) | \(.assignees | map(.login) | join(", ")) |"'
 	;;
 
---add-sub-issue)
-	CHILD_ID=$(fetch_issue_id "${OTHER_ISSUE_NUM}")
-	gh api -X POST "repos/${REPO}/issues/${ISSUE_NUM}/sub_issues" \
-		-H "Accept: application/vnd.github+json" \
-		-F sub_issue_id="${CHILD_ID}" --silent
-	echo "Sub-issue added: ${REPO}#${OTHER_ISSUE_NUM} is now a sub-issue of ${REPO}#${ISSUE_NUM}"
-	;;
+--add-dependency | --remove-dependency | --add-sub-issue | --remove-sub-issue)
+	[ $# -lt 2 ] && usage
+    TARGET_NUM="$1"
+    OTHER_NUMS=("${@:2}")
+    
+    # Batch resolve IDs for the target and all related issues
+    ID_MAP=$(resolve_ids "$TARGET_NUM" "${OTHER_NUMS[@]}")
+    
+    for OTHER_NUM in "${OTHER_NUMS[@]}"; do
+        OID=$(echo "$ID_MAP" | jq -r ".\"$OTHER_NUM\" // empty")
+        [ -z "$OID" ] && { echo "Error: Could not find Database ID for #$OTHER_NUM" >&2; continue; }
 
---remove-sub-issue)
-	CHILD_ID=$(fetch_issue_id "${OTHER_ISSUE_NUM}")
-	# DELETE path is singular /sub_issue per GitHub REST API
-	gh api -X DELETE "repos/${REPO}/issues/${ISSUE_NUM}/sub_issue" \
-		-H "Accept: application/vnd.github+json" \
-		-f sub_issue_id="${CHILD_ID}" --silent
-	echo "Sub-issue removed: ${REPO}#${OTHER_ISSUE_NUM} unlinked from ${REPO}#${ISSUE_NUM}"
+        case "$OP" in
+        --add-dependency)
+            gh api -X POST "repos/{owner}/{repo}/issues/$TARGET_NUM/dependencies/blocked_by" -F issue_id="$OID" --silent
+            echo "SUCCESS: #$TARGET_NUM is now blocked by #$OTHER_NUM"
+            ;;
+        --remove-dependency)
+            gh api -X DELETE "repos/{owner}/{repo}/issues/$TARGET_NUM/dependencies/blocked_by/$OID" --silent
+            echo "SUCCESS: Removed dependency link: #$OTHER_NUM -> #$TARGET_NUM"
+            ;;
+        --add-sub-issue)
+            gh api -X POST "repos/{owner}/{repo}/issues/$TARGET_NUM/sub_issues" -F sub_issue_id="$OID" --silent
+            echo "SUCCESS: #$OTHER_NUM added as sub-issue of #$TARGET_NUM"
+            ;;
+        --remove-sub-issue)
+            gh api -X DELETE "repos/{owner}/{repo}/issues/$TARGET_NUM/sub_issue" -f sub_issue_id="$OID" --silent
+            echo "SUCCESS: #$OTHER_NUM unlinked from parent #$TARGET_NUM"
+            ;;
+        esac
+    done
 	;;
 
 *)
-	echo "Unknown command: ${COMMAND}"
 	usage
 	;;
 esac

@@ -1,65 +1,38 @@
-# GitHub Metadata & Issues Query Examples
+# GitHub Issues Advanced Query Cookbook (Phase 3)
 
-A collection of ready-to-use `gh` CLI commands and `jq` processing combinations designed for analysis and reporting.
+Use these templates only when native `gh` commands or the `gh_issue_manager.sh` wrapper do not provide the specific formatting or filtering you need.
 
-## 1. Advanced Issue Filtering
+## 1. Advanced Filtering
 
-### Filter Issues by Label and State
-Find all closed `bug` issues in a repository:
+### Complex Search with Labels
+Find issues containing a specific phrase and tagged with multiple specific labels:
 ```bash
-gh issue list -R <owner>/<repo> --state closed --label "bug" --json number,title,closedAt
+gh issue list --search "out of memory label:high-priority label:bug" --json number,title
 ```
 
-### Search Issues by Author
-Get all open issues authored by a specific developer:
+### Filter by Author and State
 ```bash
-gh issue list -R <owner>/<repo> --author "octocat" --json number,title
-```
-
-### Search Issues with Complex Queries (using `--search`)
-Find issues containing a specific phrase and tagged with both `high-priority` and `bug`:
-```bash
-gh issue list -R <owner>/<repo> --search "out of memory label:high-priority label:bug" --json number,title
+gh issue list --state open --author "octocat" --json number,title
 ```
 
 ---
 
-## 2. Custom Output Formatting with `jq`
+## 2. Formatting with `jq`
 
-### Extract a Simple Flat List of Labels
-List all unique labels present in the last 30 issues:
+### Markdown Table Export
+Generate a formatted Markdown table for a summary report:
 ```bash
-gh issue list -R <owner>/<repo> -L 30 --json labels --jq '.[].labels[].name' | sort -u
+echo -e "| ID | Title | Labels |\n|---|---|---|"
+gh issue list -L 10 --json number,title,labels --jq '.[] | "| \(.number) | \(.title) | \(.labels | map(.name) | join(", ")) |"'
 ```
 
-### Format Issues list into a Markdown Table
-Generate a nicely formatted markdown table of the latest 5 issues:
+### Unique Labels Analysis
+List all unique labels currently in use across the latest 50 issues:
 ```bash
-echo -e "| ID | Title | State |\n|---|---|---|"
-gh issue list -R <owner>/<repo> -L 5 --json number,title,state --jq '.[] | "| \(.number) | \(.title) | \(.state) |"'
+gh issue list -L 50 --json labels --jq '.[].labels[].name' | sort -u
 ```
 
-### Export Issues with Assigned Developers to TSV
-Ideal for copy-pasting into sheets/docs:
+### TSV Export for Spreadsheets
 ```bash
-gh issue list -R <owner>/<repo> --json number,title,assignees --jq '.[] | [.number, .title, (.assignees | map(.login) | join(", "))] | @tsv'
-```
-
----
-
-## 3. Querying Pull Request Metadata
-
-### List PRs Targeting a Specific Base Branch (e.g. `main`)
-```bash
-gh pr list -R <owner>/<repo> --base main --json number,title,headRefName
-```
-
-### Check Open PRs that Have Failing Status Checks
-```bash
-gh pr list -R <owner>/<repo> --state open --json number,title,statusCheckRollup --jq '.[] | select(.statusCheckRollup.state == "FAILURE") | [.number, .title] | @tsv'
-```
-
-### List All Merged PRs in the Last 7 Days
-```bash
-gh pr list -R <owner>/<repo> --state merged --json number,title,mergedAt --jq '.[] | select(.mergedAt > (now - 7*24*3600 | strflocaltime("%Y-%m-%dT%H:%M:%SZ"))) | [.number, .title, .mergedAt] | @tsv'
+gh issue list --json number,title,assignees --jq '.[] | [.number, .title, (.assignees | map(.login) | join(", "))] | @tsv'
 ```
