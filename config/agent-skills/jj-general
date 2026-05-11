@@ -1,0 +1,82 @@
+<activated_skill name="jj-general">
+  <instructions>
+    # Jujutsu (jj) — General Version Control Workflow for Agents
+
+This skill defines the standard operating procedure for using `jj` (Jujutsu) as the primary local version control system. It is designed specifically for Agent workflows, prioritizing preemptive planning over retroactive fixes.
+
+## Core Mental Model & Differences from Git
+
+- **No staging area.** File modifications are automatically part of the current change.
+- **No stash.** Just `jj new` to start fresh work; previous changes stay where they are.
+- **No detached HEAD.** `jj edit` lets you jump to any change and keep working; descendants auto-rebase.
+- **Branches are bookmarks** and are only needed when interacting with a remote.
+- **The working copy IS a change.** Every modification is instantly tracked.
+
+## 🌟 Primary Agent Workflow: Skeleton Planning (Stacking Commits)
+
+Whenever assigned a multi-step task, **ALWAYS prefer creating a skeleton plan of empty commits first**, rather than writing all code into a single monolithic commit and trying to split it later.
+
+1.  **Draft the Plan (Create Skeleton Commits):**
+    Before modifying any files, create a chain of empty commits representing the logical steps of your task.
+    ```bash
+    jj commit -m "refactor: extract base utility"
+    jj commit -m "feat: implement core logic"
+    jj commit -m "test: add unit tests for core logic"
+    jj commit -m "docs: update public documentation"
+    ```
+
+2.  **Execute the Plan (Fill in the Commits):**
+    Iterate through your skeleton commits and implement the code.
+    ```bash
+    jj edit <first-change-id>
+    # ... write code for refactoring ...
+    # Verify tests pass
+    
+    jj edit <next-change-id>
+    # ... write code for core logic ...
+    # (Previous work automatically rebases)
+    ```
+
+3.  **Review and Describe:**
+    Ensure each commit represents a single, testable, and reviewable unit of work.
+
+## Handling Mistakes & Complex States
+
+- **If you make a mistake:** Use `jj undo` immediately. It is safe and reverses any `jj` operation.
+- **If you forgot something in a previous commit:**
+  ```bash
+  jj edit <target-commit>
+  # make the fix
+  jj edit <back-to-latest-commit>
+  ```
+  *Alternatively, if you made the fix in your current working copy but it belongs to a parent commit, use `jj absorb` to automatically distribute the hunks (if they cleanly apply to lines modified in the parent).*
+
+- **🚨 If you created a monolithic commit and MUST split it:**
+  Do NOT use the interactive `jj split` command, as Agents cannot use TUI interfaces.
+  Instead, **STOP and activate the `jj-split` skill** (defined in `jj-split-commit`), which provides a programmatic workflow for retroactive splitting using `jj restore` and file editing.
+
+## Essential Commands Quick Reference
+
+### Inspect State
+- `jj log`: Show change graph + status (replaces git log + git status). `@` is your current working commit.
+- `jj diff`: Show diff of current change vs parent.
+
+### Work on Changes
+- `jj new`: Finish current change, start a new empty one.
+- `jj new <change>`: Start new work branching from a specific change.
+- `jj describe -m "..."`: Set/update description of current change.
+- `jj edit <change>`: Jump to an existing change and continue editing it.
+- `jj abandon`: Discard the current change entirely (absorbs modifications into parent).
+
+### Remote Interaction (Git Colocated)
+- `jj git fetch`: Fetch from remote.
+- `jj bookmark create <name> -r @`: Create a branch pointer (bookmark) for pushing.
+- `jj bookmark set <name> -r <change>`: Move a branch pointer.
+- `jj git push --bookmark <name>`: Push specific bookmark to remote.
+
+## 🚫 Anti-Patterns (DO NOT DO THESE)
+- **Do NOT use `git add`, `git commit`, `git stash`, or `git checkout`.**
+- **Do NOT use interactive commands** like `jj split` or `jj squash -i` without explicit tools designed for Agents.
+- **Do NOT worry about "losing" changes.** Everything is in the operation log (`jj op log`).
+  </instructions>
+</activated_skill>
