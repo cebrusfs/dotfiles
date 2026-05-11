@@ -1,54 +1,56 @@
 ---
 name: jj-split-commit
-description: "Programmatic workflow for splitting a large jj commit into multiple smaller, testable commits without using interactive TUI."
+description: Programmatically splits large Jujutsu (jj) commits into smaller logical units using file restoration and reverse editing. Avoids interactive TUI.
 ---
 
-# Splitting a Jujutsu (jj) Commit (Agent-Safe Workflow)
+# Splitting a Jujutsu (`jj`) Commit (Agent-Safe Workflow)
 
-This skill provides a programmatic method to split a monolithic commit into multiple logical units. Since Agents cannot interact with the `jj split -i` TUI, this workflow uses `jj restore` and precise file editing.
+## Goal
+Decompose a monolithic commit into smaller, independently verifiable commits programmatically, bypassing TUI constraints (`jj split -i`).
 
-## 1. Prerequisites & Planning
-- Identify the target `COMMIT_TO_SPLIT` and its `PARENT_COMMIT`.
-- Run `jj diff --stat -r <COMMIT_TO_SPLIT>` to see all modified files.
-- Plan the logical split units (e.g., "Refactor", "Feature", "Tests").
+## When to Use This Skill
+Trigger this skill ONLY when explicitly tasked to split an existing large commit.
 
-## 2. Decomposition Cycle (Execution)
-For each logical unit in order:
+## How to Use It (Decomposition Cycle)
 
-### Step A: Initialize
-Start a new commit on top of the parent.
-- For Unit 1: `jj new <PARENT_COMMIT> -m "Part 1: Refactor"`
-- For Unit N: `jj new -m "Part N: Feature"`
-
-### Step B: Populate (Whole Files)
-If entire files belong to this unit:
+### Step 1: Reconnaissance
+Identify `COMMIT_TO_SPLIT` and `PARENT_COMMIT`.
 ```bash
-jj restore --from <COMMIT_TO_SPLIT> path/to/file1 path/to/file2
+jj diff --stat -r <COMMIT_TO_SPLIT>
 ```
+Plan logical units (e.g., Unit 1: Refactor, Unit 2: Feature).
 
-### Step C: Populate (Partial Files)
-If only parts of a file belong to this unit:
-1. Restore the entire file from the future: `jj restore --from <COMMIT_TO_SPLIT> path/to/file`
-2. **Reverse Edit**: Use editing tools (like `replace`) to manually revert the code blocks that *do not* belong to this specific unit yet.
+### Step 2: Stacking Logical Units
+Iterate through each planned unit sequentially:
 
-### Step D: Validate
-Run the project's test suite (e.g., `make test`, `npm test`) to ensure this unit is independently valid.
+#### A. Initialize Unit
+```bash
+jj new <PARENT_COMMIT> -m "Part 1: <Unit Name>"
+```
+*(Subsequent units build on top using `jj new -m "Part N: ..."`)*
 
-## 3. Final Validation
-After creating all split commits, verify the final state matches the original:
+#### B. Populate Content
+- **Whole Files**: `jj restore --from <COMMIT_TO_SPLIT> path/to/file`
+- **Partial Files**: Restore the whole file first, then manually revert unwanted code blocks using file replacement tools.
+
+#### C. Validate Unit
+Verify build/tests pass for this specific isolated commit.
+
+### Step 3: Final Integrity Check
+Compare the final stacked state against the original monolithic state:
 ```bash
 jj diff --from <COMMIT_TO_SPLIT> --to @
 ```
-**Success Condition:** The output should be empty. If there are accidental changes, fix them and use `jj absorb` to distribute the fixes.
+- **Success**: Output must be completely empty.
+- **Resolution**: If discrepancies exist, fix them and use `jj absorb`.
 
-## 4. Branch Update (Git Backend)
-If the original commit was a Git branch, move the bookmark to the new tip:
+### Step 4: Cleanup (Authorized Abandon)
+Once full equivalence is verified:
 ```bash
-jj bookmark set <branch_name> -r @
-jj abandon <ORIGINAL_MONOLITHIC_COMMIT>
-```
+# Re-point bookmarks if applicable:
+jj bookmark set <bookmark_name> -r @
 
-## Quick Reference
-- `jj restore --from <REV> <PATH>`: Pull file state from a specific revision.
-- `jj diff --from <REV1> --to <REV2>`: Compare two states.
-- `jj absorb`: Automatically distribute current changes to their origins.
+# Abandon the old monolithic duplicate:
+jj abandon <COMMIT_TO_SPLIT>
+```
+*Note: Executing `jj abandon` at this specific cleanup step is globally authorized under the skill protocol.*

@@ -1,69 +1,54 @@
 ---
 name: jj-general
-description: "Standard operating procedure for using jj (Jujutsu) in agent-assisted development workflows. Focuses on Skeleton Planning and preemptive commit stacking."
+description: Provides standard operating procedures for Jujutsu (jj) version control. Guides agents to perform Skeleton Planning (stacking empty commits) for multi-step tasks.
 ---
 
-# Jujutsu (jj) — Version Control for Agent Workflows
+# Jujutsu (`jj`) — Version Control for Agent Workflows
 
-This skill defines the standard operating procedure for using `jj` (Jujutsu) as the primary local version control system. It is designed specifically for Agent workflows, prioritizing preemptive planning over retroactive fixes.
+## Goal
+Establish robust local version control habits for agents, prioritizing preemptive planning (Skeleton Planning) over retroactive, monolithic fixes.
 
-## Core Mental Model & Differences from Git
+## When to Use This Skill
+Trigger this skill automatically when:
+- Starting a new multi-step task or feature implementation.
+- Investigating workspace state before modifying code.
+- Interacting with local version history.
 
-- **No staging area.** File modifications are automatically part of the current change. There is no `git add`.
-- **No stash.** Just `jj new` to start fresh work; previous changes stay where they are.
-- **No detached HEAD.** `jj edit` lets you jump to any change and keep working; descendants auto-rebase.
-- **Branches are called bookmarks** and are only needed when interacting with a remote.
-- **The working copy IS a change.** Every modification is instantly tracked.
+## Core Mental Model (vs Git)
+- **No staging area**: Modifications are instantly part of the current change (`@`).
+- **No stash**: Use `jj new` to start fresh; old work stays intact.
+- **No detached HEAD**: `jj edit` moves the active working copy; descendants auto-rebase.
+- **Working copy IS a change**: Always tracked.
 
-## 🌟 Primary Agent Workflow: Skeleton Planning (Stacking Commits)
+## How to Use It: Skeleton Planning Workflow
+For any multi-step assignment, ALWAYS stack empty commits first.
 
-Whenever assigned a multi-step task, **ALWAYS prefer creating a skeleton plan of empty commits first**, rather than writing all code into a single monolithic commit and trying to split it later.
-
-### 1. Draft the Plan (Create Skeleton Commits)
-Before modifying any files, create a chain of empty commits representing the logical steps of your task.
+### Step 1: Draft the Plan (Skeleton Commits)
+Create a chain of empty commits representing logical steps:
 ```bash
 jj commit -m "refactor: extract base utility"
 jj commit -m "feat: implement core logic"
 jj commit -m "test: add unit tests for core logic"
-jj commit -m "docs: update public documentation"
 ```
 
-### 2. Execute the Plan (Fill in the Commits)
-Iterate through your skeleton commits and implement the code.
+### Step 2: Execute the Plan
+Iterate through the skeleton stack to implement code:
 ```bash
-jj edit <first-change-id>
-# ... write code for refactoring ...
-# Verify tests pass
-
-jj edit <next-change-id>
-# ... write code for core logic ...
-# (Previous work automatically rebases)
+jj edit <target-change-id>
+# Implement code... verify compilation/tests
 ```
+*Note: Per Global Rules, editing these specific empty skeleton commits via `jj edit` is authorized.*
 
-## Handling Mistakes & Complex States
+### Step 3: Stack Fixups for Existing Commits
+If you need to modify an existing **populated** commit (not an empty skeleton):
+- ALWAYS use `jj new <rev> -m "fixup"`.
+- NEVER use `jj edit` on populated non-fixup commits.
 
-- **If you make a mistake:** Use `jj undo` immediately. It is safe and reverses any `jj` operation.
-- **If you forgot something in a previous commit:**
-  ```bash
-  jj edit <target-commit>
-  # make the fix
-  jj edit <back-to-latest-commit>
-  ```
-  *Alternatively, if you made the fix in your current working copy but it belongs to a parent commit, use `jj absorb` to automatically distribute the changes.*
+## State Management & Recovery
+- **Mistakes**: Executing `jj undo` is safe but requires user permission for major structural rollbacks unless part of an automated skill cleanup.
+- **Amending Parents**: If changes belong to an ancestor, use `jj absorb` to distribute them automatically.
+- **Splitting**: If a monolithic commit must be split, do NOT use interactive `jj split`. Activate the **`jj-split-commit`** skill instead.
 
-- **🚨 If you created a monolithic commit and MUST split it:**
-  Do NOT use interactive `jj split` (Agents cannot use TUI). Instead, **activate the `jj-split-commit` skill** for a programmatic splitting workflow.
-
-## Essential Commands Quick Reference
-
-- `jj log`: Show change graph + status.
-- `jj diff`: Show diff of current change vs parent.
-- `jj new`: Start a new empty change on top of the current one.
-- `jj describe -m "..."`: Set description of current change.
-- `jj edit <change>`: Jump to an existing change and continue editing it.
-- `jj abandon`: Discard a change (absorbs modifications into parent).
-- `jj git push --bookmark <name>`: Push specific bookmark to remote.
-
-## 🚫 Anti-Patterns
-- Do NOT use `git add`, `git commit`, `git stash`, or `git checkout`.
-- Do NOT use interactive commands like `jj split` or `jj squash -i`.
+## Critical Constraints
+- **NO Git Commands**: Never use `git add`, `git commit`, `git stash`.
+- **NO Interactive TUI**: Never execute `jj split` or `jj squash -i`.
