@@ -1,6 +1,6 @@
 ---
 name: jj
-description: Jujutsu (jj) version control workflows for agent use. Use this skill whenever working in a jj repository — planning multi-step implementations with skeleton commits, writing commit messages, splitting large commits, investigating workspace state, or any jj operation. Triggers when the user mentions jj commands, change IDs, bookmarks, or says "commit this", "split this commit", "describe the change", or asks how to manage history without git.
+description: Jujutsu (jj) version control workflows for agent use. Use this skill whenever working in a jj repository — planning multi-step implementations with skeleton commits, writing commit messages, splitting large commits, investigating workspace state, or any jj operation. Triggers when the user mentions jj commands, change IDs, bookmarks, or says "commit this" / "split this commit" / "describe the change" / "manage history", and also whenever the agent itself is about to run any jj command.
 allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*), Bash(jj fix:*)
 ---
 
