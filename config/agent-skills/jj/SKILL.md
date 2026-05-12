@@ -1,7 +1,7 @@
 ---
 name: jj
 description: Jujutsu (jj) version control workflows for agent use. Use this skill whenever working in a jj repository — planning multi-step implementations with skeleton commits, writing commit messages, splitting large commits, investigating workspace state, or any jj operation. Triggers when the user mentions jj commands, change IDs, bookmarks, or says "commit this", "split this commit", "describe the change", or asks how to manage history without git.
-allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*)
+allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*), Bash(jj fix:*)
 ---
 
 # Jujutsu (`jj`) — Version Control for Agent Workflows
@@ -12,9 +12,17 @@ allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:
 - **No detached HEAD**: `jj edit` moves the active working copy; descendants auto-rebase.
 - **Working copy IS a change**: Always tracked.
 
-## Constraints
+## Constraints & TUI Bypasses
 - Don't use `git add`, `git commit`, or `git stash` — in a jj-colocated repo these bypass jj's change tracking and break the history model.
-- Don't run `jj split` or `jj squash -i` — these require an interactive TUI that hangs the agent.
+- **NO Interactive TUI**: As an AI Agent, you CANNOT handle editor popups.
+  - Never execute `jj split` or `jj resolve` interactively. (See Routing table for programmatic splitting).
+  - Bypass `jj squash` editor using `-m "..."` or `--use-destination-message`.
+  - Always provide `-m` to `jj describe` and `jj commit`.
+
+## Investigating State (Token Conservation)
+- **NEVER** run `jj show` or `jj log` blindly without limits.
+- **ONLY** use `jj status` or `jj log -n 3 --no-graph -T commit_summary` at the start of a task, or if you suspect external changes.
+- **Tree Context**: Query relative to the base bookmark (e.g., `jj log -r 'main..@'`). Keep formatting minimal if exploring depth.
 
 ## Skeleton Planning Workflow
 
@@ -41,6 +49,12 @@ jj edit <target-change-id>
 If you need to revise an already-populated commit:
 - Use `jj new <rev> -m "fixup"` and make your changes, then `jj absorb` to fold them back in.
 - Avoid `jj edit` on populated commits — it repoints the working copy onto an existing change, which can silently mix new edits with old content.
+
+### Step 4: Formatting
+Before finalizing a commit, run formatting (if configured in the repo):
+```bash
+jj fix
+```
 
 ## State Management & Recovery
 - **Mistakes**: `jj undo` is safe for local rollbacks; ask the user before major structural rollbacks.
