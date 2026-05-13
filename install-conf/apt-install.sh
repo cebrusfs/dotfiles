@@ -6,7 +6,8 @@ BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 source "${BASEDIR}/utils.sh"
 
 function install_pkgs() {
-    sudo apt install -y ripgrep fd-find
+    linux_install ripgrep
+    linux_install fd-find
 }
 
 function main() {
@@ -14,7 +15,7 @@ function main() {
         exit 0
     fi
 
-    if ! check_command apt; then
+    if ! check_command apt && ! check_command dnf; then
         exit 0
     fi
     install_pkgs
