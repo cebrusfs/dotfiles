@@ -7,14 +7,17 @@ email = "2252236+cebrusfs@users.noreply.github.com"
 [ui]
 default-command = "log"
 
-# Use diff format and diff-so-facny as pager
+# Output git-format diffs so that `delta` can properly parse and style them
 diff-formatter = ":git"
 
-# On 0.36.0+, the $PAGER is ignored and have to explicitly setup by default.
+# As of jj v0.36.0, the $PAGER environment variable is ignored.
+# The pager must be explicitly configured here to use 'delta'.
 pager = "delta"
 
 # Editors
 diff-editor = ":builtin"
+
+# Used for 3-way merge conflict resolution (e.g., `jj resolve`)
 merge-editor = "vimdiff"
 show-cryptographic-signatures = true
 
