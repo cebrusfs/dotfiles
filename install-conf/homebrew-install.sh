@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # vim: syntax=bash:
 
 set -e

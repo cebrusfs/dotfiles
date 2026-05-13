@@ -6,7 +6,6 @@ set -e
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${BASEDIR}/install-conf/utils.sh"
 
-
 DOTBOT_DIR="modules/dotbot"
 
 function dotbot_install() {
@@ -27,7 +26,7 @@ function dotbot_init() {
 
 function dotbot_main() {
     dotbot_init
-    dotbot_install
+    dotbot_install "$@"
 }
 
 
@@ -43,7 +42,7 @@ function zsh_main() {
 
     if [[ "$SHELL" != *zsh ]]; then
         log "Current shell is not zsh, switch default shell to zsh"
-        chsh -s $(which zsh)
+        chsh -s "$(which zsh)"
 
         log "Enable the setting in zsh before starting the later steps"
         if [[ "$SHELL" != *zsh ]]; then
@@ -51,7 +50,6 @@ function zsh_main() {
         fi
     fi
 }
-
 
 function vim_install_deps_linux() {
     # vim modules deps
@@ -116,13 +114,12 @@ function zsh_deps_main() {
     linux_install git-delta
 }
 
-
 function main() {
     umask 022
 
     pushd "${BASEDIR}"
 
-    dotbot_main
+    dotbot_main "$@"
     zsh_main
     package_manager_main
     zsh_deps_main
@@ -133,4 +130,4 @@ function main() {
     popd
 }
 
-main
+main "$@"

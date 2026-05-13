@@ -1,24 +1,25 @@
+#!/usr/bin/env bash
 # vim: syntax=sh:
 
 function log() {
     local COLOR='\033[1;35m'
     local NO_COLOR='\033[0m'
-    printf "${COLOR}>> ${1}${NO_COLOR}\n"
+    printf "%b>> %s%b\n" "${COLOR}" "${1}" "${NO_COLOR}"
 }
 
 function error() {
     local COLOR='\033[1;31m'
     local NO_COLOR='\033[0m'
-    printf "${COLOR}[ERROR] ${1}${NO_COLOR}\n"
+    printf "%b[ERROR] %s%b\n" "${COLOR}" "${1}" "${NO_COLOR}"
     exit 1
 }
 
 function pushd() {
-    command pushd "$@" >/dev/null
+    command pushd "$@" > /dev/null || return
 }
 
 function popd() {
-    command popd "$@" >/dev/null
+    command popd "$@" > /dev/null || return
 }
 
 function is_osx() {
@@ -30,11 +31,13 @@ function is_linux() {
 }
 
 function is_x86_64() {
-    local arch=$(uname -m)
+    local arch
+    arch=$(uname -m)
     [[ "$arch" == x86_64 ]]
 }
 function is_arm() {
-    local arch=$(uname -m)
+    local arch
+    arch=$(uname -m)
     # TODO: arm32
     [[ "$arch" == aarch64* ]]
 }
