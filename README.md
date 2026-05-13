@@ -20,9 +20,8 @@
 
 ### TODOs
 
-* Migrated to neovim built-in package management system
-* Fix linux setup scripts for new deps
-* Mise setup for languages env
+* Migrated to neovim built-in package management system (nvim 0.12+, not available in common Linux yet)
+* Mise setup for default programming languages environment
 
 
 ## INSTALL
