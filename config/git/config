@@ -4,6 +4,8 @@
 	name = Meng-Huan Yu
 	email = 2252236+cebrusfs@users.noreply.github.com
 
+[init]
+	defaultBranch = main
 [push]
 	default = simple
 [filter "lfs"]
