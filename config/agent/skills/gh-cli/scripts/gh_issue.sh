@@ -22,7 +22,7 @@ usage() {
 	echo "  --list-sub-issues   <issue>           Sub-issues of this issue (JSON)"
 	echo "  --show-parent       <issue>           Parent number + sub-issue summary (JSON)"
 	echo "  --relations         <issue_num...>    Rich view: parent/sub-issues/blockedBy (GraphQL)"
-	echo "  --report            [limit=20]        Markdown summary table"
+	echo "  --report            [limit=20] [--human]   Issue list (compact default; --human for table)"
 	echo ""
 	echo "Write operations (support multiple targets):"
 	echo "  --add-dependency    <issue> <blocker...>   Mark as blocked by"
@@ -150,10 +150,25 @@ case "$OP" in
 	;;
 
 --report)
-	LIMIT="${1:-20}"
-	echo -e "| ID | State | Title | Labels | Assignees |\n|---|---|---|---|---|"
-	gh issue list -L "$LIMIT" --json number,state,title,labels,assignees \
-		--jq '.[] | "| \(.number) | \(.state) | \(.title) | \(.labels | map(.name) | join(", ")) | \(.assignees | map(.login) | join(", ")) |"'
+	HUMAN=0
+	LIMIT=20
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		--human) HUMAN=1 ;;
+		*)       LIMIT="$1" ;;
+		esac
+		shift
+	done
+	if [ "$HUMAN" -eq 1 ]; then
+		echo -e "| ID | State | Title | Labels | Assignees |\n|---|---|---|---|---|"
+		gh issue list -L "$LIMIT" --json number,state,title,labels,assignees \
+			--jq '.[] | "| \(.number) | \(.state) | \(.title) | \(.labels | map(.name) | join(", ")) | \(.assignees | map(.login) | join(", ")) |"'
+	else
+		gh issue list -L "$LIMIT" --json number,state,title,labels,assignees \
+			--jq '.[] | "#\(.number) [\(.state)] \(.title)" +
+			      (if (.labels | length) > 0 then " [\(.labels | map(.name) | join(","))]" else "" end) +
+			      (if (.assignees | length) > 0 then " @\(.assignees | map(.login) | join(","))" else "" end)'
+	fi
 	;;
 
 --add-dependency | --remove-dependency | --add-sub-issue | --remove-sub-issue)
