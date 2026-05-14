@@ -1,46 +1,24 @@
-# Splitting a jj Commit (Agent-Safe Workflow)
+# Splitting a jj Commit (Non-Interactive)
 
-Decompose a monolithic commit into smaller, independently verifiable commits programmatically — bypassing `jj split -i` which requires an interactive TUI.
+Use `jj restore` to populate new commits from the original — no TUI needed.
 
-The approach: create new empty commits on top of the parent, then selectively restore files from the original commit into each one. This gives full control over which changes land in which commit without any interactive editor.
+## Workflow
 
-## Step 1: Reconnaissance
-Identify `COMMIT_TO_SPLIT` and `PARENT_COMMIT`.
+**1. Recon:** `jj diff --stat -r <COMMIT>` — plan logical units.
+
+**2. Create new commits on the parent:**
 ```bash
-jj diff --stat -r <COMMIT_TO_SPLIT>
+jj new <PARENT> -m "Part 1: ..."
+jj restore --from <COMMIT> path/to/file   # whole file
+# partial: restore whole file, then revert unwanted blocks in-editor
+jj new -m "Part 2: ..."
+jj restore --from <COMMIT> other/file
 ```
-Plan logical units (e.g., Unit 1: Refactor, Unit 2: Feature).
 
-## Step 2: Stack Logical Units
-Iterate through each planned unit sequentially:
+**3. Verify equivalence:** `jj diff --from <COMMIT> --to @` must be empty.
 
-### A. Initialize Unit
+**4. Cleanup:**
 ```bash
-jj new <PARENT_COMMIT> -m "Part 1: <Unit Name>"
-```
-*(Subsequent units build on top using `jj new -m "Part N: ..."`)*
-
-### B. Populate Content
-- **Whole files**: `jj restore --from <COMMIT_TO_SPLIT> path/to/file`
-- **Partial files**: Restore the whole file first, then revert unwanted blocks using file replacement tools.
-
-### C. Validate Unit
-Verify build/tests pass for this isolated commit before moving to the next unit.
-
-## Step 3: Final Integrity Check
-Compare the final stacked state against the original:
-```bash
-jj diff --from <COMMIT_TO_SPLIT> --to @
-```
-- **Success**: Output must be completely empty.
-- **Resolution**: If discrepancies exist, fix them and use `jj absorb`.
-
-## Step 4: Cleanup
-Once full equivalence is verified, abandon the original — its content is fully preserved in the new commits:
-```bash
-# Re-point bookmarks if applicable:
-jj bookmark set <bookmark_name> -r @
-
-# Abandon the old monolithic duplicate:
-jj abandon <COMMIT_TO_SPLIT>
+jj bookmark set <name> -r @   # re-point if needed
+jj abandon <COMMIT>
 ```

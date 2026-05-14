@@ -5,18 +5,24 @@ alwaysApply: true
 
 # jj baseline
 
-## Mental model (vs git)
-- No staging, no stash, no detached HEAD. The working copy IS a change (`@`), always tracked.
+## Mental model
+- No staging, no stash, no detached HEAD. Working copy IS a change (`@`), always tracked.
 - `jj new` starts fresh work; `jj edit` moves `@`; descendants auto-rebase.
 
 ## Hard rules
-- Never run `git add`, `git commit`, `git stash` in a jj-colocated repo — they bypass jj's change tracking.
-- Never invoke an interactive TUI: don't run `jj split` / `jj resolve` without flags; always pass `-m "..."` to `jj describe` / `jj commit`; bypass `jj squash`'s editor with `-m` or `--use-destination-message`.
-- Never run destructive ops (`jj abandon` / `jj undo` / `jj squash` / `jj rebase`) without explicit user instruction.
+- Never use `git add / commit / stash` — bypasses jj tracking.
+- Every command must be non-blocking — never open an interactive TUI:
 
-## State exploration (token discipline)
-- Don't run `jj show` or unbounded `jj log` blindly.
-- Default probes: `jj st`, or `jj log -n 3 --no-graph -T commit_summary`.
-- For tree context, scope to the base bookmark: `jj log -r 'main..@'`.
+| Command | Non-interactive form |
+|---------|---------------------|
+| `jj describe` / `jj commit` | `-m "..."` |
+| `jj squash` | `-m "..."` or `--use-destination-message` |
+| `jj split <files>` | specify explicit file paths |
+| `jj split` (diff-based) | read `/jj` skill first |
+| `jj resolve` | read `/jj` skill first |
 
-For workflow details (skeleton planning, commit messages, split, recovery), invoke the `jj` skill.
+## State exploration
+- Default: `jj st` or `jj log -n 3 --no-graph -T commit_summary`
+- Scoped: `jj log -r 'main..@'`
+
+For workflow details (skeleton, commit messages, split, recovery), invoke the `jj` skill.
