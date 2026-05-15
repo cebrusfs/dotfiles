@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "deny": [
+      "Bash(jj git *)",
+      "Bash(jj op *)"
+    ]
+  },
   "hooks": {
     "WorktreeCreate": [
       {
@@ -39,11 +45,5 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true,
-  "permissions": {
-    "deny": [
-      "Bash(jj git *)",
-      "Bash(jj op *)"
-    ]
-  }
+  "agentPushNotifEnabled": true
 }
