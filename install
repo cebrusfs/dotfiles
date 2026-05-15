@@ -46,7 +46,7 @@ function zsh_main() {
 
         log "Enable the setting in zsh before starting the later steps"
         if [[ "$SHELL" != *zsh ]]; then
-            exec zsh --login -c "$BASEDIR/install post"
+            exec zsh --login -c "$BASEDIR/install"
         fi
     fi
 }
