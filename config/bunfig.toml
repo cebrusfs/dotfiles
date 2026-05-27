@@ -1,0 +1,37 @@
+# ===================================================================
+# Global Bun Configuration (~/.bunfig.toml)
+# Focus: Supply Chain Attack Mitigation & Security Enhancements
+# ===================================================================
+
+[install]
+# 1. Block Lifecycle Scripts
+# Prevent the execution of preinstall, install, and postinstall scripts.
+# Equivalent to npm's `ignore-scripts=true`. This is a critical defense
+# against malicious code executing automatically upon package download.
+ignoreScripts = true
+
+# 2. Time-Delaying for New Packages
+# Do not download packages published within the last 3 days.
+# The unit in Bun is seconds (3 days = 3 * 24 * 60 * 60 = 259200 seconds).
+# This provides a buffer period to avoid zero-day compromised packages.
+minimumReleaseAge = 259200
+
+# (Optional) Exclude specific internal or highly trusted packages from
+# the time-delay restriction. Uncomment and modify the array as needed.
+# minimumReleaseAgeExcludes = ["@my-company/internal-package"]
+
+# 3. Lock dependency tree
+# Disallow modifications to the lockfile during `bun install`.
+# Ensures that the installed dependencies strictly match the lockfile,
+# preventing unexpected or tampered sub-dependency updates.
+frozenLockfile = true
+
+
+# ===================================================================
+# Security Scanner Integration
+# ===================================================================
+[install.security]
+# Automatically trigger a behavioral security scanner during installation.
+# Note: You must install this scanner (e.g., `bun add -d @socketsecurity/bun-security-scanner`)
+# in your project or globally for it to work.
+# scanner = "@socketsecurity/bun-security-scanner"

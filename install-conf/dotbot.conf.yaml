@@ -46,6 +46,8 @@
 
     # mise
     ~/.config/mise: config/mise
+    # bun
+    ~/.bunfig.toml: config/bunfig.toml
 
     # jj
     ~/.config/jj: config/jj
