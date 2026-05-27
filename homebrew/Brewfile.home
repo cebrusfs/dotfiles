@@ -62,7 +62,6 @@ brew "go"
 brew "pandoc"
 
 # Javascript / Typescript
-# node is in neovim deps, so already put in .min
 brew "typescript"
 
 # Media tools
