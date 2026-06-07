@@ -8,6 +8,11 @@ ruby = "latest"
 uv = "latest"
 
 [settings]
+minimum_release_age = "7d"
 
 [settings.npm]
 bun = true
+package_manager = "bun"
+
+[settings.ruby]
+compile = false
