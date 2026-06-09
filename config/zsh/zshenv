@@ -22,6 +22,13 @@ export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 # GPG
 export GPG_TTY=`tty`
 
+# Corp tool configuration
+# roadwarrior (rw)
+export AUTH_CHECK_REMAINING=true
+export AUTH_TMUX=true
+export AUTH_TMUX_ITERM=true
+export AUTH_TMUX_SESSION=tmux-main
+
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
