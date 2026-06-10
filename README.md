@@ -22,6 +22,7 @@
 
 * Migrated to neovim built-in package management system (nvim 0.12+, not available in common Linux yet)
 * Mise setup for default programming languages environment
+* Move corp `AUTH_*` / `ANDROID_SDK_ROOT` / `JAVA_TOOL_OPTIONS` out of `config/zsh/zshenv` into a gitignored local file (mirror fish's `config.corp.fish`)
 
 
 ## Architecture (5-Phase)
