@@ -6,6 +6,7 @@ fzf = "latest"
 ripgrep = "latest"
 fd = "latest"
 delta = "latest"
+git-lfs = "latest"             # git/config sets filter.lfs.required=true, so this must exist
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@openai/codex" = "latest"
