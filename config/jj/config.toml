@@ -36,6 +36,17 @@ auto-track-bookmarks = "glob:*"
 blame = ["file", "annotate"]
 bl = ["blame"]
 
+# `git pull --rebase` equivalent: fetch, then replant every local stack onto the
+# updated trunk in one shot. jj has no built-in fetch+rebase, so this composes the
+# two steps. `roots(trunk()..mutable())` (built-in `mutable()`/`trunk()`, inlined to
+# avoid a custom revset) picks each stack's root; `-s` carries descendants so
+# stacked work stays intact; `--skip-emptied` drops commits already merged upstream.
+sync = ["util", "exec", "--", "bash", "-c", """
+set -e
+jj git fetch --all-remotes
+jj rebase --skip-emptied --onto 'trunk()' --source 'roots(trunk()..mutable())'
+"""]
+
 [revset-aliases]
 # Private and WIP commits that should never be pushed anywhere. Often part of
 # work-in-progress merge stacks.
@@ -43,12 +54,12 @@ bl = ["blame"]
 'private()' = 'description(glob:"private:*") | description(glob:"DO.?NOT.?SUBMIT:*")'
 'blacklist()' = 'wip() | private()'
 
+[template-aliases]
+diff_counts = "self.diff().summary()"
+
 [signing]
 key = "~/.ssh/id_ed25519.pub"
 backends.ssh.allowed-signers = "~/.config/git/allowed_signers"
-
-[template-aliases]
-diff_counts = "self.diff().summary()"
 
 # Enable signing
 # backend = "ssh"
