@@ -1,22 +1,39 @@
 [tools]
-bun = "latest"
-node = "latest"
-rust = "latest"
+
+#
+# Default dev tools
+#
+
 fzf = "latest"
 ripgrep = "latest"
 fd = "latest"
 delta = "latest"
-git-lfs = "latest"             # git/config sets filter.lfs.required=true, so this must exist
+neovim = "latest"
+
+# JS
+node = "latest"
+bun = "latest"
+
+# Rust
+rust = "latest"
+
+# Ruby
+ruby = "latest"
+
+# Python
+uv = "latest"
+
+# git/config sets filter.lfs.required=true, so this must exist
+git-lfs = "latest"
+
+# Agents
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@openai/codex" = "latest"
 
-ruby = "latest"
-uv = "latest"
-neovim = "latest"
-
 [settings]
 minimum_release_age = "7d"
+minimum_release_age_excludes = []
 
 [settings.npm]
 bun = true
