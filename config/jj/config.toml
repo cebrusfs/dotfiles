@@ -25,7 +25,10 @@ show-cryptographic-signatures = true
 # Prevent upload
 private-commits = 'blacklist()'
 
-# Sign on push, work together with behavior = "drop"
+# Sign on push (works with behavior = "drop"). Off by default: this is the only line
+# that actually attempts signing, and jj hard-fails the push when no key is reachable.
+# Enable it per-machine (where a local or forwarded key is available) as a local,
+# uncommitted toggle.
 # sign-on-push = true
 
 # Automatically track all branches/bookmarks on `origin` remote
@@ -58,9 +61,11 @@ jj rebase --skip-emptied --onto 'trunk()' --source 'roots(trunk()..mutable())'
 diff_counts = "self.diff().summary()"
 
 [signing]
-key = "~/.ssh/id_ed25519.pub"
+# Embedded (not a .pub path) so remote hosts need no key file: ssh-keygen finds the
+# private half in the forwarded ssh-agent, so signing works over `ForwardAgent yes`.
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMysomNRNnZ9+FjuCQKw6rkoulTLUxGJtzAJ09DWx4MQ"
 backends.ssh.allowed-signers = "~/.config/git/allowed_signers"
 
 # Enable signing
-# backend = "ssh"
-# behavior = "own"
+backend = "ssh"
+behavior = "drop"
