@@ -1,5 +1,9 @@
 # Splitting a jj Commit (Non-Interactive)
 
+> **Purpose:** carve an already-mixed `@` into separate commits. **Recovery path** — prefer
+> committing incrementally (rules/jj.md). Use only when concerns are *already* tangled in
+> one commit.
+
 Use `jj restore` to populate new commits from the original — no TUI needed.
 
 ## Workflow
@@ -22,3 +26,9 @@ jj restore --from <COMMIT> other/file
 jj bookmark set <name> -r @   # re-point if needed
 jj abandon <COMMIT>
 ```
+
+## Why sticky junk stays at the leaf (`@`), not the base
+A `private:` commit can't be pushed, and jj refuses to push *any descendant* of it (pushing
+a descendant would require pushing the private one). So junk parked at the base would make
+all work above it unpushable. Keep junk in `@` (the leaf): it has no descendants, work
+commits sit below it and don't carry it as an ancestor, so they push cleanly.

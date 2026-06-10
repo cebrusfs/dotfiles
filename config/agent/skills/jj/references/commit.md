@@ -1,5 +1,8 @@
 # Writing a jj Commit Message
 
+> **Purpose:** write/apply a message for a finished change — one component per message
+> (`<component>: summary`).
+
 - Status: !`jj st`
 - Diff: !`jj diff`
 - History: !`jj log -r 'ancestors(@, 5)' --no-graph -T 'change_id.short() ++ " " ++ description.first_line() ++ "\n"'`
