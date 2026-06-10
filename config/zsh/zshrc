@@ -35,6 +35,14 @@ function _warn() {
 }
 
 #
+# Mise initialize
+#
+
+if _check_command mise; then
+  eval "$(mise activate zsh)"
+fi
+
+#
 # Environment for interactive commands
 #
 
@@ -200,10 +208,7 @@ if _check_command fzf; then
   fi
 fi
 
-# Mise initialize
-if _check_command mise; then
-  eval "$(mise activate)"
-fi
+
 
 # OrbStack initialize
 if _check_command orb; then
