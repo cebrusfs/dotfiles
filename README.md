@@ -24,6 +24,7 @@
 * Mise setup for default programming languages environment
 * Move corp `AUTH_*` / `ANDROID_SDK_ROOT` / `JAVA_TOOL_OPTIONS` out of `config/zsh/zshenv` into a gitignored local file (mirror fish's `config.corp.fish`)
 * Align `config/fish/config.fish` with the current zsh setup once fish is in real use (drop legacy `NPM_PACKAGES` / `~/.cargo/bin` / `~/.gem` / rv-ruby paths that mise/zsh no longer use)
+* Make `config/agent/` (rules, skills, settings) format generic enough to also drive Codex (OpenAI) alongside Claude Code — e.g. portable rules/skills that map to both `~/.claude/` and `~/.agents/` (Codex) layouts
 
 
 ## Architecture (5-Phase)
