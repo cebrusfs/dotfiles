@@ -8,6 +8,16 @@
   "model": "opus",
   "includeCoAuthoredBy": false,
   "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/commit-nudge.sh\""
+          }
+        ]
+      }
+    ],
     "WorktreeCreate": [
       {
         "hooks": [
