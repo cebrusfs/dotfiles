@@ -30,6 +30,13 @@ function is_linux() {
     [[ "$OSTYPE" == linux* ]]
 }
 
+function is_glinux() {
+    if [[ -f /etc/glinux_version ]] || grep -q "go/glinux" /etc/os-release 2>/dev/null; then
+        return 0
+    fi
+    return 1
+}
+
 function is_x86_64() {
     local arch
     arch=$(uname -m)

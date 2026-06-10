@@ -18,6 +18,7 @@
     - [git submodule update --init --recursive, "Installing submodules"]
 
 - create:
+    ~/.config/mise:
     ~/working:
     ~/Applications:
         if: '[[ "$OSTYPE" == darwin* ]]'
@@ -45,7 +46,11 @@
     ~/.p10k.zsh: config/zsh/p10k.zsh
 
     # mise
-    ~/.config/mise: config/mise
+    ~/.config/mise/config.toml: config/mise/config.toml
+    ~/.config/mise/config.local.toml:
+        path: config/mise/config.glinux.local.toml
+        if: '[[ -f /etc/glinux_version ]] || grep -q "go/glinux" /etc/os-release 2>/dev/null'
+
     # bun
     ~/.bunfig.toml: config/bunfig.toml
 
