@@ -141,8 +141,8 @@ if status is-interactive
         fzf --fish | source 2>/dev/null
     end
 
-    # Mise (Runtime Executor)
-    if type -q mise; and not test -x /usr/local/bin/mule
+    # Mise (Runtime Executor) — corp runs mise too (e.g. neovim), so do not gate on /usr/local/bin/mule
+    if type -q mise
         mise activate fish | source
     end
 
