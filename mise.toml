@@ -20,9 +20,14 @@ run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | x
 description = "Check if Bash scripts are formatted correctly"
 run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shfmt -d -i 4"
 
+# No shellcheck equivalent exists for zsh; `zsh -n` does a parse-only syntax check.
+[tasks."lint:zsh"]
+description = "Syntax-check all zsh files using zsh -n"
+run = "for f in config/zsh/*; do zsh -n \"$f\"; done"
+
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash"]
+depends = ["lint:bash", "lint:zsh"]
 
 [tasks."fmt"]
 description = "Run all formatters"

@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - name: Run Bash Format Check
-        run: mise run check-fmt:bash
-      - name: Run Bash Lint
-        run: mise run lint:bash
+      - name: Install zsh (for lint:zsh)
+        run: sudo apt-get update && sudo apt-get install -y zsh
+      - name: Run all checks (lint + format)
+        run: mise run check
