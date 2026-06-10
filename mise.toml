@@ -2,17 +2,23 @@
 shellcheck = "latest"
 shfmt = "latest"
 
+# Shell scripts are auto-collected by `shfmt -f`, which detects them via shebang —
+# so extensionless scripts (install/update/fetch) are caught without a hand-kept list.
+# `shfmt -f` walks the filesystem and ignores .gitignore, so prune third-party code it
+# would otherwise descend into: git submodules (modules/), vendored vim plugins, and
+# zsh dotfiles (config/zsh/, incl. the generated p10k.zsh) — shfmt parses sh/bash, not zsh —
+# and bin/ (vendored third-party tools like checksec, not style-managed here).
 [tasks."lint:bash"]
 description = "Lint all Bash scripts using shellcheck"
-run = "shellcheck install update fetch cleanup_legacy.sh install-conf/*.sh config/vim/update"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shellcheck"
 
 [tasks."fmt:bash"]
 description = "Format all Bash scripts using shfmt"
-run = "shfmt -w -i 4 install update fetch cleanup_legacy.sh install-conf/*.sh config/vim/update"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shfmt -w -i 4"
 
 [tasks."check-fmt:bash"]
 description = "Check if Bash scripts are formatted correctly"
-run = "shfmt -d -i 4 install update fetch cleanup_legacy.sh install-conf/*.sh config/vim/update"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shfmt -d -i 4"
 
 [tasks."lint"]
 description = "Run all linters"

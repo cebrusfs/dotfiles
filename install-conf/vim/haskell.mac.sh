@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 brew install ghc cabal-install
 cabal update
 cabal install happy
