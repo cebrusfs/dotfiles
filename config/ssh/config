@@ -26,7 +26,7 @@ Host nslab
 Host amd-micro
     HostName 152.70.104.204
     User ubuntu
-Host vpn
+Host vpn arm-light
     HostName vpn.cerberus.fish
     User ubuntu
 Host arm-perf
@@ -42,15 +42,18 @@ Host free-us
 
 # }}}
 
-# Work
-Host corp*
-    # Migrated most of config with roadwarrior
-    RequestTTY yes
-
-
-# Default
+# Non-Corp
 Host amd-micro vpn arm-perf free-us ws* !github.com
-    # enable tmux with iterm integration
+    # Auto tmux
     RemoteCommand tmux -CC new -A -s tmux-main
-    # TTY is require to support tmux control command
+
+    # Enable tty
     RequestTTY yes
+
+Host *
+    # SSH Multiplexing
+    #   Prevent 2FA everytime. Faster re-connection.
+    #   But new config (e.g. tunneling) won't take effect immediately other than first connection.
+    ControlMaster auto
+    ControlPath ~/.ssh/sc-%C
+    ControlPersist 10h
