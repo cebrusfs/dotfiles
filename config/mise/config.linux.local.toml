@@ -1,2 +1,2 @@
 [tools]
-"cargo:jujutsu" = "latest"
+"cargo:jj-cli" = "latest"
