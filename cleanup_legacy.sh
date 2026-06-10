@@ -33,6 +33,9 @@ fi
 echo " -> Removing Node.js legacy environments (~/.nvm, ~/.npm, etc)..."
 rm -rf ~/.nvm ~/.n-install ~/.n ~/.npm-global ~/.node-gyp ~/.npm || true
 
+echo " -> Removing legacy ~/.npmrc (clearing old prefixes and obsolete auth tokens)..."
+rm -f ~/.npmrc || true
+
 echo " -> Removing Python legacy environments (~/.pyenv)..."
 rm -rf ~/.pyenv || true
 
