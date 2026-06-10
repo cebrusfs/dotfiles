@@ -12,6 +12,7 @@ fd = "latest"
 
 ruby = "latest"
 uv = "latest"
+neovim = "stable"
 
 [settings]
 minimum_release_age = "7d"

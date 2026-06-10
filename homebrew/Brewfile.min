@@ -23,7 +23,5 @@ brew "mise"
 
 cask "iterm2"
 
-brew "neovim"
-
 # Font support ligatures
 cask "font-fira-code"

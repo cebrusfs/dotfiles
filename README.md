@@ -41,7 +41,8 @@ To ensure cross-platform consistency while accommodating corp internal environme
 |---|---|---|---|---|
 | **Mise** | Version Manager | Homebrew | Official `curl \| sh` | Official `curl \| sh` |
 | **Zsh** | Shell | Built-in / Homebrew | `apt` / `dnf` | `apt` |
-| **Vim / Neovim** | Editor | Homebrew | `apt` / `dnf` | `apt` |
+| **Vim** | Editor | Homebrew | `apt` / `dnf` | `apt` |
+| **Neovim** | Editor | `mise` | `mise` | `mise` |
 | **Rust / Node / Go** | Language | **Mise** | **Mise** | **Mise** |
 | **Ripgrep / fd / fzf** | CLI Tools | **Mise** | **Mise** | **Mise** |
 | **git-delta** | CLI Tools | **Mise** | **Mise** | **Mise** |
@@ -53,7 +54,10 @@ To ensure cross-platform consistency while accommodating corp internal environme
 **1. Tooling Isolation (Corp Compatibility)**
 To prevent `mise` from overriding corp internal variants of tools (like `jj` and `git` which have specific SSO/credential hooks), we decouple them from the global `config.toml`. Instead, they are placed in `config.linux.local.toml`. The `dotbot.conf.yaml` strictly conditionally symlinks this local config *only* on non-gLinux environments. This guarantees Corp machines will never accidentally use the open-source variants.
 
-**2. Script Execution Flow (Sourcing in Place)**
+**2. Editor Strategy (Vim vs Neovim)**
+Vim is installed via native package managers (`apt`, `brew`) to guarantee ubiquitous availability as a fundamental fallback editor on any system. Neovim, however, is fully managed by `mise` to ensure the latest version is consistently available everywhere. Modern Lua plugins and LSP configurations heavily depend on recent Neovim features (0.10+) that are unavailable in outdated Linux package repositories.
+
+**3. Script Execution Flow (Sourcing in Place)**
 The `./install` script employs a strictly linear bootstrap process. Instead of interrupting the flow with an `exec zsh -c` to evaluate new tools, it uses `eval "$(mise activate bash)"` and `eval "$(/opt/homebrew/bin/brew shellenv)"` directly in the active Bash session. The script only commits to an `exec zsh -l` at the absolute very end of the execution (Phase 5). This prevents unpredictable subshell loops and ensures idempotency.
 
 ## INSTALL

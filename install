@@ -41,7 +41,6 @@ function os_packages_main() {
     elif is_linux; then
         linux_install zsh
         linux_install vim
-        linux_install neovim
     else
         error "Unknown OSTYPE: $OSTYPE"
     fi
