@@ -24,6 +24,38 @@
 * Mise setup for default programming languages environment
 
 
+## Architecture (5-Phase)
+
+The `./install` script executes a clean 5-phase bootstrap process:
+- **Phase 1: Dotbot Init & Symlinks**: Initialize submodules and create dotfile symlinks.
+- **Phase 2: OS Packages Setup**: Install system-level dependencies requiring root/sudo via `Brewfile.min` on macOS or batched `apt`/`dnf` on Linux.
+- **Phase 3: Dev Tools & Binaries**: Bootstrap `mise` and use `mise deps install` to install programming languages (Rust, Node.js, Go) and modern CLI tools (rg, fzf, delta).
+- **Phase 4: Vim Plugins**: Run PlugUpdate to install Vim/Neovim plugins automatically.
+- **Phase 5: Shell Configuration**: Ensure Zsh is the default shell and cleanly transition the shell session.
+
+## Package Management Strategy
+
+To ensure cross-platform consistency while accommodating corp internal environment (gLinux) security requirements, packages are routed as follows:
+
+| Package | Category | macOS | Personal Linux | gLinux (Corp) |
+|---|---|---|---|---|
+| **Mise** | Version Manager | Homebrew | Official `curl \| sh` | Official `curl \| sh` |
+| **Zsh** | Shell | Built-in / Homebrew | `apt` / `dnf` | `apt` |
+| **Vim / Neovim** | Editor | Homebrew | `apt` / `dnf` | `apt` |
+| **Rust / Node / Go** | Language | **Mise** | **Mise** | **Mise** |
+| **Ripgrep / fd / fzf** | CLI Tools | **Mise** | **Mise** | **Mise** |
+| **git-delta** | CLI Tools | **Mise** | **Mise** | **Mise** |
+| **Jujutsu (jj)** | VCS Tool | Homebrew | **Mise** | 🔴 **Corp `apt` (Mise disabled)** |
+| **Tmux / Git** | Core Tools | Homebrew | `apt` / `dnf` | 🔴 **Corp `apt` (Mise disabled)** |
+
+### Design Decisions & Best Practices
+
+**1. Tooling Isolation (Corp Compatibility)**
+To prevent `mise` from overriding corp internal variants of tools (like `jj` and `git` which have specific SSO/credential hooks), we decouple them from the global `config.toml`. Instead, they are placed in `config.linux.local.toml`. The `dotbot.conf.yaml` strictly conditionally symlinks this local config *only* on non-gLinux environments. This guarantees Corp machines will never accidentally use the open-source variants.
+
+**2. Script Execution Flow (Sourcing in Place)**
+The `./install` script employs a strictly linear bootstrap process. Instead of interrupting the flow with an `exec zsh -c` to evaluate new tools, it uses `eval "$(mise activate bash)"` and `eval "$(/opt/homebrew/bin/brew shellenv)"` directly in the active Bash session. The script only commits to an `exec zsh -l` at the absolute very end of the execution (Phase 5). This prevents unpredictable subshell loops and ensures idempotency.
+
 ## INSTALL
 
 ```sh
