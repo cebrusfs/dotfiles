@@ -28,4 +28,6 @@
 
     "workbench.preferredDarkColorTheme": "Default Dark Modern",
     "window.commandCenter": true,
+    "antigravity.marketplaceGalleryItemURL": "",
+    "antigravity.marketplaceExtensionGalleryServiceURL": "",
 }
