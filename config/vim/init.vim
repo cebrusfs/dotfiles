@@ -188,6 +188,9 @@ endif
     " TODO: compare neogit or lazygit?
     Plug 'tpope/vim-fugitive'
 
+    " Map <Leader>g as the prefix for Git shortcuts
+    nmap <Leader>g <Plug>(key-git)
+
     nnoremap <silent> <Plug>(key-git)s      :<C-u>Git<CR>
     nnoremap <silent> <Plug>(key-git)d      :<C-u>Gdiff<CR>
     " nnoremap <silent> <Plug>(key-git)dp      :<C-u>diffput<CR>
