@@ -60,7 +60,7 @@ brew "ghc"
 brew "cabal-install"
 
 # Javascript
-brew "node"
+# node is managed by mise (config/mise/config.toml), not brew — see cleanup_legacy.sh
 
 # Golang
 brew "go"
