@@ -25,11 +25,11 @@ function error() {
 }
 
 function pushd() {
-    command pushd "$@" > /dev/null || return
+    command pushd "$@" >/dev/null || return
 }
 
 function popd() {
-    command popd "$@" > /dev/null || return
+    command popd "$@" >/dev/null || return
 }
 
 function is_osx() {

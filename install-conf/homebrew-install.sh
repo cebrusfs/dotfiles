@@ -4,6 +4,7 @@
 set -e
 
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+# shellcheck source=/dev/null
 source "${BASEDIR}/utils.sh"
 
 function homebrew_install() {
@@ -14,6 +15,7 @@ function homebrew_install() {
     export PATH="/opt/homebrew/bin:/usr/local/bin"
 
     # Fix app path
+    # shellcheck source=/dev/null
     source ~/.zshenv
 
     brew analytics off

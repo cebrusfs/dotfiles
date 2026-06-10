@@ -11,15 +11,15 @@ if [[ "$OSTYPE" == darwin* ]]; then
     echo "[macOS] Cleaning up Brew..."
     # We leave jujutsu in Brew for Mac, so we don't uninstall it.
     # We remove the CLI tools & languages now managed by mise.
-    brew uninstall node nvm pyenv rbenv rustup-init fzf ripgrep fd git-delta bun go ruby 2>/dev/null || true
+    brew uninstall node nvm pyenv rbenv rustup-init fzf ripgrep fd git-delta bun go ruby shellcheck shfmt 2>/dev/null || true
     brew autoremove || true
 elif [[ -f /etc/glinux_version ]] || grep -q "go/glinux" /etc/os-release 2>/dev/null; then
     echo "[gLinux] Cleaning up APT..."
-    sudo apt-get remove --purge -y nodejs npm python3-venv python3-pip ruby golang ripgrep fd-find fzf 2>/dev/null || true
+    sudo apt-get remove --purge -y nodejs npm python3-venv python3-pip ruby golang ripgrep fd-find fzf shellcheck shfmt 2>/dev/null || true
     sudo apt-get autoremove -y || true
 else
     echo "[Personal Linux] Cleaning up APT..."
-    sudo apt-get remove --purge -y nodejs npm python3-venv python3-pip ruby golang ripgrep fd-find fzf 2>/dev/null || true
+    sudo apt-get remove --purge -y nodejs npm python3-venv python3-pip ruby golang ripgrep fd-find fzf shellcheck shfmt 2>/dev/null || true
     sudo apt-get autoremove -y || true
 fi
 

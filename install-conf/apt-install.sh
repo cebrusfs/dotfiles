@@ -4,6 +4,7 @@
 set -e
 
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+# shellcheck source=/dev/null
 source "${BASEDIR}/utils.sh"
 
 function install_pkgs() {

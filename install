@@ -4,6 +4,7 @@
 set -e
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
 source "${BASEDIR}/install-conf/utils.sh"
 
 DOTBOT_DIR="modules/dotbot"
@@ -31,6 +32,7 @@ function dotbot_main() {
 
 function os_packages_main() {
     if is_osx; then
+        # shellcheck source=/dev/null
         . install-conf/homebrew-install.sh
         # Make sure brew is in PATH for later steps
         if [[ -f "/opt/homebrew/bin/brew" ]]; then
@@ -60,7 +62,7 @@ function dev_tools_main() {
     if check_command mise; then
         # Activate mise to ensure its shims are in PATH and can be used immediately
         eval "$(mise activate bash)"
-        
+
         # Bootstrap bun and rust first so mise can use them for npm: and cargo: packages
         log "Bootstrapping bun and rust via mise..."
         mise install bun rust -y
@@ -77,6 +79,7 @@ function dev_tools_main() {
 function vim_plugins_main() {
     log "Install VIM plugins"
     # Plugins update (Mason, Plug, etc)
+    # shellcheck source=/dev/null
     . config/vim/update
 }
 
@@ -109,7 +112,7 @@ function main() {
 
     print_stage "Installation Completed Successfully! 🎉"
 
-    popd
+    popd >/dev/null
 
     # Switch shell at the very last step to replace the old behavior that caused script restarting mid-way
     if [[ "$SHELL" != *zsh ]]; then
