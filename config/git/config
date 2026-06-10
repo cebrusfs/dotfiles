@@ -19,7 +19,9 @@
 
 [merge]
 	tool = vimdiff
-	conflictStyle = zdiff3 # TODO: don't know what's for
+	# zdiff3: show the common ancestor (base) in conflict markers and hoist
+	# shared lines out of the conflict, giving smaller/clearer hunks than diff3
+	conflictStyle = zdiff3
 
 [mergetool]
 	prompt = false
