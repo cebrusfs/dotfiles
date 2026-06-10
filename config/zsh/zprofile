@@ -43,9 +43,7 @@ typeset -gU cdpath fpath mailpath path
 #   $cdpath
 # )
 
-# Node
-NPM_PACKAGES="${HOME}/.npm-packages"
-export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
 
 # Set the list of directories that Zsh searches for programs.
 # (N) to remove the path when the path is not found.
@@ -53,15 +51,8 @@ path=(
   $HOME/bin                             # Customized binary/script managed by git
 
   # Programing Language and packages
-  $HOME/.cargo/bin(N)                   # Rust: Local install path
-
   $HOME/.local/bin                      # Python: uv path
   $HOME/Library/Python/*/bin(N)         # Python: Local pip path for OSX
-
-  $NPM_PACKAGES/bin(N)                  # Node: Local npm packages path
-
-  $HOME/.data/rv/rubies/ruby-*/bin(N)   # Ruby: rv path
-  $HOME/.gem/ruby/*/bin(N)              # Ruby: rv gem path
 
   $HOME/.codeium/windsurf/bin(N)        # Windsurf
 
