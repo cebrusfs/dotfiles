@@ -18,14 +18,18 @@ Baseline rules (mental model, non-interactive requirements, state-exploration) l
 | Recover from a mistake / resolve conflicts | `references/recovery.md` |
 
 ## Quick reminders
-- `jj new` on a clean `@` before edits so `jj absorb` can route changes correctly later.
-- For `abandon` / `squash` / `rebase` on shared/pushed changes, verify target is local with `jj log` first.
+- Baseline (mental model, hard rules, flow choice) is always-on in `rules/jj.md`; this skill holds the heavier recipes.
 
-## 🔄 Autonomous Fixup Loop (Loop Engineering)
-Instead of waiting for human verification after every minor code change, execute an autonomous loop:
-1. **Act**: Run `jj new -m "fixup"` to create an isolated checkpoint, then apply your code changes.
-2. **Verify**: Run the project's build/test command.
-3. **Evaluate**:
-   - 🟢 **Pass**: `jj squash` the fixup(s) into the target commit to keep history clean.
-   - 🔴 **Fail**: Read the error. DO NOT destroy the commit. Create another `jj new -m "fixup"` to try an alternative approach. This shows progress over counting.
-4. **🛑 Safety Brake**: If you stack >5 fixup commits without resolving the test failure, stop and ask the user for guidance. Your fixup history will serve as the "dev journal" for the human to review.
+## Amending a commit in a stack
+Mutable commits can be rewritten. Two ways:
+
+- **Direct amend** (default): edit, then `jj squash` into the target (or `jj absorb`).
+- **Visible fixup** (when the amendment should stay separately reviewable — e.g. answering review on a shared commit): add a commit right after the target so its diff shows exactly what changed; squash it in once it no longer needs to be visible.
+
+```bash
+jj new --after <target> -m "<component>: fix up <target>"
+# make the changes here
+jj squash --from <fixup> --into <target>
+```
+
+A→B→C becomes A→fixupA→B→fixupB→C→fixupC; squash each before finalizing.
