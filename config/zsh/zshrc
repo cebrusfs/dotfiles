@@ -76,8 +76,7 @@ fi
 if _check_command fd ; then
   export FZF_DEFAULT_COMMAND="$(which fd) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  alias fd='fdfind'
-# Debian/Ubuntu use 'fdfind' binary name instead, use 'fdfind' as ballback
+# Debian/Ubuntu ship the binary as 'fdfind'; alias it back to 'fd' as a fallback
 elif _check_command fdfind ; then
   export FZF_DEFAULT_COMMAND="$(which fdfind) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
