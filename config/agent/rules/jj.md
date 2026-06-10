@@ -28,7 +28,7 @@ alwaysApply: true
 | `jj resolve` | read `/jj` skill first |
 
 ## State exploration
-- Default: `jj st` or `jj log -n 3 --no-graph -T commit_summary`
+- Default: `jj st` or `jj log -n 3 --no-graph -T builtin_log_oneline`
 - Scoped: `jj log -r 'main..@'`
 
 For workflow details (skeleton, commit messages, split, recovery), invoke the `jj` skill.
