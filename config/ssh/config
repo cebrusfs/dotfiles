@@ -32,6 +32,11 @@ Host vpn arm-light
 Host arm-perf
     HostName 138.3.221.172
     User ubuntu
+    ForwardAgent yes
+
+Host amd-oracle
+    HostName 140.245.83.228
+    User opc
 
 # GCP
 Host free-us
@@ -43,17 +48,28 @@ Host free-us
 # }}}
 
 # Non-Corp
-Host amd-micro vpn arm-perf free-us ws* !github.com
+Host amd-micro vpn arm-perf amd-oracle free-us ws*
     # Auto tmux
     RemoteCommand tmux -CC new -A -s tmux-main
 
     # Enable tty
     RequestTTY yes
 
-Host *
-    # SSH Multiplexing
-    #   Prevent 2FA everytime. Faster re-connection.
-    #   But new config (e.g. tunneling) won't take effect immediately other than first connection.
+# SSH has no "inherit"/"use" directive; `Tag NAME` on a host + a `Match tagged NAME`
+# block below is the closest. A host opts into multiplexing with a single line:
+#
+#     Host corp-box
+#         HostName ...
+#         Tag multiplex
+#
+# The definition must sit BELOW the tagged hosts (ssh reads top-down; `Match tagged`
+# only sees tags set earlier), so keep this at the end of the file. Multiplexing is
+# left off for personal hosts on purpose: with key auth + tmux -CC (one long-lived
+# connection) it saves little and brings stale forwarded-agent / stale-socket issues.
+# Corp hosts, where per-connection 2FA makes reuse worth it, tag in explicitly.
+Match tagged multiplex
     ControlMaster auto
     ControlPath ~/.ssh/sc-%C
+    # Long persist maximizes 2FA-skip across a work session. Lower it if you also
+    # forward your agent to the host, to shrink the stale-forwarded-agent window.
     ControlPersist 10h
