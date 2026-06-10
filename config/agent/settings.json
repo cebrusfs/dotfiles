@@ -5,6 +5,7 @@
       "Bash(jj op *)"
     ]
   },
+  "model": "opus",
   "hooks": {
     "WorktreeCreate": [
       {
@@ -38,7 +39,8 @@
     "claude-code-setup@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
-    "context7@claude-plugins-official": true
+    "context7@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {},
   "language": "台灣繁體中文",
