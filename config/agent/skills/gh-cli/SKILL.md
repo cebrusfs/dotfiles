@@ -58,3 +58,12 @@ Each issue has at most one parent. Re-parent = remove old, then add new.
 
 ## Reference
 Advanced filtering, jq patterns, GraphQL, PR queries: `examples/issues_metadata_examples.md`
+
+## 🔄 Autonomous Issue Resolution Loop (Loop Engineering)
+When instructed to resolve an issue, use GitHub as your state backend to maintain a transparent, resilient loop:
+1. **Plan & Context**: Add a comment (`gh issue comment <issue> --body "Starting work. Plan: ..."`) and mark it `in-progress` (if labels are used).
+2. **Act & Verify**: Write the code and run local tests/linters.
+3. **Observe & Evaluate**:
+   - 🟢 **Success**: Create a PR or commit, and close the issue (`gh issue close <issue> --reason completed`).
+   - 🔴 **Failure**: Document the error in a new comment to maintain a persistent history of the inner loop, and retry.
+4. **🛑 Safety Brake (Escalate)**: If the exact same opaque error occurs 3 times, or you exceed 5-7 iterations without progress, stop. Comment `@user Blocked on [error]`, add a `blocked` label, and wait for human guidance.

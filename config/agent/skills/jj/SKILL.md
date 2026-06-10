@@ -20,3 +20,12 @@ Baseline rules (mental model, non-interactive requirements, state-exploration) l
 ## Quick reminders
 - `jj new` on a clean `@` before edits so `jj absorb` can route changes correctly later.
 - For `abandon` / `squash` / `rebase` on shared/pushed changes, verify target is local with `jj log` first.
+
+## 🔄 Autonomous Fixup Loop (Loop Engineering)
+Instead of waiting for human verification after every minor code change, execute an autonomous loop:
+1. **Act**: Run `jj new -m "fixup"` to create an isolated checkpoint, then apply your code changes.
+2. **Verify**: Run the project's build/test command.
+3. **Evaluate**:
+   - 🟢 **Pass**: `jj squash` the fixup(s) into the target commit to keep history clean.
+   - 🔴 **Fail**: Read the error. DO NOT destroy the commit. Create another `jj new -m "fixup"` to try an alternative approach. This shows progress over counting.
+4. **🛑 Safety Brake**: If you stack >5 fixup commits without resolving the test failure, stop and ask the user for guidance. Your fixup history will serve as the "dev journal" for the human to review.
