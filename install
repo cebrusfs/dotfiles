@@ -29,89 +29,62 @@ function dotbot_main() {
     dotbot_install "$@"
 }
 
-
-function zsh_main() {
-    if ! check_command zsh; then
-        # OSX should have zsh by default
-        if is_linux; then
-            linux_install zsh
-        else
-            error "No zsh is installed"
-        fi
-    fi
-
-    if [[ "$SHELL" != *zsh ]]; then
-        log "Current shell is not zsh, switch default shell to zsh"
-        chsh -s "$(which zsh)"
-
-        log "Enable the setting in zsh before starting the later steps"
-        if [[ "$SHELL" != *zsh ]]; then
-            exec zsh --login -c "$BASEDIR/install"
-        fi
-    fi
-}
-
-function vim_install_deps_linux() {
-    # vim modules deps
-    # * linter/formatter installation of Mason)
-    linux_install nodejs
-    linux_install npm
-
-    # vim / neovim
-    linux_install vim
-    linux_install neovim
-}
-
-function vim_install_dev_tools() {
-    # Use Mason that will auto download and install dev tools. We don't need to manually install stuff now.
-
-    # Rust
-    # TODO: move outside from vim deps
-    # Use rustup. Avoid using package manager like "apt" or "homebrew" to avoid potencial issue.
-    if ! check_command rustup; then
-        # sh -s: read script from stdin
-        # --no-modify-path: avoid modify shell config for adding PATH. It is already set.
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-    else
-        # Use update for toolchain and self-update, instead of installing again.
-        rustup update
-    fi
-
-}
-
-function vim_main() {
-    log "Install VIM dependancies"
-    # We don't need to handle OSX since packages are installed by homebrew bundle
+function os_packages_main() {
     if is_osx; then
-        :
+        . install-conf/homebrew-install.sh
+        # Make sure brew is in PATH for later steps
+        if [[ -f "/opt/homebrew/bin/brew" ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
     elif is_linux; then
-        vim_install_deps_linux
+        linux_install zsh
+        linux_install vim
+        linux_install neovim
     else
-        error "Unkown OSTYPE: $OSTYPE"
+        error "Unknown OSTYPE: $OSTYPE"
+    fi
+}
+
+function dev_tools_main() {
+    if ! check_command mise; then
+        log "Installing mise..."
+        if is_osx; then
+            brew install mise
+        elif is_linux; then
+            MISE_QUIET=1 curl -s https://mise.run | sh
+            # Ensure it is in PATH for this script session
+            export PATH="$HOME/.local/bin:$PATH"
+        fi
     fi
 
-    vim_install_dev_tools
+    if check_command mise; then
+        # Activate mise to ensure its shims are in PATH and can be used immediately
+        eval "$(mise activate bash)"
+        
+        # Bootstrap bun and rust first so mise can use them for npm: and cargo: packages
+        log "Bootstrapping bun and rust via mise..."
+        mise install bun rust -y
 
-    # install vim plugin
+        # At this point, Phase 1 has already symlinked ~/.config/mise/config*.toml
+        # So mise will read the correct global config when running install
+        log "Running 'mise install' to fetch the remaining CLI tools..."
+        mise install -y
+    else
+        error "mise not found! Installation failed."
+    fi
+}
+
+function vim_plugins_main() {
+    log "Install VIM plugins"
+    # Plugins update (Mason, Plug, etc)
     . config/vim/update
 }
 
-function package_manager_main() {
-    log "Install OS package manager"
-    if is_osx; then
-        . install-conf/homebrew-install.sh
-    elif is_linux; then
-        :
-    else
-        error "Unkown OSTYPE: $OSTYPE"
+function zsh_setup_main() {
+    if [[ "$SHELL" != *zsh ]]; then
+        log "Current shell is not zsh, switch default shell to zsh"
+        chsh -s "$(which zsh)"
     fi
-}
-
-function zsh_deps_main() {
-    linux_install ripgrep
-    linux_install fd-find
-    linux_install fzf
-    linux_install git-delta
 }
 
 function main() {
@@ -119,15 +92,30 @@ function main() {
 
     pushd "${BASEDIR}"
 
+    print_stage "Phase 1: Create Symlinks (Dotbot)"
     dotbot_main "$@"
-    zsh_main
-    package_manager_main
-    zsh_deps_main
-    vim_main
 
-    log "Completed!"
+    print_stage "Phase 2: Install OS dependencies (OS Packages)"
+    os_packages_main
+
+    print_stage "Phase 3: Install development tools (Dev Tools)"
+    dev_tools_main
+
+    print_stage "Phase 4: Install Vim/Neovim plugins"
+    vim_plugins_main
+
+    print_stage "Phase 5: Set Zsh as default shell"
+    zsh_setup_main
+
+    print_stage "Installation Completed Successfully! 🎉"
 
     popd
+
+    # Switch shell at the very last step to replace the old behavior that caused script restarting mid-way
+    if [[ "$SHELL" != *zsh ]]; then
+        log "Restarting shell to apply changes..."
+        exec zsh -l
+    fi
 }
 
 main "$@"

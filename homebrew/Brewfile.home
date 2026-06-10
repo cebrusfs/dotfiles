@@ -10,6 +10,14 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
 
 
 #
+# Remote Working & VCS (Personal Mac only)
+#
+brew "tmux"
+brew "mosh"
+brew "git"
+brew "jj"                       # Next-gen VCS
+
+#
 # sudo required
 #
 

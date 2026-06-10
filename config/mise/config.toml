@@ -1,6 +1,11 @@
 [tools]
 bun = "latest"
 node = "latest"
+rust = "latest"
+fzf = "latest"
+ripgrep = "latest"
+fd = "latest"
+"cargo:git-delta" = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@openai/codex" = "latest"

@@ -14,9 +14,8 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.min").read
 #
 
 # Remote working
-brew "tmux"
+# (Moved to Brewfile.home to protect gMac corp versions)
 brew "tmux-mem-cpu-load"        # show mem/cpu load in tmux
-brew "mosh"
 
 # System monitor
 brew "tree"
@@ -29,8 +28,7 @@ brew "netcat"
 brew "wget"
 
 # Version control system (VCS)
-brew "git"
-brew "jj"                       # Next-gen VCS
+# (Moved to Brewfile.home to protect gMac corp versions)
 
 # Misc
 brew "md5sha1sum"

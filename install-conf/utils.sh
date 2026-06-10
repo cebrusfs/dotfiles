@@ -2,9 +2,19 @@
 # vim: syntax=sh:
 
 function log() {
-    local COLOR='\033[1;35m'
+    local COLOR='\033[0;35m'
     local NO_COLOR='\033[0m'
     printf "%b>> %s%b\n" "${COLOR}" "${1}" "${NO_COLOR}"
+}
+
+function print_stage() {
+    local COLOR='\033[0;36m'
+    local NO_COLOR='\033[0m'
+    echo ""
+    echo -e "${COLOR}======================================================================${NO_COLOR}"
+    echo -e "${COLOR}  $1  ${NO_COLOR}"
+    echo -e "${COLOR}======================================================================${NO_COLOR}"
+    echo ""
 }
 
 function error() {

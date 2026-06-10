@@ -48,8 +48,8 @@
     # mise
     ~/.config/mise/config.toml: config/mise/config.toml
     ~/.config/mise/config.local.toml:
-        path: config/mise/config.glinux.local.toml
-        if: '[[ -f /etc/glinux_version ]] || grep -q "go/glinux" /etc/os-release 2>/dev/null'
+        path: config/mise/config.linux.local.toml
+        if: '[[ "$OSTYPE" == linux* ]] && ! [[ -f /etc/glinux_version ]] && ! grep -q "go/glinux" /etc/os-release 2>/dev/null'
 
     # bun
     ~/.bunfig.toml: config/bunfig.toml
