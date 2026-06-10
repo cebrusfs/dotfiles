@@ -4,6 +4,10 @@
 > committing incrementally (rules/jj.md). Use only when concerns are *already* tangled in
 > one commit.
 
+**Not this if** the parts already belong to existing ancestor commits — `jj absorb`
+(recovery.md) auto-routes each hunk to the right ancestor; manual split is for carving
+into *new* commits.
+
 Use `jj restore` to populate new commits from the original — no TUI needed.
 
 ## Workflow

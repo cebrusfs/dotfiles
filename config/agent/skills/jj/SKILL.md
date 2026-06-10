@@ -23,7 +23,7 @@ Baseline rules (mental model, non-interactive requirements, state-exploration) l
 ## Amending a commit in a stack
 Mutable commits can be rewritten. Two ways:
 
-- **Direct amend** (default): edit, then `jj squash` into the target (or `jj absorb`).
+- **Direct amend** (default): edit, then `jj squash` into the target. If the edits are spread across several existing stack commits, `jj absorb` auto-routes each hunk to the ancestor that last touched those lines — start work on a clean `@` so the hunks route cleanly.
 - **Visible fixup** (when the amendment should stay separately reviewable — e.g. answering review on a shared commit): add a commit right after the target so its diff shows exactly what changed; squash it in once it no longer needs to be visible.
 
 ```bash
