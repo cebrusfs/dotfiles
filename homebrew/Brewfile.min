@@ -11,11 +11,9 @@ cask_args appdir: "~/Applications", require_sha: true
 # Shell / System Util Core
 #
 
-# Zsh dependancy
-brew "colordiff"                    # colorful diff used in zpretzo
-
 # General binary manager for managing python, ruby, golang...etc
 brew "mise"
+
 
 #
 # Shell and VIM

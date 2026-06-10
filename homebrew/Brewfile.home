@@ -13,7 +13,6 @@ instance_eval File.new("#{ENV['HOME']}/.dotfiles/homebrew/Brewfile.work").read
 # Remote Working & VCS (Personal Mac only)
 #
 brew "tmux"
-brew "mosh"
 brew "git"
 brew "jj"                       # Next-gen VCS
 
@@ -21,12 +20,7 @@ brew "jj"                       # Next-gen VCS
 # sudo required
 #
 
-#cask "xquartz"
-#cask "mactex"
-
-#cask "bitwarden"            # Password manager # Use App Store
-
-cask "parallels"
+#cask "bitwarden"            # Password manager (Used App Store)
 
 cask "clip-studio-paint"    # painting
 
@@ -34,18 +28,23 @@ cask "clip-studio-paint"    # painting
 # Developing
 #
 
+# Agent
+cask "claude"
+
 # IDE tools
 cask "visual-studio-code"
-cask "cursor"
-cask "windsurf"
+cask "antigravity"
+
+# Container
+cask "orbstack"             # faster Docker client/server on Mac
 
 # GPG tools
 #cask "gpg-suite-no-mail"
 #brew "gnupg"
 
 # VPN client
-# Wireguard via App store
-# Tailscale via App store
+# Wireguard (Used App store)
+# Tailscale (Used App store)
 
 #
 # Programming Language
