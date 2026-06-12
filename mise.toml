@@ -25,3 +25,7 @@ depends = ["fmt:bash"]
 [tasks."check-fmt"]
 description = "Check all formatters"
 depends = ["check-fmt:bash"]
+
+[tasks."check"]
+description = "Run all checks (file keep unchanged)"
+depends = ["lint", "check-fmt"]
