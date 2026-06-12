@@ -1,5 +1,15 @@
 #!/bin/bash
 # vim: syntax=bash:
+#
+# ============================================================================
+# ROLE & GOAL:
+# This is the "Full Sync & Bootstrap" script.
+# Its purpose is to perform a heavy, declarative synchronization of the system
+# state against the configuration files. It handles everything from creating
+# symlinks, installing OS packages, to installing all missing dev tools via `mise`
+# and PRUNING unused tools. It should be run when setting up a new environment
+# or when applying structural changes to the dotfiles.
+# ============================================================================
 
 set -e
 
@@ -18,6 +28,7 @@ function dotbot_install() {
     echo ""
 }
 
+# Initialize and sync dotbot git submodules
 function dotbot_init() {
     log "Initialize dotbot module"
     git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
@@ -25,11 +36,13 @@ function dotbot_init() {
     echo ""
 }
 
+# Phase 1: Set up symlinks using Dotbot
 function dotbot_main() {
     dotbot_init
     dotbot_install "$@"
 }
 
+# Phase 2: Install system-level dependencies (Homebrew for macOS, APT/DNF for Linux)
 function os_packages_main() {
     if is_osx; then
         # shellcheck source=/dev/null
@@ -46,6 +59,8 @@ function os_packages_main() {
     fi
 }
 
+# Phase 3: Bootstrap `mise` and install/prune development tools
+# This step ensures the exact toolset declared in config.toml is installed.
 function dev_tools_main() {
     if ! check_command mise; then
         log "Installing mise..."
@@ -78,6 +93,7 @@ function dev_tools_main() {
     fi
 }
 
+# Phase 4: Install and update Vim/Neovim plugins
 function vim_plugins_main() {
     log "Install VIM plugins"
     # Plugins update (Mason, Plug, etc)
@@ -85,6 +101,7 @@ function vim_plugins_main() {
     . config/vim/update
 }
 
+# Phase 5: Ensure Zsh is the default shell
 function zsh_setup_main() {
     if [[ "$SHELL" != *zsh ]]; then
         log "Current shell is not zsh, switch default shell to zsh"

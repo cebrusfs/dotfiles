@@ -1,11 +1,21 @@
 #!/bin/bash
 # vim: syntax=sh:
+#
+# ============================================================================
+# ROLE & GOAL:
+# This is the "Daily Upgrade & Pull" script.
+# Its purpose is to quickly pull the latest changes from the dotfiles repository
+# and upgrade existing dev tools to their latest versions. It intentionally skips 
+# the heavy installation and pruning steps (`mise prune`) to avoid unintentionally 
+# wiping out manually installed or experimental tools. Run this for regular maintenance.
+# ============================================================================
 
 set -e
 
 BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
 source "${BASEDIR}/install-conf/utils.sh"
 
+# Pull the latest commits from the dotfiles repository
 function update_self() {
     log "Pull/update dotfiles"
 
@@ -15,6 +25,7 @@ function update_self() {
     git pull --autostash --recurse-submodules 2>/dev/null || git pull --autostash 2>/dev/null || git pull
 }
 
+# Update external git submodules to their remote or pinned versions
 function update_submodule() {
     #zprezto-update
 
@@ -26,11 +37,13 @@ function update_submodule() {
     git submodule foreach --recursive git submodule update --init
 }
 
+# Hard reset submodules to the committed state (unused by default, but available for recovery)
 function restore_submodule() {
     git submodule sync --recursive
     git submodule update --init --recursive
 }
 
+# Upgrade all development tools managed by `mise` (without pruning unlisted ones)
 function update_dev_tools() {
     if check_command mise; then
         log "Upgrading dev tools via mise..."
