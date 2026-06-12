@@ -62,9 +62,9 @@ function dev_tools_main() {
         # Activate mise to ensure its shims are in PATH and can be used immediately
         eval "$(mise activate bash)"
 
-        # Bootstrap bun and rust first so mise can use them for npm: and cargo: packages
-        log "Bootstrapping bun and rust via mise..."
-        mise install bun rust -y
+        # Bootstrap bun first so mise can use it for npm: packages
+        log "Bootstrapping bun via mise..."
+        mise install bun -y
 
         # At this point, Phase 1 has already symlinked ~/.config/mise/config*.toml
         # So mise will read the correct global config when running install
