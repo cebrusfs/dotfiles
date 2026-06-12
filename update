@@ -31,6 +31,13 @@ function restore_submodule() {
     git submodule update --init --recursive
 }
 
+function update_dev_tools() {
+    if check_command mise; then
+        log "Upgrading dev tools via mise..."
+        mise upgrade -y
+    fi
+}
+
 
 function main() {
     pushd "${BASEDIR}"
@@ -44,6 +51,8 @@ function main() {
 
     # update vim plugin
     . config/vim/update
+
+    update_dev_tools
 
     popd
 }
