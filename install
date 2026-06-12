@@ -70,6 +70,9 @@ function dev_tools_main() {
         # So mise will read the correct global config when running install
         log "Running 'mise install' to fetch the remaining CLI tools..."
         mise install -y
+
+        log "Pruning unused mise tools..."
+        mise prune -y
     else
         error "mise not found! Installation failed."
     fi
