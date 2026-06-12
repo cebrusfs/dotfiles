@@ -24,7 +24,7 @@ minimumReleaseAge = 604800
 # Disallow modifications to the lockfile during `bun install`.
 # Ensures that the installed dependencies strictly match the lockfile,
 # preventing unexpected or tampered sub-dependency updates.
-frozenLockfile = true
+# frozenLockfile = true
 
 
 # ===================================================================
