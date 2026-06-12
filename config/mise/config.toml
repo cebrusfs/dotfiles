@@ -12,7 +12,7 @@ delta = "latest"
 
 ruby = "latest"
 uv = "latest"
-neovim = "stable"
+neovim = "latest"
 
 [settings]
 minimum_release_age = "7d"
