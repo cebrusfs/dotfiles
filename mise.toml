@@ -4,15 +4,15 @@ shfmt = "latest"
 
 [tasks."lint:bash"]
 description = "Lint all Bash scripts using shellcheck"
-run = "shellcheck install cleanup_legacy.sh install-conf/*.sh"
+run = "shellcheck install update fetch cleanup_legacy.sh re-sign.sh install-conf/*.sh config/vim/update"
 
 [tasks."fmt:bash"]
 description = "Format all Bash scripts using shfmt"
-run = "shfmt -w -i 4 install cleanup_legacy.sh install-conf/*.sh"
+run = "shfmt -w -i 4 install update fetch cleanup_legacy.sh re-sign.sh install-conf/*.sh config/vim/update"
 
 [tasks."check-fmt:bash"]
 description = "Check if Bash scripts are formatted correctly"
-run = "shfmt -d -i 4 install cleanup_legacy.sh install-conf/*.sh"
+run = "shfmt -d -i 4 install update fetch cleanup_legacy.sh re-sign.sh install-conf/*.sh config/vim/update"
 
 [tasks."lint"]
 description = "Run all linters"
@@ -21,3 +21,7 @@ depends = ["lint:bash"]
 [tasks."fmt"]
 description = "Run all formatters"
 depends = ["fmt:bash"]
+
+[tasks."check-fmt"]
+description = "Check all formatters"
+depends = ["check-fmt:bash"]

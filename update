@@ -5,8 +5,8 @@
 # ROLE & GOAL:
 # This is the "Daily Upgrade & Pull" script.
 # Its purpose is to quickly pull the latest changes from the dotfiles repository
-# and upgrade existing dev tools to their latest versions. It intentionally skips 
-# the heavy installation and pruning steps (`mise prune`) to avoid unintentionally 
+# and upgrade existing dev tools to their latest versions. It intentionally skips
+# the heavy installation and pruning steps (`mise prune`) to avoid unintentionally
 # wiping out manually installed or experimental tools. Run this for regular maintenance.
 # ============================================================================
 
@@ -50,7 +50,6 @@ function update_dev_tools() {
         mise upgrade -y
     fi
 }
-
 
 function main() {
     pushd "${BASEDIR}"
