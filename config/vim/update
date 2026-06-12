@@ -1,7 +1,5 @@
 #!/bin/bash
 
-BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
-
 # Use command to bypass alias
 command vim +PlugUpdate +qa
 command nvim +PlugClean +PlugUpdate +qa
