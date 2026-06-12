@@ -44,7 +44,7 @@ bl = ["blame"]
 # two steps. `roots(trunk()..mutable())` (built-in `mutable()`/`trunk()`, inlined to
 # avoid a custom revset) picks each stack's root; `-s` carries descendants so
 # stacked work stays intact; `--skip-emptied` drops commits already merged upstream.
-sync = ["util", "exec", "--", "bash", "-c", """
+pull = ["util", "exec", "--", "bash", "-c", """
 set -e
 jj git fetch --all-remotes
 jj rebase --skip-emptied --onto 'trunk()' --source 'roots(trunk()..mutable())'
