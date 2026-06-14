@@ -24,6 +24,7 @@
 * Mise setup for default programming languages environment
 * Move corp `AUTH_*` / `ANDROID_SDK_ROOT` / `JAVA_TOOL_OPTIONS` out of `config/zsh/zshenv` into a gitignored local file (mirror fish's `config.corp.fish`)
 * Align `config/fish/config.fish` with the current zsh setup once fish is in real use (drop legacy `NPM_PACKAGES` / `~/.cargo/bin` / `~/.gem` / rv-ruby paths that mise/zsh no longer use)
+* Define Codex config layering: keep `~/.codex/config.toml` for personal/runtime/corp-sensitive settings, keep `config/agent/codex/config.toml` as the dotfile-managed safe global template, and use project `.codex/config.toml` only for trusted repo-scoped settings.
 
 ## Agent Config
 
