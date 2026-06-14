@@ -1,0 +1,22 @@
+# Stable Codex user defaults that are safe to keep in dotfiles.
+# Do not add runtime state such as [projects] or [hooks.state] here.
+
+web_search = "live"
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+approvals_reviewer = "auto_review"
+
+[tui]
+status_line = [
+    "model-with-reasoning",
+    "current-dir",
+    "project-name",
+    "branch-changes",
+    "run-state",
+    "approval-mode",
+    "context-remaining",
+    "five-hour-limit",
+    "weekly-limit",
+    "task-progress",
+]
+status_line_use_colors = true
