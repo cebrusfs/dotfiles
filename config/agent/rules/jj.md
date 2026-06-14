@@ -19,6 +19,10 @@ command below just maintains this — for an uncovered case, derive from the inv
 - **`@` clean** → intent-first: `jj new -m "<component>: <intent>"`, then edit. Work lands above; `@` stays clean for the next task.
 - **`@` carries sticky local junk** (machine config, app-rewritten files) → split-down: keep junk in `@` (once: `jj describe @ -m "private: local-only"`), edit, then per task `jj split <files> -m "<component>: ..."` to drop it BELOW `@`.
 - Either way: one component per commit, land it as you finish. Never pile multiple concerns into `@` then split at the end — that's what `/jj` split.md *recovers* from, not the default.
+- If a commit-checkpoint Stop hook fires, treat it as a final hygiene gate:
+  commit/split only the files you changed for the completed task, or explicitly
+  explain why the dirty state is pre-existing, unsafe to isolate, or intentionally
+  incomplete.
 
 ## Hard rules
 - Never use `git add / commit / stash` — bypasses jj tracking.

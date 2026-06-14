@@ -19,6 +19,12 @@
   unrelated pre-existing dirty files untouched. If the repo has a commit/split
   hook or guidance, treat it as a prompt to organize the local work before
   stopping.
+* After a coherent implementation change is complete and relevant checks are run
+  or explicitly reported, create a local commit/checkpoint for only your own
+  changes before the final response unless I explicitly told you not to.
+* Do not checkpoint exploration, planning, review-only work, failed experiments,
+  or intentionally incomplete work. In the final response, include the local
+  commit/change id, or say why no checkpoint was created.
 * Ask first before changing history or ownership boundaries that are not clearly
   your own current work.
 * Without explicit instruction: no push, pull/sync/fetch, or open/close/comment on

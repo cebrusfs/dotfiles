@@ -13,7 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "AGENT_HOOK_FORMAT=claude \"$HOME/.dotfiles/config/agent/hooks/commit-nudge.sh\""
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/commit-nudge.sh\""
           }
         ]
       }
