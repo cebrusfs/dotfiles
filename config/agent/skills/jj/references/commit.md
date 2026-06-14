@@ -30,7 +30,12 @@ or `git commit -F -`.
 2. Check `CLAUDE.md` / `CONTRIBUTING.md`
 3. Default: `<component>: <title>` (omit component if not obvious)
 
-Title ≤72 chars. Use a summary body only when it adds context, verification
-notes, tradeoffs, or close keywords. If diff is empty, say so.
+Title ≤72 chars. Use the subject for the high-level what. Use a body when the
+why or how would not be obvious from the diff, or when the change has tradeoffs,
+risks, or close keywords; do not squeeze material context into the subject. Use
+bullets when the body explains multiple distinct what/why/how points. After
+amending, squashing, or splitting a commit, re-read the final diff and update the
+message if it no longer describes the committed content. If diff is empty, say
+so.
 
 Report the message used. Nothing else.
