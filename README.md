@@ -2,17 +2,9 @@
 
 ## Issues
 
-* Neovim lsp plugins only support 0.11+. Even latest Ubuntu 25.10 don't have it
-   ```
-   sudo add-apt-repository ppa:neovim-ppa/unstable
-   sudo apt update
-   ```
-* Neovim Mason can't install clangd on ARM as they don't have prebuild.
+* Neovim Mason can't install clangd on ARM because clangd does not publish prebuilt binaries for every ARM target. Install clangd from the OS package manager when Mason fails.
    * https://github.com/mason-org/mason.nvim/issues/1578
    * https://github.com/clangd/clangd/issues/514
-* Neovim doesn't work on clipboard sync (seems resolve?)
-   * https://github.com/neovim/neovim/issues/1822
-   * Maybe https://github.com/bfredl/nvim-miniyank
 * Mouse scroll not smooth.
    * Vim: good
    * other pager: slow
@@ -20,11 +12,7 @@
 
 ### TODOs
 
-* Migrated to neovim built-in package management system (nvim 0.12+, not available in common Linux yet)
-* Mise setup for default programming languages environment
-* Move corp `AUTH_*` / `ANDROID_SDK_ROOT` / `JAVA_TOOL_OPTIONS` out of `config/zsh/zshenv` into a gitignored local file (mirror fish's `config.corp.fish`)
-* Align `config/fish/config.fish` with the current zsh setup once fish is in real use (drop legacy `NPM_PACKAGES` / `~/.cargo/bin` / `~/.gem` / rv-ruby paths that mise/zsh no longer use)
-* Define Codex config layering: keep `~/.codex/config.toml` for personal/runtime/corp-sensitive settings, keep `config/agent/codex/config.toml` as the dotfile-managed safe global template, and use project `.codex/config.toml` only for trusted repo-scoped settings.
+* Migrate to Neovim built-in package management system (nvim 0.12+, not available in common Linux yet)
 
 ## Agent Config
 
@@ -40,6 +28,10 @@ Tool-specific home directories are only adapters:
 | `~/.claude/skills` | Claude skill adapter |
 | `~/.agents/skills` | User-level Agent Skills adapter for Codex and Gemini CLI |
 
+`config/agent/codex/config.toml` is a safe template, not a symlink target for
+`~/.codex/config.toml`. Keep personal, runtime, and project trust state in the
+local Codex config.
+
 Do not put custom user skills under `~/.codex/skills`; Codex keeps its own state,
 cache, and bundled system skills there.
 
@@ -48,7 +40,7 @@ cache, and bundled system skills there.
 The `./install` script executes a clean 5-phase bootstrap process:
 - **Phase 1: Dotbot Init & Symlinks**: Initialize submodules and create dotfile symlinks.
 - **Phase 2: OS Packages Setup**: Install system-level dependencies requiring root/sudo via `Brewfile.min` on macOS or batched `apt`/`dnf` on Linux.
-- **Phase 3: Dev Tools & Binaries**: Bootstrap `mise` and use `mise deps install` to install programming languages (Rust, Node.js, Go) and modern CLI tools (rg, fzf, delta).
+- **Phase 3: Dev Tools & Binaries**: Bootstrap `mise` and use `mise install` to install programming languages and tools (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta).
 - **Phase 4: Vim Plugins**: Run PlugUpdate to install Vim/Neovim plugins automatically.
 - **Phase 5: Shell Configuration**: Ensure Zsh is the default shell and cleanly transition the shell session.
 
@@ -62,16 +54,16 @@ To ensure cross-platform consistency while accommodating corp internal environme
 | **Zsh** | Shell | Built-in / Homebrew | `apt` / `dnf` | `apt` |
 | **Vim** | Editor | Homebrew | `apt` / `dnf` | `apt` |
 | **Neovim** | Editor | `mise` | `mise` | `mise` |
-| **Rust / Node / Go** | Language | **Mise** | **Mise** | **Mise** |
+| **Rust / Node / Bun / Ruby / uv** | Language/toolchain | **Mise** | **Mise** | **Mise** |
 | **Ripgrep / fd / fzf** | CLI Tools | **Mise** | **Mise** | **Mise** |
 | **git-delta** | CLI Tools | **Mise** | **Mise** | **Mise** |
-| **Jujutsu (jj)** | VCS Tool | Homebrew | **Mise** | 🔴 **Corp `apt` (Mise disabled)** |
-| **Tmux / Git** | Core Tools | Homebrew | `apt` / `dnf` | 🔴 **Corp `apt` (Mise disabled)** |
+| **Jujutsu (jj)** | VCS Tool | Homebrew | **Mise** | Corp/system package |
+| **Tmux / Git** | Core Tools | Homebrew | `apt` / `dnf` | Corp/system package |
 
 ### Design Decisions & Best Practices
 
 **1. Tooling Isolation (Corp Compatibility)**
-To prevent `mise` from overriding corp internal variants of tools (like `jj` and `git` which have specific SSO/credential hooks), we decouple them from the global `config.toml`. Instead, they are placed in `config.linux.local.toml`. The `dotbot.conf.yaml` strictly conditionally symlinks this local config *only* on non-gLinux environments. This guarantees Corp machines will never accidentally use the open-source variants.
+To prevent `mise` from overriding corp internal variants of tools (like `jj` and `git` which have specific SSO/credential hooks), we decouple them from the global `config/mise/config.toml`. Instead, they are placed in `config/mise/config.linux.local.toml`. The `dotbot.conf.yaml` strictly conditionally symlinks this local config *only* on non-gLinux environments. This guarantees Corp machines will never accidentally use the open-source variants.
 
 **2. Editor Strategy (Vim vs Neovim)**
 Vim is installed via native package managers (`apt`, `brew`) to guarantee ubiquitous availability as a fundamental fallback editor on any system. Neovim, however, is fully managed by `mise` to ensure the latest version is consistently available everywhere. Modern Lua plugins and LSP configurations heavily depend on recent Neovim features (0.10+) that are unavailable in outdated Linux package repositories.
@@ -86,30 +78,18 @@ bash <(curl -s https://raw.githubusercontent.com/cebrusfs/dotfiles/main/fetch)
 p10k configure
 ```
 
-### Post install (OSX)
+### Post install (macOS)
 
 #### Homebrew
 
 ```sh
-brew bundle install -v --no-lock --file="~/.dotfiles/homebrew/Brewfile.home"
-```
-
-#### Topcoder Client
-
-```sh
-DOTFILE_DIR=~/.dotfiles
-ln -s "$DOTFILE_DIR/config/topcoder" "$HOME/Topcoder"
-ln -s "$DOTFILE_DIR/config/topcoder/contestapplet.conf" "$HOME/contestapplet.conf"
-chflags -h hidden "$HOME/contestapplet.conf"
-
-touch "$HOME/contestapplet.conf.bak"
-chflags -h hidden "$HOME/contestapplet.conf.bak"
+brew bundle install -v --no-lock --file="homebrew/Brewfile.home"
 ```
 
 
 ## Key binding
 
-* Terminator / iTerm2: Not using window spliting
+* Terminator / iTerm2: Not using window splitting
 
 ### Tmux
 
