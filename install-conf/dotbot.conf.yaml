@@ -72,7 +72,7 @@
         path: config/agent/global.md
         force: true
         backup: true
-    ~/.claude/settings.json: config/agent/settings.json
+    ~/.claude/settings.json: config/agent/claude/settings.json
     ~/.claude/rules: config/agent/rules
     ~/.claude/skills: config/agent/skills
     ~/.codex/AGENTS.md: config/agent/global.md

@@ -40,7 +40,7 @@ command below just maintains this — for an uncovered case, derive from the inv
 - Scoped: `jj log -r 'main..@'`
 
 ## Agent workspaces
-- Claude isolated workspaces use `config/agent/settings.json` hooks, which create and
+- Claude isolated workspaces use `config/agent/claude/settings.json` hooks, which create and
   remove jj workspaces under `.claude/worktrees/`.
 - Do not assume Codex App worktrees are jj workspaces. For Codex + jj isolation,
   create/select a jj workspace manually and start Codex in that directory.
