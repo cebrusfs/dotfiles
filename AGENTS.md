@@ -83,4 +83,4 @@ Four Brewfiles for different contexts:
 ## Commit Message Formatting
 *   **Prefixes:** Do NOT use conventional commit prefixes like `feat:` or `chore:`.
 *   **Component-Based:** ALWAYS use the component or module name as the prefix. For example, use `neovim: ...`, `zsh: ...`, `ssh: ...`, `mise: ...`, `npmrc: ...`.
-*   **Format:** `<component>: <description>`
+*   **Format:** `<component>: <title>`, with an optional summary body only when it adds context.
