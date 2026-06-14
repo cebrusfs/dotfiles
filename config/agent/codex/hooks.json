@@ -1,5 +1,18 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'command -v python3 >/dev/null 2>&1 || exit 0; exec python3 \"$HOME/.dotfiles/config/agent/hooks/commit-message-check.py\"'",
+            "timeout": 30,
+            "statusMessage": "Checking commit message"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
