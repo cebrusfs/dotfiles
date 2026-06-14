@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "set -e; wt=$(jq -r '\"\\(.cwd)/.claude/worktrees/\\(.name)\"'); mkdir -p \"$(dirname \"$wt\")\"; jj workspace add \"$wt\" >&2; echo \"$wt\""
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/jj-workspace-create.sh\""
           }
         ]
       }
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "wt=$(jq -r '.worktree_path'); (cd \"$wt\" && jj workspace forget) >&2 2>&1 || true; rm -rf \"$wt\""
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/jj-workspace-remove.sh\""
           }
         ]
       }
