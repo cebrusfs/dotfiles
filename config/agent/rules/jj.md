@@ -39,4 +39,10 @@ command below just maintains this — for an uncovered case, derive from the inv
 - Default: `jj st` or `jj log -n 3 --no-graph -T builtin_log_oneline`
 - Scoped: `jj log -r 'main..@'`
 
+## Agent workspaces
+- Claude isolated workspaces use `config/agent/settings.json` hooks, which create and
+  remove jj workspaces under `.claude/worktrees/`.
+- Do not assume Codex App worktrees are jj workspaces. For Codex + jj isolation,
+  create/select a jj workspace manually and start Codex in that directory.
+
 For workflow details (skeleton, commit messages, amend/fixup, split, recovery), invoke the `jj` skill.
