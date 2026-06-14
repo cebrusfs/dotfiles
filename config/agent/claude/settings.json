@@ -1,4 +1,5 @@
 {
+  "includeCoAuthoredBy": false,
   "permissions": {
     "deny": [
       "Bash(jj git *)",
@@ -6,7 +7,6 @@
     ]
   },
   "model": "opus",
-  "includeCoAuthoredBy": false,
   "hooks": {
     "Stop": [
       {
@@ -41,7 +41,6 @@
   },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
