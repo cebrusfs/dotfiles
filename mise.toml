@@ -1,6 +1,9 @@
 [tools]
+actionlint = "latest"
+jq = "latest"
 shellcheck = "latest"
 shfmt = "latest"
+yq = "latest"
 
 # Shell scripts are auto-collected by `shfmt -f`, which detects them via shebang —
 # so extensionless scripts (install/update/fetch) are caught without a hand-kept list.
@@ -25,9 +28,22 @@ run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | x
 description = "Syntax-check all zsh files using zsh -n"
 run = "for f in config/zsh/*; do zsh -n \"$f\"; done"
 
+[tasks."lint:github-actions"]
+description = "Lint GitHub Actions workflows"
+run = "actionlint"
+
+[tasks."lint:json"]
+# Antigravity uses JSONC syntax in .json files, so strict JSON lint excludes it.
+description = "Validate tracked strict JSON files"
+run = "git ls-files '*.json' | grep -vE '^config/Antigravity/' | xargs jq empty"
+
+[tasks."lint:yaml"]
+description = "Validate tracked YAML files"
+run = "git ls-files '*.yaml' '*.yml' | xargs yq eval '.' >/dev/null"
+
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml"]
 
 [tasks."fmt"]
 description = "Run all formatters"
