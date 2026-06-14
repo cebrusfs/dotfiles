@@ -26,10 +26,10 @@ uv = "latest"
 # git/config sets filter.lfs.required=true, so this must exist
 git-lfs = "latest"
 
-# Agents
-"npm:@anthropic-ai/claude-code" = "latest"
+# Agent CLI
+claude-code = "latest"
+codex = "latest"
 "npm:@google/gemini-cli" = "latest"
-"npm:@openai/codex" = "latest"
 
 [settings]
 minimum_release_age = "7d"
