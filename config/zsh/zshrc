@@ -190,6 +190,24 @@ function ssh() {
     return $return_code
   }
 
+#
+# SSH agent: survive tmux / iTerm2 reconnects
+#
+# tmux freezes SSH_AUTH_SOCK in each pane at launch. On reconnect the forwarded
+# agent socket gets a new path, so old panes point at a dead socket (breaks jj/git
+# signing with "No private key found"). tmux's update-environment refreshes the
+# *session* env on each client attach, so pull the fresh value into the running
+# shell before every prompt.
+function _ssh_auth_sock_refresh () {
+  [[ -n "$TMUX" ]] || return
+  local line sock
+  line="$(tmux show-environment SSH_AUTH_SOCK 2>/dev/null)" || return
+  sock="${line#SSH_AUTH_SOCK=}"
+  [[ "$sock" == /* && -S "$sock" ]] && export SSH_AUTH_SOCK="$sock"
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _ssh_auth_sock_refresh
+
 # Git
 alias gws='gwS'
 
