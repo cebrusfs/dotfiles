@@ -9,9 +9,15 @@
 
 hook_input=$(cat)
 stop_hook_active=false
-if printf '%s' "$hook_input" | grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; then
+if command -v jq >/dev/null 2>&1; then
+    if printf '%s' "$hook_input" | jq -e '.stop_hook_active == true' >/dev/null 2>&1; then
+        stop_hook_active=true
+    fi
+elif printf '%s' "$hook_input" | grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; then
     stop_hook_active=true
 fi
+
+[ "$stop_hook_active" = true ] && exit 0
 
 project_root=$(jj root 2>/dev/null) || exit 0
 cd "$project_root" || exit 0
@@ -106,9 +112,8 @@ state_dir="$state_base/commit-nudge"
 state_file="$state_dir/$project_key"
 previous=""
 [ -f "$state_file" ] && previous=$(sed -n '1p' "$state_file")
-mkdir -p "$state_dir" 2>/dev/null && printf '%s\n' "$fingerprint" >"$state_file"
-
-[ "$stop_hook_active" = true ] && exit 0
+mkdir -p "$state_dir" 2>/dev/null || exit 0
+printf '%s\n' "$fingerprint" >"$state_file" 2>/dev/null || exit 0
 [ "$previous" = "$fingerprint" ] && exit 0
 
 dir_word=directories
