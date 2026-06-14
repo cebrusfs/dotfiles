@@ -80,7 +80,6 @@ Four Brewfiles for different contexts:
 
 # Agent Guidelines for dotfiles repository
 
-## Commit Message Formatting
-*   **Prefixes:** Do NOT use conventional commit prefixes like `feat:` or `chore:`.
-*   **Component-Based:** ALWAYS use the component or module name as the prefix. For example, use `neovim: ...`, `zsh: ...`, `ssh: ...`, `mise: ...`, `npmrc: ...`.
-*   **Format:** `<component>: <title>`, with an optional summary body only when it adds context.
+## Commit messages
+
+Use `<component>: <title>` for dotfiles changes; prefer real component names such as `zsh`, `vim`, `jj`, `agent`, `mise`, or `ssh`. Add a summary body only when it adds context; the commit-message hook shows examples when the format is wrong.
