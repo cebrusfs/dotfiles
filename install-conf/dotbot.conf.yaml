@@ -68,6 +68,8 @@
     ~/.ssh/authorized_keys: config/ssh/authorized_keys
 
     # agents
+    # Codex stores config/state in ~/.codex, while Codex and Gemini CLI
+    # discover user Agent Skills from ~/.agents/skills.
     ~/.claude/CLAUDE.md:
         path: config/agent/global.md
         force: true

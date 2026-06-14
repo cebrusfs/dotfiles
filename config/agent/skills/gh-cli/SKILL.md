@@ -32,8 +32,8 @@ gh issue reopen  123
 
 Invoke the script from this skill's `scripts/` directory. Common installed paths:
 - Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh` (pre-approved via `allowed-tools`)
-- Codex user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
-- Codex repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
+- Codex/Gemini user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
+- Repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
 
 ```bash
 S=~/.agents/skills/gh-cli/scripts/gh_issue.sh

@@ -53,7 +53,12 @@ Platform-conditional links use `if:` clauses:
 | `ssh/` | `~/.ssh/config`, `~/.ssh/authorized_keys` | SSH config |
 | `mise/` | `~/.config/mise/` | mise tool version manager |
 | `tmux/` | `~/.tmux.conf` | Tmux config |
-| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.agents/skills` | Shared Claude/Codex agent instructions, hooks, rules, and skills |
+| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.agents/skills` | Shared agent instructions plus Claude/Codex adapters; `~/.agents/skills` is the user Agent Skills path for Codex and Gemini CLI |
+
+`config/agent/skills/` is the only skill source of truth. Link it to
+`~/.claude/skills` for Claude and `~/.agents/skills` for Codex/Gemini-compatible
+user skills. Do not put custom skills under `~/.codex/skills`; Codex uses that
+directory for its own state and bundled system skills.
 
 ### Homebrew
 

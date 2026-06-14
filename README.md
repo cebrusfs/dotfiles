@@ -24,8 +24,23 @@
 * Mise setup for default programming languages environment
 * Move corp `AUTH_*` / `ANDROID_SDK_ROOT` / `JAVA_TOOL_OPTIONS` out of `config/zsh/zshenv` into a gitignored local file (mirror fish's `config.corp.fish`)
 * Align `config/fish/config.fish` with the current zsh setup once fish is in real use (drop legacy `NPM_PACKAGES` / `~/.cargo/bin` / `~/.gem` / rv-ruby paths that mise/zsh no longer use)
-* Make `config/agent/` (rules, skills, settings) format generic enough to also drive Codex (OpenAI) alongside Claude Code — e.g. portable rules/skills that map to both `~/.claude/` and `~/.agents/` (Codex) layouts
 
+## Agent Config
+
+`config/agent/` is the source of truth for shared agent guidance and skills.
+Tool-specific home directories are only adapters:
+
+| Path | Purpose |
+|---|---|
+| `config/agent/global.md` | Shared durable guidance for personal and corp-safe use |
+| `config/agent/claude/` | Claude-only settings and hook wiring |
+| `config/agent/codex/` | Codex-only hooks, rules, and stable config template |
+| `config/agent/skills/` | Shared Agent Skills source |
+| `~/.claude/skills` | Claude skill adapter |
+| `~/.agents/skills` | User-level Agent Skills adapter for Codex and Gemini CLI |
+
+Do not put custom user skills under `~/.codex/skills`; Codex keeps its own state,
+cache, and bundled system skills there.
 
 ## Architecture (5-Phase)
 
