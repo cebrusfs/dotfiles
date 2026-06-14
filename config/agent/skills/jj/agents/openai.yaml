@@ -1,0 +1,4 @@
+interface:
+  display_name: "jj"
+  short_description: "Jujutsu workflows and recovery"
+  default_prompt: "Use $jj to plan or repair a Jujutsu workflow."

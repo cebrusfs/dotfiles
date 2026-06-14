@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Issues"
+  short_description: "Manage GitHub issues with gh"
+  default_prompt: "Use $gh-cli to manage GitHub issues and dependencies."

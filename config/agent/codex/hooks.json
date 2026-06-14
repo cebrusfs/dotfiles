@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "AGENT_HOOK_FORMAT=codex \"$HOME/.dotfiles/config/agent/hooks/commit-nudge.sh\"",
+            "timeout": 30,
+            "statusMessage": "Checking jj working copy"
+          }
+        ]
+      }
+    ]
+  }
+}

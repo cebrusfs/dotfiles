@@ -16,5 +16,15 @@ ignore="${CLAUDE_PROJECT_DIR:-.}/.claude/commit-nudge-ignore"
 
 n=$(printf '%s\n' "$paths" | sed '/^$/d' | xargs -r -n1 dirname | sort -u | wc -l | tr -d ' ')
 
-[ "$n" -gt 1 ] && printf '{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"jj: @ spans %s directories — likely multiple concerns. Commit per component (rules/jj.md split-down), or ignore if it is genuinely one task."}}' "$n"
+if [ "$n" -gt 1 ]; then
+    message="jj: @ spans ${n} directories - likely multiple concerns. Commit per component (rules/jj.md split-down), or ignore if it is genuinely one task."
+    case "${AGENT_HOOK_FORMAT:-claude}" in
+    codex)
+        printf '%s\n' "$message"
+        ;;
+    claude | *)
+        printf '{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"%s"}}' "$message"
+        ;;
+    esac
+fi
 exit 0

@@ -1,0 +1,19 @@
+prefix_rule(
+    pattern = ["jj", "git"],
+    decision = "forbidden",
+    justification = "Use jj sync yourself; agents must not run jj git commands in colocated repos.",
+    match = [
+        "jj git fetch",
+        "jj git push",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "op"],
+    decision = "forbidden",
+    justification = "Operation-log recovery is destructive enough to require explicit user instruction.",
+    match = [
+        "jj op log",
+        "jj op restore abc123",
+    ],
+)

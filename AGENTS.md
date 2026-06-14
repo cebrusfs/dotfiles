@@ -1,6 +1,6 @@
-# CLAUDE.md
+# Agent Instructions
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code and Codex when working with code in this repository. `CLAUDE.md` delegates here so the repository instructions stay in one format.
 
 ## Overview
 
@@ -53,7 +53,7 @@ Platform-conditional links use `if:` clauses:
 | `ssh/` | `~/.ssh/config`, `~/.ssh/authorized_keys` | SSH config |
 | `mise/` | `~/.config/mise/` | mise tool version manager |
 | `tmux/` | `~/.tmux.conf` | Tmux config |
-| `agent/` | (not symlinked) | Personal Claude Code rules + skills |
+| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.agents/skills` | Shared Claude/Codex agent instructions, hooks, rules, and skills |
 
 ### Homebrew
 

@@ -1,6 +1,7 @@
 ---
 name: gh-cli
-description: Manage GitHub issues using `gh` CLI — CRUD, labels, native dependencies, sub-issues. Use this skill whenever you need to create, list, view, close, or manage GitHub issues, track task dependencies, manage epics, or link parent/child issues — even if the user just says "create a task", "what's blocking this", or "show me open issues".
+description: >-
+  Manage GitHub issues using `gh` CLI — CRUD, labels, native dependencies, sub-issues. Use this skill whenever you need to create, list, view, close, or manage GitHub issues, track task dependencies, manage epics, or link parent/child issues — even if the user just says "create a task", "what's blocking this", or "show me open issues".
 allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 ---
 
@@ -14,6 +15,7 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 - Always `--json` when reading; never omit `--title`/`--body` on create/edit (avoids interactive hang)
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
 - sub-issue = hierarchy (epic→task); blocked-by = sequential ordering. Don't conflate
+- Write actions (create/edit/close/comment/label/assign, dependency changes, sub-issue changes, PR creation) still require explicit user instruction.
 
 ## CRUD
 
@@ -28,10 +30,13 @@ gh issue reopen  123
 
 ## Extended Operations (`scripts/gh_issue.sh`)
 
-Invoke as `~/.claude/skills/gh-cli/scripts/gh_issue.sh` (pre-approved via `allowed-tools`).
+Invoke the script from this skill's `scripts/` directory. Common installed paths:
+- Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh` (pre-approved via `allowed-tools`)
+- Codex user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
+- Codex repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
 
 ```bash
-S=~/.claude/skills/gh-cli/scripts/gh_issue.sh
+S=~/.agents/skills/gh-cli/scripts/gh_issue.sh
 
 # Full thread dump — body + all comments, multiple issues in one GraphQL call
 $S --dump  <issue_num...>

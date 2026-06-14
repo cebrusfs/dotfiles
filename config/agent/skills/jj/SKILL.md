@@ -1,12 +1,13 @@
 ---
 name: jj
-description: jj (Jujutsu) workflow details — skeleton planning, commit messages, diff-based split, conflict resolution, recovery. Invoke when: (a) planning a multi-step jj stack, (b) writing a commit message, (c) splitting a commit diff-selectively (no explicit file paths), (d) resolving merge conflicts without TUI, or (e) recovering from a jj mistake. Skip for routine probes or file-path-only splits.
+description: >-
+  jj (Jujutsu) workflow details — skeleton planning, commit messages, diff-based split, conflict resolution, recovery. Invoke when: (a) planning a multi-step jj stack, (b) writing a commit message, (c) splitting a commit diff-selectively (no explicit file paths), (d) resolving merge conflicts without TUI, or (e) recovering from a jj mistake. Skip for routine probes or file-path-only splits.
 allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*), Bash(jj fix:*), Bash(jj squash:*), Bash(jj split:*), Bash(jj resolve:*), Bash(jj rebase:*)
 ---
 
 # jj
 
-Baseline rules (mental model, non-interactive requirements, state-exploration) live in `~/.claude/rules/jj.md` and always apply. This skill covers operations needing extra recipe.
+Baseline rules (mental model, non-interactive requirements, state-exploration) live in the shared rules file (`config/agent/rules/jj.md` in this repo; `~/.claude/rules/jj.md` when installed for Claude) and always apply. This skill covers operations needing extra recipe.
 
 ## Routing
 
