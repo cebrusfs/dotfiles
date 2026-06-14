@@ -15,19 +15,15 @@ export COPYFILE_DISABLE=true
 # Homebrew: cask: Change default app install directory
 export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 
-# Java SDK paths
-export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"
-export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
 # GPG
 export GPG_TTY=`tty`
 
-# Corp tool configuration
-# roadwarrior (rw)
-export AUTH_CHECK_REMAINING=true
-export AUTH_TMUX=true
-export AUTH_TMUX_ITERM=true
-export AUTH_TMUX_SESSION=tmux-main
+# Machine-local/private environment lives outside tracked dotfiles.
+_zshenv_local="${${(%):-%x}:A:h}/config.local.zsh"
+if [[ -r "$_zshenv_local" ]]; then
+  source "$_zshenv_local"
+fi
+unset _zshenv_local
 
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then

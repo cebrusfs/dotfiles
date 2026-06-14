@@ -12,10 +12,6 @@ set -gx COPYFILE_DISABLE true
 # Homebrew: cask: Change default app install directory
 set -gx HOMEBREW_CASK_OPTS "--appdir=~/Applications"
 
-# Java SDK paths
-set -gx ANDROID_SDK_ROOT /usr/local/share/android-sdk
-set -gx JAVA_TOOL_OPTIONS "-Dfile.encoding=UTF8"
-
 # GPG
 set -gx GPG_TTY (tty)
 
@@ -28,10 +24,6 @@ end
 if test -z "$LANG"
     set -gx LANG "en_US.UTF-8"
 end
-
-# Node
-set -gx NPM_PACKAGES $HOME/.npm-packages
-set -gx NODE_PATH "$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 
 # Less
 if test -z "$LESS"
@@ -59,12 +51,8 @@ set -gx LS_COLORS "di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg
 # -----------------------------------------------------------------------------
 
 fish_add_path -g $HOME/bin # Customized binary/script managed by git
-fish_add_path -g $HOME/.cargo/bin # Rust: Local install path
 fish_add_path -g $HOME/.local/bin # Python: uv path
 fish_add_path -g $HOME/Library/Python/*/bin # Python: Local pip path for OSX
-fish_add_path -g $NPM_PACKAGES/bin # Node: Local npm packages path
-fish_add_path -g $HOME/.data/rv/rubies/ruby-*/bin # Ruby: rv path
-fish_add_path -g $HOME/.gem/ruby/*/bin # Ruby: rv gem path
 fish_add_path -g $HOME/.codeium/windsurf/bin # Windsurf
 fish_add_path -g /opt/homebrew/bin /opt/homebrew/sbin # Default homebrew for Apple Silicon
 fish_add_path -g /Library/TeX/texbin # Mactex
@@ -158,10 +146,12 @@ if status is-interactive
 end
 
 # -----------------------------------------------------------------------------
-# Corporate / Private Settings
+# Machine-local / Private Settings
 # -----------------------------------------------------------------------------
-# Source private corp settings if they exist (ignored by Git)
-set -l corp_config (dirname (status filename))/config.corp.fish
-if test -f $corp_config
-    source $corp_config
+# Source private settings if they exist (ignored by Git).
+for local_config in config.local.fish config.corp.fish
+    set -l local_path (dirname (status filename))/$local_config
+    if test -f $local_path
+        source $local_path
+    end
 end
