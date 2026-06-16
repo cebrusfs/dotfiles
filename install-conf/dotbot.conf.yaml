@@ -22,6 +22,7 @@
     ~/.claude:
     ~/.codex:
     ~/.config/mise:
+    ~/.gemini/config:
     ~/working:
 
 - shell:
@@ -99,6 +100,7 @@
     ~/.codex/hooks.json: config/agent/codex/hooks.json
     ~/.codex/rules/agent.rules: config/agent/codex/rules/agent.rules
     ~/.agents/skills: config/agent/skills
+    ~/.gemini/config/hooks: config/agent/hooks
 
 
 # vim
