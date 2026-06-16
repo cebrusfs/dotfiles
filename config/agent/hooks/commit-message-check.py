@@ -70,6 +70,13 @@ def project_owns_commit_style(root: Path | None) -> bool:
     return False
 
 
+def is_google3(root: Path | None) -> bool:
+    if not root:
+        return False
+    parts = str(root).split(os.sep)
+    return "google3" in parts
+
+
 def split_segments(command: str) -> list[list[str]]:
     try:
         tokens = shlex.split(command, posix=True)
@@ -122,7 +129,7 @@ def extract_messages(segment: list[str], errors: list[str]) -> list[str]:
     return messages
 
 
-def validate_message(message: str, kind: str, errors: list[str]) -> None:
+def validate_message(message: str, kind: str, errors: list[str], root: Path | None) -> None:
     normalized = message.replace("\r\n", "\n").replace("\r", "\n").strip()
     if not normalized:
         errors.append(f"{kind}: commit message is empty")
@@ -130,24 +137,32 @@ def validate_message(message: str, kind: str, errors: list[str]) -> None:
 
     if re.search(r"(?im)^Co-Authored-By:", normalized):
         errors.append(f"{kind}: remove Co-Authored-By trailers")
-    if re.search(r"(?i)Generated with (Claude|Codex)", normalized):
+    if re.search(r"(?i)Generated with (Claude|Codex|Jetski)", normalized):
         errors.append(f"{kind}: remove AI attribution trailers")
 
     title_line = normalized.split("\n", 1)[0]
-    match = re.match(r"^([a-z0-9][a-z0-9_-]*(?:\([a-z0-9_-]+\))?): (.+)$", title_line)
-    if not match:
-        errors.append(f"{kind}: first line must be '<component>: <title>'")
+
+    if title_line == "fixup":
         return
 
-    component, title = match.groups()
-    bare_component = component.split("(", 1)[0]
-    if bare_component in DISALLOWED_COMPONENTS:
-        errors.append(
-            f"{kind}: use a real component, not conventional type '{bare_component}:'"
-        )
-    if len(title) > 72:
-        errors.append(f"{kind}: title is {len(title)} chars; keep it <= 72")
-    if title.endswith("."):
+    if is_google3(root):
+        title = title_line
+    else:
+        match = re.match(r"^([a-z0-9][a-z0-9_-]*(?:\([a-z0-9_-]+\))?): (.+)$", title_line)
+        if not match:
+            errors.append(f"{kind}: first line must be '<component>: <title>'")
+            return
+
+        component, title = match.groups()
+        bare_component = component.split("(", 1)[0]
+        if bare_component in DISALLOWED_COMPONENTS:
+            errors.append(
+                f"{kind}: use a real component, not conventional type '{bare_component}:'"
+            )
+
+    if len(title_line) > 72:
+        errors.append(f"{kind}: title is {len(title_line)} chars; keep it <= 72")
+    if title_line.endswith("."):
         errors.append(f"{kind}: title should not end with a period")
 
 
@@ -177,7 +192,7 @@ Body:
     )
 
 
-def validate_command(command: str) -> int:
+def validate_command(command: str, root: Path | None) -> int:
     errors: list[str] = []
     message_commands: list[str] = []
     for segment in split_segments(command):
@@ -194,7 +209,7 @@ def validate_command(command: str) -> int:
             errors.append(f"{kind}: use -m '<component>: <title>' instead of an editor")
             continue
 
-        validate_message("\n\n".join(messages), kind, errors)
+        validate_message("\n\n".join(messages), kind, errors, root)
 
     if not message_commands:
         return 0
@@ -216,8 +231,10 @@ def main() -> int:
         ("tool",),
         ("toolName",),
         ("tool_call", "tool_name"),
+        ("toolCall", "name"),
+        ("name",),
     )
-    if tool != "Bash":
+    if tool not in ("Bash", "run_command"):
         return 0
 
     root = current_repo_root()
@@ -230,11 +247,13 @@ def main() -> int:
         ("input", "command"),
         ("arguments", "command"),
         ("tool_call", "input", "command"),
+        ("toolCall", "arguments", "CommandLine"),
+        ("arguments", "CommandLine"),
     )
     if not command:
         return 0
 
-    return validate_command(command)
+    return validate_command(command, root)
 
 
 if __name__ == "__main__":
