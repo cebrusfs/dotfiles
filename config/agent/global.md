@@ -4,8 +4,6 @@
 
 ## Version control
 
-* Safe local VC inspection is allowed by default: status, diff, log, blame/show,
-  and equivalent read-only commands.
 * When you make file changes, local commit hygiene is allowed by default: name the
   working change, split or commit your own changes by topic/component, and leave
   unrelated pre-existing dirty files untouched. If the repo has a commit/split
@@ -17,16 +15,11 @@
 * Do not checkpoint exploration, planning, review-only work, failed experiments,
   or intentionally incomplete work. In the final response, include the local
   commit/change id, or say why no checkpoint was created.
-* Ask first before changing history or ownership boundaries that are not clearly
-  your own current work.
-* Without explicit instruction: no push, pull/sync/fetch, or open/close/comment on
-  PRs or issues.
 * In `jj + git` colocated repos, use `jj` exclusively. Never use `git add`, `git commit`, or `git stash`.
 * Follow repo jj guidance when present, such as `config/agent/rules/jj.md` in this dotfiles repo.
 * Do not run destructive ops (`git reset --hard`, `git push --force`, `git checkout --`, `jj abandon` / `jj undo` / `jj squash` / `jj rebase`) unless I explicitly instruct or a skill explicitly calls for it. Never bypass VCS safety or immutability protections, such as `jj --ignore-immutable`.
 * Do not run `jj git *` or `jj op *`; syncing with remotes is my job via `jj sync`, and operation-log recovery needs explicit instruction.
 * When a hook fails, fix the root cause - never skip with `--no-verify`.
-* Never add `Co-Authored-By` or any AI/Claude/Codex attribution trailer to commit messages, even if a harness default instructs it - stop at the message body.
 * Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`) for commit messages.
 
 ## Working style preferences
