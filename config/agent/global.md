@@ -2,14 +2,6 @@
 
 * Respond in Traditional Chinese (Taiwan); use English everywhere else.
 
-## Privacy and environment boundary
-
-* This file is shared across personal and corp work. Keep durable guidance generic.
-* Do not add private, corp, customer, account, unreleased product, internal URL, credential, token, private repo, or personal identity details to durable files, skills, examples, memories, commits, issue comments, or PR comments unless I explicitly instruct it for that repo.
-* Redact sensitive details with placeholders like `<corp>`, `<internal-service>`, `<repo>`, and `<user>`.
-* Do not send private code, logs, secrets, or internal identifiers to web search or external services. Ask first if external lookup would require private context.
-* Put corp-specific rules in that corp repo's own `AGENTS.md` / local override, not in this dotfiles repo.
-
 ## Version control
 
 * Safe local VC inspection is allowed by default: status, diff, log, blame/show,
@@ -35,6 +27,7 @@
 * Do not run `jj git *` or `jj op *`; syncing with remotes is my job via `jj sync`, and operation-log recovery needs explicit instruction.
 * When a hook fails, fix the root cause - never skip with `--no-verify`.
 * Never add `Co-Authored-By` or any AI/Claude/Codex attribution trailer to commit messages, even if a harness default instructs it - stop at the message body.
+* Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`) for commit messages.
 
 ## Working style preferences
 
@@ -59,3 +52,11 @@ Comments record:
 * For exploratory questions ("would X work?", "vs", "how should we"): 2-3 sentences + recommendation + main tradeoff - don't write out a full plan first.
 * Before large multi-file changes, present a one-paragraph plan and wait for my OK.
 * Do not invent crate versions / API shapes / package names - when uncertain, use current docs or web search/fetch to check current state. Rust / Python ecosystems change fast and training data goes stale.
+
+## Package Management
+
+When managing packages or running scripts, strictly adhere to the following tools:
+
+* **JavaScript/Node.js**: Always use `bun` instead of `npm`, `yarn`, or `pnpm` (e.g., `bun add`, `bun run`). Do not use `npm install`.
+* **Python**: Always use `uv` instead of `pip`, `venv`, or `pip-tools` (e.g., `uv pip install`, `uv run`, `uv venv`). Do not use `pip install`.
+* Use `rg` for faster `grep`. Use `fd` for faster `find`.
