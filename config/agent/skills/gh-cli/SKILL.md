@@ -11,6 +11,13 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 - `gh auth status` — must be authenticated
 - Run from inside the repository (scripts use `{owner}/{repo}` context)
 
+## Codex Sandbox Auth Recovery
+- If `gh auth status`, any `gh ...` command, or `scripts/gh_issue.sh` fails with an invalid token, missing token, not authenticated, credential/keyring, or credential helper error, first consider whether Codex sandboxing prevented `gh` from reading the host keyring.
+- In Codex, request a one-command sandbox escalation for the same necessary command instead of immediately telling the user to run `gh auth login`. Use `sandbox_permissions: "require_escalated"` with a justification such as: `gh may need host keyring access to read the GitHub token; allow running this command outside the sandbox?`
+- Keep the escalation narrow: only the command needed for the user's current request, no broad `["gh"]` prefix rule. For repeated reads, prefer a subcommand prefix such as `["gh", "issue", "view"]` or `["gh", "pr", "check"]`.
+- Write commands still need explicit user instruction before they are run or retried outside the sandbox.
+- If the escalated retry also fails with the same auth/token error, then treat the credential as genuinely unavailable or invalid and ask the user to refresh authentication.
+
 ## Rules
 - Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
 - Use `--body-file <file>` for every issue, PR, and comment body. Do not inline body content with `--body`, shell heredocs inside command arguments, or command substitution; Markdown, quotes, and long text can be escaped or truncated unexpectedly.
