@@ -31,9 +31,9 @@ private-commits = 'blacklist()'
 # uncommitted toggle.
 # sign-on-push = true
 
-# Automatically track all branches/bookmarks on `origin` remote
-[remotes.origin]
-auto-track-bookmarks = "glob:*"
+# Do not auto-track every remote bookmark. `jj pull` fetches all remotes so
+# deleted remote bookmarks are observed, while PR/topic branches stay untracked
+# until explicitly adopted with `jj bookmark track`.
 
 [aliases]
 blame = ["file", "annotate"]
