@@ -1,7 +1,7 @@
 function on_exit --on-process-exit %self
-    # Replicates Zsh's zlogout logic.
-    # Only print "Bye!" if the shell is interactive.
-    if status is-interactive
-        echo -e "\nBye!" >&2
-    end
+    # Mirror zlogout's interactive farewell without polluting non-TTY shells.
+    status is-interactive; or return
+    isatty stderr; or return
+
+    printf '\nBye!\n' >&2
 end

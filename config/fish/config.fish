@@ -1,6 +1,30 @@
 # =============================================================================
-# Fish Configuration (Migrated from Zsh)
+# Fish Configuration (Zsh parity pilot)
 # =============================================================================
+
+function __fish_dotfiles_warn
+    set_color red >&2
+    printf '[WARN] %s\n' "$argv[1]" >&2
+    set_color normal >&2
+end
+
+function __fish_dotfiles_add_path_if_dir
+    set -l paths
+    for path in $argv
+        if test -d "$path"
+            set -a paths "$path"
+        end
+    end
+
+    if test (count $paths) -gt 0
+        fish_add_path --path --move $paths
+    end
+end
+
+# Fish already provides the Prezto pieces used by zsh for autosuggestions,
+# syntax highlighting, completion, history search, and basic prompt plumbing.
+# After the fish migration is final, the zsh-only Prezto/P10k/async files are
+# candidates to delete; keep them while zsh remains the fallback shell.
 
 # -----------------------------------------------------------------------------
 # Environment Variables
@@ -13,10 +37,14 @@ set -gx COPYFILE_DISABLE true
 set -gx HOMEBREW_CASK_OPTS "--appdir=~/Applications"
 
 # GPG
-set -gx GPG_TTY (tty)
+set -l __fish_dotfiles_gpg_tty (tty 2>/dev/null)
+if test $status -eq 0
+    set -gx GPG_TTY $__fish_dotfiles_gpg_tty
+end
+set -e __fish_dotfiles_gpg_tty
 
 # Browser
-if test -z "$BROWSER"; and string match -q "darwin*" "$OSTYPE"
+if test -z "$BROWSER"; and test (uname -s 2>/dev/null) = Darwin
     set -gx BROWSER open
 end
 
@@ -47,18 +75,67 @@ set -gx LSCOLORS Gxfxcxdxbxegedabagacad
 set -gx LS_COLORS "di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
 
 # -----------------------------------------------------------------------------
-# Paths (using fish_add_path for idempotent prepending/appending)
+# Paths
 # -----------------------------------------------------------------------------
 
-fish_add_path -g $HOME/bin # Customized binary/script managed by git
-fish_add_path -g $HOME/.local/bin # Python: uv path
+# User-managed scripts and per-user tool shims.
+set -l __fish_dotfiles_paths \
+    $HOME/bin \
+    $HOME/.local/bin
+
+# Python --user installs put console scripts under versioned framework dirs.
 for python_bin in $HOME/Library/Python/*/bin
-    fish_add_path -g $python_bin
+    set -a __fish_dotfiles_paths $python_bin
 end
-fish_add_path -g $HOME/.codeium/windsurf/bin # Windsurf
-fish_add_path -g /opt/homebrew/bin /opt/homebrew/sbin # Default homebrew for Apple Silicon
-fish_add_path -g /Library/TeX/texbin # Mactex
-fish_add_path -g /usr/texbin # Linux latex
+
+# GUI/editor shims, platform package managers, TeX, and ChromiumOS tooling.
+set -a __fish_dotfiles_paths \
+    $HOME/.codeium/windsurf/bin \
+    /opt/homebrew/bin \
+    /opt/homebrew/sbin \
+    /Library/TeX/texbin \
+    /usr/texbin \
+    $HOME/working/cros_script/bin \
+    $HOME/depot_tools \
+    $HOME/crosfleet
+
+__fish_dotfiles_add_path_if_dir $__fish_dotfiles_paths
+set -e __fish_dotfiles_paths
+
+# Source machine-local/private settings if they exist. This mirrors
+# `config.local.zsh`; keep corp-specific shell logic out of tracked files.
+set -l __fish_dotfiles_local_path (dirname (status filename))/config.local.fish
+if test -f $__fish_dotfiles_local_path
+    source $__fish_dotfiles_local_path
+end
+set -e __fish_dotfiles_local_path
+
+# Fish has no `noclobber` equivalent enabled by default, so zsh's explicit
+# `setopt clobber` does not need a fish setting.
+
+# Starship owns prompt rendering; fish still owns commandline suggestion and
+# completion pager colors.
+set -g fish_color_autosuggestion brblack
+set -g fish_color_valid_path --underline
+set -g fish_pager_color_completion --reset
+set -g fish_pager_color_description yellow --italics
+set -g fish_pager_color_prefix --bold --underline
+set -g fish_pager_color_selected_background --background=238
+
+# Prompt event hook, not prompt rendering; Starship's fish_prompt still triggers it.
+function __fish_dotfiles_ssh_auth_sock_refresh --on-event fish_prompt
+    set -q TMUX; or return
+    type -q tmux; or return
+
+    set -l line (tmux show-environment SSH_AUTH_SOCK 2>/dev/null)
+    or return
+    string match -q 'SSH_AUTH_SOCK=*' -- $line; or return
+
+    set -l sock (string replace -r '^SSH_AUTH_SOCK=' '' -- $line)
+    if string match -q '/*' -- $sock; and test -S "$sock"
+        set -gx SSH_AUTH_SOCK "$sock"
+    end
+end
 
 # -----------------------------------------------------------------------------
 # Interactive Shell Configurations
@@ -75,28 +152,41 @@ if status is-interactive
         mise activate fish | source
     end
 
-    # Enable vi key bindings
-    fish_vi_key_bindings
+    if type -q starship
+        # Starship owns fish_prompt/fish_right_prompt. If it is unavailable,
+        # fish falls back to its built-in prompt instead of a repo-maintained one.
+        starship init fish | source
+    end
 
-    # Print a random adage on login
-    if type -q fortune
+    # zsh uses Prezto's emacs key bindings; fish's default key bindings match.
+    fish_default_key_bindings
+
+    # zlogin prints fortune only for interactive login shells.
+    if status is-login; and isatty stderr; and type -q fortune
         fortune -s >&2
         echo >&2
     end
 
     # Environment Variables
-    if type -q nvim
-        set -gx EDITOR nvim
-    else if type -q vim
-        set -gx EDITOR vim
+    if test -z "$EDITOR"
+        if type -q nvim
+            set -gx EDITOR nvim
+        else if type -q vim
+            set -gx EDITOR vim
+            __fish_dotfiles_warn "'nvim' is not installed"
+        end
     end
-    set -gx VISUAL "$EDITOR"
+
+    if test -z "$VISUAL"; and test -n "$EDITOR"
+        set -gx VISUAL "$EDITOR"
+    end
 
     # PAGER
     if type -q delta
         set -gx PAGER delta
     else
         set -gx PAGER less
+        __fish_dotfiles_warn "'delta' is not installed"
     end
 
     # FZF & fd
@@ -107,6 +197,8 @@ if status is-interactive
         set -gx FZF_DEFAULT_COMMAND "fdfind --type file"
         set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
         alias fd fdfind
+    else
+        __fish_dotfiles_warn "'fd' is not installed"
     end
 
     # Aliases
@@ -121,7 +213,12 @@ if status is-interactive
     if type -q nvim
         alias vim nvim
         alias vimdiff "nvim -d"
+    else
+        __fish_dotfiles_warn "'neovim' is not installed"
     end
+
+    type -q rg; or __fish_dotfiles_warn "'rg' is not installed"
+    type -q fzf; or __fish_dotfiles_warn "'fzf' is not installed"
 
     # Tmux alias wrapper
     if type -q tmx2
@@ -133,7 +230,9 @@ if status is-interactive
 
     # Third-party initializations
     if type -q fzf
-        fzf --fish | source 2>/dev/null
+        if fzf --fish >/dev/null 2>&1
+            fzf --fish | source
+        end
     end
 
     # OrbStack
@@ -144,16 +243,5 @@ if status is-interactive
     # Jujutsu (jj) Completion
     if type -q jj
         jj util completion fish | source
-    end
-end
-
-# -----------------------------------------------------------------------------
-# Machine-local / Private Settings
-# -----------------------------------------------------------------------------
-# Source private settings if they exist (ignored by Git).
-for local_config in config.local.fish config.corp.fish
-    set -l local_path (dirname (status filename))/$local_config
-    if test -f $local_path
-        source $local_path
     end
 end

@@ -14,7 +14,7 @@
 
 * Migrate to Neovim built-in package management system (nvim 0.12+, not available in common Linux yet)
 * Terminal migration: keep iTerm2 for `tmux -CC`; pilot Ghostty only for local shells/plain tmux before adding Brewfile/dotbot config. Research: [docs/terminal-migration.md](docs/terminal-migration.md)
-* Shell migration: pilot fish manually before `chsh`; add Brewfile + dotbot link, port tmux `SSH_AUTH_SOCK` refresh, and add fish syntax checks. Research: [docs/shell-migration.md](docs/shell-migration.md)
+* Shell migration: pilot fish manually before `chsh`; package/default-shell changes and shared fish syntax checks still need review. Research: [docs/shell-migration.md](docs/shell-migration.md)
 
 ## Agent Config
 
