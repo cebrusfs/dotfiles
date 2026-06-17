@@ -10,13 +10,20 @@ default_permissions = "workspace-mise"
 
 # Permission profiles do not compose with legacy sandbox_mode settings. This
 # profile extends the built-in workspace filesystem policy with a local tool
-# cache root; it does not grant command network access.
+# cache root and scoped GitHub network access for CLI inspection commands.
 [permissions.workspace-mise]
 description = "Workspace access plus writable mise cache."
 extends = ":workspace"
 
 [permissions.workspace-mise.workspace_roots]
 "~/Library/Caches/mise" = true
+
+[permissions.workspace-mise.network]
+enabled = true
+
+[permissions.workspace-mise.network.domains]
+"api.github.com" = "allow"
+"github.com" = "allow"
 
 
 [tui]

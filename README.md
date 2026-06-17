@@ -52,9 +52,11 @@ which dotbot links to `~/.codex/rules/agent.rules`. Keep
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =
 "workspace-mise"`. The `workspace-mise` profile is the built-in workspace
-filesystem sandbox plus a writable `mise` cache. It does not grant shell command
-network access. `web_search = "live"` controls the agent's web-search tool, not
-network access for spawned CLI commands such as `gh`.
+filesystem sandbox plus a writable `mise` cache. It also grants scoped shell
+network access to `api.github.com` and `github.com`, so sandboxed read-only
+GitHub CLI inspection can work without broad network access. `web_search =
+"live"` controls the agent's web-search tool, not network access for spawned
+CLI commands such as `gh`.
 
 Do not put custom user skills under `~/.codex/skills`; Codex keeps its own state,
 cache, and bundled system skills there.
