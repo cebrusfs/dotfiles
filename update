@@ -51,16 +51,6 @@ function update_dev_tools() {
     fi
 }
 
-function apply_codex_config() {
-    if ! check_command python3; then
-        error "python3 is required to sync Codex config"
-    fi
-
-    log "Sync Codex config"
-    # sync-config.py intentionally uses only Python stdlib; no uv/env bootstrap needed.
-    python3 config/agent/codex/sync-config.py --apply
-}
-
 function main() {
     pushd "${BASEDIR}"
 
@@ -76,6 +66,7 @@ function main() {
     . config/vim/update
 
     update_dev_tools
+    apply_codex_config
 
     # shellcheck disable=SC2119
     popd >/dev/null

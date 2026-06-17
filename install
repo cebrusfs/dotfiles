@@ -122,6 +122,7 @@ function main() {
 
     print_stage "Phase 3: Install development tools (Dev Tools)"
     dev_tools_main
+    apply_codex_config
 
     print_stage "Phase 4: Install Vim/Neovim plugins"
     vim_plugins_main

@@ -38,10 +38,11 @@ session.
 Sync stable Codex defaults into the local runtime config with:
 
 ```sh
-python3 config/agent/codex/sync-config.py --apply
+uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply
 ```
 
-`./update` also runs this sync after pulling the latest dotfiles.
+`./install` runs this sync after installing dev tools, and `./update` runs it
+after updating dev tools.
 
 The script preserves local runtime sections such as `[projects]`, `[hooks.state]`,
 `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`, and strips the
@@ -68,7 +69,7 @@ cache, and bundled system skills there.
 The `./install` script executes a clean 5-phase bootstrap process:
 - **Phase 1: Dotbot Init & Symlinks**: Initialize submodules and create dotfile symlinks.
 - **Phase 2: OS Packages Setup**: Install system-level dependencies requiring root/sudo via `Brewfile.min` on macOS or batched `apt`/`dnf` on Linux.
-- **Phase 3: Dev Tools & Binaries**: Bootstrap `mise` and use `mise install` to install programming languages and tools (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta).
+- **Phase 3: Dev Tools & Binaries**: Bootstrap `mise`, install programming languages and tools (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta), and sync stable Codex runtime defaults.
 - **Phase 4: Vim Plugins**: Run PlugUpdate to install Vim/Neovim plugins automatically.
 - **Phase 5: Shell Configuration**: Ensure Zsh is the default shell and cleanly transition the shell session.
 

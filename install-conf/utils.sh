@@ -24,6 +24,19 @@ function error() {
     exit 1
 }
 
+function apply_codex_config() {
+    log "Sync Codex config"
+    if check_command uv; then
+        # Track uv's latest stable CPython instead of pinning a minor version;
+        # this is expected to move beyond 3.14 when uv promotes a newer stable.
+        uv run --quiet --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply
+    elif check_command python3 && python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 11))'; then
+        python3 config/agent/codex/sync-config.py --apply
+    else
+        error "uv or Python 3.11+ is required to sync Codex config"
+    fi
+}
+
 function pushd() {
     command pushd "$@" >/dev/null || return
 }
