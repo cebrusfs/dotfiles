@@ -51,11 +51,21 @@ function update_dev_tools() {
     fi
 }
 
+function apply_codex_config() {
+    if ! check_command python3; then
+        error "python3 is required to sync Codex config"
+    fi
+
+    log "Sync Codex config"
+    python3 config/agent/codex/sync-config.py --apply
+}
+
 function main() {
     pushd "${BASEDIR}"
 
     update_self
     update_submodule
+    apply_codex_config
 
     # Remove fzf configs
     rm -f ~/.fzf.bash ~/.fzf.zsh

@@ -41,6 +41,8 @@ Sync stable Codex defaults into the local runtime config with:
 python3 config/agent/codex/sync-config.py --apply
 ```
 
+`./update` also runs this sync after pulling the latest dotfiles.
+
 The script preserves local runtime sections such as `[projects]`, `[hooks.state]`,
 `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`, and strips the
 legacy sandbox keys managed by the template.
