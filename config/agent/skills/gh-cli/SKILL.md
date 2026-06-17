@@ -20,16 +20,17 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 
 ## Rules
 - Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
-- Use `--body-file <file>` for every issue, PR, and comment body.
+- Default to `--body-file <file>` for issue, PR, review, and comment body text.
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
 - Dependency and sub-issue requests must be written to GitHub issue metadata with the CLI script, not only described in the issue body, checklist, or comments.
 - sub-issue = hierarchy (epic→task); blocked-by = sequential ordering. Don't conflate
 - Write actions (create/edit/close/comment/label/assign, dependency changes, sub-issue changes, PR creation) still require explicit user instruction.
 
-## Body File Hard Rule
-- Never use `--body` or `-b` for GitHub writes, even for short comments.
-- Never pass body text through shell heredocs, command substitution, `printf`, `echo`, or `cat` inside a `gh` command argument.
-- Required pattern: write the body, comment, review, or PR text to a local file first, then pass `--body-file <file>`.
+## Body Argument Rule
+- `--body` is allowed only for short, single-line, plain literal text with no special characters; the same limit applies to `-b`, though `--body` is clearer.
+- Plain literal text means letters, numbers, spaces, and simple punctuation such as `. , : ; ! ? - _ /`. If it needs quotes inside the body, Markdown, links, bullets, code, shell metacharacters, variables, backticks, backslashes, command substitution, or newlines, use `--body-file`.
+- Never pass body text through shell heredocs, command substitution, `printf`, `echo`, or `cat` inside a `gh` command argument; write a local body file and pass `--body-file <file>` instead.
+- Prefer `--body-file` whenever the content is generated, multi-line, user-provided, or even slightly ambiguous.
 - This applies to all text-bearing writes, including `gh issue create/edit/comment`, `gh pr create/edit/comment`, and `gh pr review`.
 - Keep generated body files local unless the user explicitly asks to commit them.
 
@@ -46,7 +47,7 @@ gh issue reopen  123
 
 ## Body Files
 
-Use body files for short, long, generated, and multi-line content alike:
+Use body files for long, generated, multi-line, Markdown, or special-character content:
 
 ```bash
 gh issue comment 123 --body-file <comment.md>
