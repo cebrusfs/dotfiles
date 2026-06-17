@@ -20,11 +20,18 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 
 ## Rules
 - Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
-- Use `--body-file <file>` for every issue, PR, and comment body. Do not inline body content with `--body`, shell heredocs inside command arguments, or command substitution; Markdown, quotes, and long text can be escaped or truncated unexpectedly.
+- Use `--body-file <file>` for every issue, PR, and comment body.
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
 - Dependency and sub-issue requests must be written to GitHub issue metadata with the CLI script, not only described in the issue body, checklist, or comments.
 - sub-issue = hierarchy (epic→task); blocked-by = sequential ordering. Don't conflate
 - Write actions (create/edit/close/comment/label/assign, dependency changes, sub-issue changes, PR creation) still require explicit user instruction.
+
+## Body File Hard Rule
+- Never use `--body` or `-b` for GitHub writes, even for short comments.
+- Never pass body text through shell heredocs, command substitution, `printf`, `echo`, or `cat` inside a `gh` command argument.
+- Required pattern: write the body, comment, review, or PR text to a local file first, then pass `--body-file <file>`.
+- This applies to all text-bearing writes, including `gh issue create/edit/comment`, `gh pr create/edit/comment`, and `gh pr review`.
+- Keep generated body files local unless the user explicitly asks to commit them.
 
 ## CRUD
 
