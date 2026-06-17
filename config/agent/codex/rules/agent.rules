@@ -1,4 +1,23 @@
 prefix_rule(
+    pattern = ["jj", "diff"],
+    decision = "allow",
+    justification = "Inspecting local jj diffs is read-only.",
+    match = [
+        "jj diff",
+        "jj diff --stat",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "status"],
+    decision = "allow",
+    justification = "Inspecting local jj status is read-only.",
+    match = [
+        "jj status",
+    ],
+)
+
+prefix_rule(
     pattern = ["jj", "git"],
     decision = "forbidden",
     justification = "Use jj sync yourself; agents must not run jj git commands in colocated repos.",
@@ -16,4 +35,149 @@ prefix_rule(
         "jj op log",
         "jj op restore abc123",
     ],
+)
+
+prefix_rule(
+    pattern = ["gh", "auth", "status"],
+    decision = "allow",
+    justification = "Allow read-only GitHub CLI authentication checks outside the sandbox.",
+    match = [
+        "gh auth status",
+    ],
+)
+
+
+prefix_rule(
+    pattern = ["/bin/zsh", "-lc", "AGENT_HOOK_FORMAT=codex config/agent/hooks/commit-nudge.sh"],
+    decision = "allow",
+    justification = "Run the shared Codex commit-nudge hook check.",
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["list", "status", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub issue inspection outside the sandbox.",
+    match = [
+        "gh issue list --repo cebrusfs/Aureus --json number,title,state",
+        "gh issue status --repo cebrusfs/Aureus",
+        "gh issue view 77 --repo cebrusfs/Aureus --json number,title,body,state,labels,assignees,comments",
+    ],
+    not_match = [
+        "gh issue edit 77 --repo cebrusfs/Aureus",
+        "gh issue comment 77 --repo cebrusfs/Aureus --body ok",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", ["checks", "diff", "list", "status", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub PR inspection outside the sandbox.",
+    match = [
+        "gh pr view 12 --repo cebrusfs/Aureus --json number,title,state",
+        "gh pr list --repo cebrusfs/Aureus --json number,title,state",
+        "gh pr checks 12 --repo cebrusfs/Aureus",
+        "gh pr diff 12 --repo cebrusfs/Aureus",
+        "gh pr status --repo cebrusfs/Aureus",
+    ],
+    not_match = [
+        "gh pr merge 12 --repo cebrusfs/Aureus",
+        "gh pr review 12 --repo cebrusfs/Aureus --approve",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "repo", ["list", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub repository inspection outside the sandbox.",
+    match = [
+        "gh repo view cebrusfs/Aureus --json name,owner,description",
+        "gh repo list cebrusfs --limit 10",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "run", ["list", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub Actions run inspection outside the sandbox.",
+    match = [
+        "gh run list --repo cebrusfs/Aureus --limit 10",
+        "gh run view 123 --repo cebrusfs/Aureus --json status,conclusion",
+    ],
+    not_match = [
+        "gh run rerun 123 --repo cebrusfs/Aureus",
+        "gh run cancel 123 --repo cebrusfs/Aureus",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "workflow", ["list", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub Actions workflow inspection outside the sandbox.",
+    match = [
+        "gh workflow list --repo cebrusfs/Aureus",
+        "gh workflow view test.yml --repo cebrusfs/Aureus",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "release", ["list", "view"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub release inspection outside the sandbox.",
+    match = [
+        "gh release list --repo cebrusfs/Aureus",
+        "gh release view v1.0.0 --repo cebrusfs/Aureus",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "search", ["issues", "prs", "repos"]],
+    decision = "allow",
+    justification = "Allow read-only GitHub search outside the sandbox.",
+    match = [
+        "gh search issues sandbox --owner cebrusfs --json number,title,repository",
+        "gh search prs sandbox --owner cebrusfs --json number,title,repository",
+        "gh search repos dotfiles --owner cebrusfs --json name,owner",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["close", "comment", "create", "delete", "develop", "edit", "lock", "pin", "reopen", "transfer", "unlock", "unpin"]],
+    decision = "prompt",
+    justification = "GitHub issue mutations need explicit review before running outside the sandbox.",
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", ["checkout", "close", "comment", "create", "edit", "lock", "merge", "ready", "reopen", "review", "unlock"]],
+    decision = "prompt",
+    justification = "GitHub PR mutations or checkout side effects need explicit review before running outside the sandbox.",
+)
+
+prefix_rule(
+    pattern = ["gh", "api"],
+    decision = "prompt",
+    justification = "GitHub API calls can read or mutate arbitrary resources; review each invocation.",
+)
+
+prefix_rule(
+    pattern = ["gh", "repo", ["archive", "create", "delete", "deploy-key", "edit", "fork", "rename", "set-default", "sync", "unarchive"]],
+    decision = "prompt",
+    justification = "GitHub repository mutations need explicit review before running outside the sandbox.",
+)
+
+prefix_rule(
+    pattern = ["gh", "run", ["cancel", "delete", "download", "rerun", "watch"]],
+    decision = "prompt",
+    justification = "GitHub Actions run side effects or local writes need explicit review before running outside the sandbox.",
+)
+
+prefix_rule(
+    pattern = ["gh", "workflow", ["disable", "enable", "run"]],
+    decision = "prompt",
+    justification = "GitHub Actions workflow mutations need explicit review before running outside the sandbox.",
+)
+
+prefix_rule(
+    pattern = ["gh", "release", ["create", "delete", "delete-asset", "edit", "upload"]],
+    decision = "prompt",
+    justification = "GitHub release mutations need explicit review before running outside the sandbox.",
 )

@@ -45,6 +45,10 @@ The script preserves local runtime sections such as `[projects]`, `[hooks.state]
 `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`, and strips the
 legacy sandbox keys managed by the template.
 
+Shared Codex execpolicy rules live in `config/agent/codex/rules/agent.rules`,
+which dotbot links to `~/.codex/rules/agent.rules`. Keep
+`~/.codex/rules/default.rules` as Codex's local mutable allow-list state.
+
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =
 "workspace-mise"`. The `workspace-mise` profile is the built-in workspace
