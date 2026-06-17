@@ -12,7 +12,8 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 - Run from inside the repository (scripts use `{owner}/{repo}` context)
 
 ## Rules
-- Always `--json` when reading; never omit `--title`/`--body` on create/edit (avoids interactive hang)
+- Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
+- Use `--body-file <file>` for every issue, PR, and comment body. Do not inline body content with `--body`, shell heredocs inside command arguments, or command substitution; Markdown, quotes, and long text can be escaped or truncated unexpectedly.
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
 - sub-issue = hierarchy (epic→task); blocked-by = sequential ordering. Don't conflate
 - Write actions (create/edit/close/comment/label/assign, dependency changes, sub-issue changes, PR creation) still require explicit user instruction.
@@ -20,13 +21,25 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 ## CRUD
 
 ```bash
-gh issue create  --title "..." --body "..." [--label "bug"] [--assignee "@me"]
+gh issue create  --title "..." --body-file <body.md> [--label "bug"] [--assignee "@me"]
 gh issue list    --state open --limit 20 --json number,title,state,labels,assignees
 gh issue view    123 --json title,body,state,labels
-gh issue edit    123 --title "..." --add-label "bug" --remove-label "needs-triage"
+gh issue edit    123 --title "..." --body-file <body.md> --add-label "bug" --remove-label "needs-triage"
 gh issue close   123 --reason completed   # or: not_planned
 gh issue reopen  123
 ```
+
+## Body Files
+
+Use body files for short, long, generated, and multi-line content alike:
+
+```bash
+gh issue comment 123 --body-file <comment.md>
+gh pr create --title "..." --body-file <body.md>
+gh pr comment 123 --body-file <comment.md>
+```
+
+Create the body file with the normal file-writing tool available in the agent environment, then pass that path to `gh`. Keep the body file local unless the user explicitly asks to commit it.
 
 ## Extended Operations (`scripts/gh_issue.sh`)
 
@@ -66,7 +79,7 @@ Advanced filtering, jq patterns, GraphQL, PR queries: `examples/issues_metadata_
 
 ## 🔄 Autonomous Issue Resolution Loop (Loop Engineering)
 When instructed to resolve an issue, use GitHub as your state backend to maintain a transparent, resilient loop:
-1. **Plan & Context**: Add a comment (`gh issue comment <issue> --body "Starting work. Plan: ..."`) and mark it `in-progress` (if labels are used).
+1. **Plan & Context**: Write the plan comment to a body file, add it with `gh issue comment <issue> --body-file <body.md>`, and mark it `in-progress` (if labels are used).
 2. **Act & Verify**: Write the code and run local tests/linters.
 3. **Observe & Evaluate**:
    - 🟢 **Success**: Create a PR or commit, and close the issue (`gh issue close <issue> --reason completed`).
