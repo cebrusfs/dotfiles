@@ -52,7 +52,9 @@ set -gx LS_COLORS "di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg
 
 fish_add_path -g $HOME/bin # Customized binary/script managed by git
 fish_add_path -g $HOME/.local/bin # Python: uv path
-fish_add_path -g $HOME/Library/Python/*/bin # Python: Local pip path for OSX
+for python_bin in $HOME/Library/Python/*/bin
+    fish_add_path -g $python_bin
+end
 fish_add_path -g $HOME/.codeium/windsurf/bin # Windsurf
 fish_add_path -g /opt/homebrew/bin /opt/homebrew/sbin # Default homebrew for Apple Silicon
 fish_add_path -g /Library/TeX/texbin # Mactex
@@ -67,6 +69,11 @@ if status is-interactive
     # Terminal settings
     # Disable flow control (Ctrl-S/Ctrl-Q) to allow Ctrl-S for other bindings.
     stty -ixon 2>/dev/null
+
+    # Mise (Runtime Executor) — corp runs mise too (e.g. neovim), so do not gate on /usr/local/bin/mule
+    if type -q mise
+        mise activate fish | source
+    end
 
     # Enable vi key bindings
     fish_vi_key_bindings
@@ -127,11 +134,6 @@ if status is-interactive
     # Third-party initializations
     if type -q fzf
         fzf --fish | source 2>/dev/null
-    end
-
-    # Mise (Runtime Executor) — corp runs mise too (e.g. neovim), so do not gate on /usr/local/bin/mule
-    if type -q mise
-        mise activate fish | source
     end
 
     # OrbStack
