@@ -25,7 +25,10 @@
     ~/working:
 
 - shell:
-    - ['case "$(uname -s)" in Darwin) mkdir -p "$HOME/Applications" ;; esac', "Creating macOS Applications directory"]
+    # Dotbot create entries do not support `if`; keep this macOS-only directory
+    # as a quiet shell no-op on other platforms.
+    - command: 'case "$(uname -s)" in Darwin) mkdir -p "$HOME/Applications" ;; esac'
+      quiet: true
 
 - link:
     # tmux
