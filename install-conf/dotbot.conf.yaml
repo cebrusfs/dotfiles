@@ -23,8 +23,9 @@
     ~/.codex:
     ~/.config/mise:
     ~/working:
-    ~/Applications:
-        if: '[[ "$OSTYPE" == darwin* ]]'
+
+- shell:
+    - ['case "$(uname -s)" in Darwin) mkdir -p "$HOME/Applications" ;; esac', "Creating macOS Applications directory"]
 
 - link:
     # tmux
