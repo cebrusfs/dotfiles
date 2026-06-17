@@ -15,6 +15,7 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 - Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
 - Use `--body-file <file>` for every issue, PR, and comment body. Do not inline body content with `--body`, shell heredocs inside command arguments, or command substitution; Markdown, quotes, and long text can be escaped or truncated unexpectedly.
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
+- Dependency and sub-issue requests must be written to GitHub issue metadata with the CLI script, not only described in the issue body, checklist, or comments.
 - sub-issue = hierarchy (epic→task); blocked-by = sequential ordering. Don't conflate
 - Write actions (create/edit/close/comment/label/assign, dependency changes, sub-issue changes, PR creation) still require explicit user instruction.
 
@@ -73,6 +74,24 @@ $S --remove-sub-issue  <parent> <child...>
 ```
 
 Each issue has at most one parent. Re-parent = remove old, then add new.
+
+## Creating Issues With Relations
+
+When creating tickets that have dependencies or parent/child relationships:
+
+1. Create every needed issue with `gh issue create --title "..." --body-file <body.md>`.
+2. Write relationships into GitHub metadata with `scripts/gh_issue.sh`.
+3. Verify with `--relations`, `--list-blocked-by`, `--list-blocking`, or `--show-parent`.
+
+```bash
+# #12 cannot start until #7 and #9 are done.
+$S --add-dependency 12 7 9
+
+# #15 and #16 are child tasks under epic #3.
+$S --add-sub-issue 3 15 16
+```
+
+Dependency direction: `--add-dependency <issue> <blocker...>` means `<issue>` is blocked by each `<blocker>`.
 
 ## Reference
 Advanced filtering, jq patterns, GraphQL, PR queries: `examples/issues_metadata_examples.md`
