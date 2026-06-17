@@ -57,6 +57,7 @@ function apply_codex_config() {
     fi
 
     log "Sync Codex config"
+    # sync-config.py intentionally uses only Python stdlib; no uv/env bootstrap needed.
     python3 config/agent/codex/sync-config.py --apply
 }
 
