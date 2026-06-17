@@ -4,7 +4,20 @@
 web_search = "live"
 model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
+approval_policy = "on-request"
 approvals_reviewer = "auto_review"
+default_permissions = "workspace-mise"
+
+# Permission profiles do not compose with legacy sandbox_mode settings. This
+# profile extends the built-in workspace filesystem policy with a local tool
+# cache root; it does not grant command network access.
+[permissions.workspace-mise]
+description = "Workspace access plus writable mise cache."
+extends = ":workspace"
+
+[permissions.workspace-mise.workspace_roots]
+"~/Library/Caches/mise" = true
+
 
 [tui]
 status_line = [

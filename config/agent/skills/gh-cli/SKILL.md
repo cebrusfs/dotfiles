@@ -12,9 +12,10 @@ allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 - Run from inside the repository (scripts use `{owner}/{repo}` context)
 
 ## Codex Sandbox Auth Recovery
-- If `gh auth status`, any `gh ...` command, or `scripts/gh_issue.sh` fails with an invalid token, missing token, not authenticated, credential/keyring, or credential helper error, first consider whether Codex sandboxing prevented `gh` from reading the host keyring.
-- In Codex, request a one-command sandbox escalation for the same necessary command instead of immediately telling the user to run `gh auth login`. Use `sandbox_permissions: "require_escalated"` with a justification such as: `gh may need host keyring access to read the GitHub token; allow running this command outside the sandbox?`
-- Keep the escalation narrow: only the command needed for the user's current request, no broad `["gh"]` prefix rule. For repeated reads, prefer a subcommand prefix such as `["gh", "issue", "view"]` or `["gh", "pr", "check"]`.
+- If `gh auth status`, any `gh ...` command, or `scripts/gh_issue.sh` fails with `The token ... is invalid` inside Codex, do not immediately tell the user to run `gh auth login`; first consider sandboxed network/auth reachability problems.
+- Remember that `web_search = "live"` only affects the agent's web-search tool; it does not grant network access to spawned CLI commands. Some `gh` failures caused by blocked command network can look like invalid-token or auth failures.
+- If the command is necessary for the user's request and fails with an invalid token, missing token, not authenticated, credential/keyring, network, or credential helper error, request a one-command sandbox escalation for the same command. Use `sandbox_permissions: "require_escalated"` with a justification such as: `gh may need GitHub network/keyring access outside the current sandbox; allow running this command outside the sandbox?`
+- Keep the escalation narrow: only the command needed for the user's current request. For repeated reads, prefer a subcommand prefix such as `["gh", "issue", "view"]` or `["gh", "pr", "check"]`; avoid a broad `["gh"]` prefix rule.
 - Write commands still need explicit user instruction before they are run or retried outside the sandbox.
 - If the escalated retry also fails with the same auth/token error, then treat the credential as genuinely unavailable or invalid and ask the user to refresh authentication.
 

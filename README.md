@@ -30,7 +30,27 @@ Tool-specific home directories are only adapters:
 
 `config/agent/codex/config.toml` is a safe template, not a symlink target for
 `~/.codex/config.toml`. Keep personal, runtime, and project trust state in the
-local Codex config.
+local Codex config. If copying the template's permission profile into local
+Codex config, do not mix it with legacy `sandbox_mode` /
+`[sandbox_workspace_write]` settings; use one sandbox configuration model per
+session.
+
+Sync stable Codex defaults into the local runtime config with:
+
+```sh
+python3 config/agent/codex/sync-config.py --apply
+```
+
+The script preserves local runtime sections such as `[projects]`, `[hooks.state]`,
+`[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`, and strips the
+legacy sandbox keys managed by the template.
+
+The default Codex posture is `approval_policy = "on-request"`,
+`approvals_reviewer = "auto_review"`, and `default_permissions =
+"workspace-mise"`. The `workspace-mise` profile is the built-in workspace
+filesystem sandbox plus a writable `mise` cache. It does not grant shell command
+network access. `web_search = "live"` controls the agent's web-search tool, not
+network access for spawned CLI commands such as `gh`.
 
 Do not put custom user skills under `~/.codex/skills`; Codex keeps its own state,
 cache, and bundled system skills there.
