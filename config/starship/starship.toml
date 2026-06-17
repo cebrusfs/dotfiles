@@ -1,0 +1,131 @@
+# P10k-inspired Starship prompt. This is the tracked source for
+# ~/.config/starship.toml.
+
+add_newline = true
+format = """
+$time$username$hostname$directory[](fg:238)$fill$status$cmd_duration$jobs$direnv$python$nodejs$rust$ruby$golang$kubernetes$aws$gcloud$battery
+$character"""
+
+[fill]
+symbol = " "
+style = "fg:242"
+
+[time]
+disabled = false
+format = "[ $time ]($style)"
+time_format = "%m/%d %a %H:%M:%S"
+style = "fg:111 bg:238"
+
+[username]
+show_always = true
+format = "[│](fg:246 bg:238)[ $user ]($style)"
+style_user = "fg:182 bg:238"
+style_root = "fg:166 bg:238 bold"
+
+[hostname]
+ssh_only = true
+format = "[│](fg:246 bg:238)[ @$hostname ]($style)"
+style = "fg:177 bg:238"
+trim_at = "."
+
+[directory]
+format = "[│](fg:246 bg:238)[ $path]($style)[$read_only]($read_only_style)[ ]($style)"
+style = "fg:31 bg:238 bold"
+read_only = " lock"
+read_only_style = "fg:196 bg:238"
+truncation_length = 8
+truncate_to_repo = false
+truncation_symbol = ".../"
+
+[git_branch]
+disabled = true
+
+[git_status]
+disabled = true
+
+[git_commit]
+disabled = true
+
+[status]
+disabled = false
+format = "[](fg:238)[ $symbol$status ]($style)"
+symbol = "x"
+success_symbol = ""
+style = "fg:160 bg:238"
+map_symbol = false
+recognize_signal_code = true
+pipestatus = true
+pipestatus_separator = "|"
+
+[cmd_duration]
+min_time = 1000
+format = "[](fg:238)[ $duration ]($style)"
+style = "fg:248 bg:238"
+show_milliseconds = false
+
+[jobs]
+symbol = "*"
+style = "fg:37 bg:238"
+format = "[](fg:238)[ $symbol$number ]($style)"
+
+[direnv]
+disabled = false
+format = "[](fg:238)[ direnv $loaded/$allowed ]($style)"
+style = "fg:178 bg:238"
+
+[mise]
+disabled = true
+format = "[](fg:238)[ mise $health ]($style)"
+style = "fg:66 bg:238"
+
+[python]
+format = "[](fg:238)[ py ${version}${virtualenv} ]($style)"
+style = "fg:37 bg:238"
+
+[nodejs]
+format = "[](fg:238)[ node $version ]($style)"
+style = "fg:70 bg:238"
+
+[rust]
+format = "[](fg:238)[ rs $version ]($style)"
+style = "fg:37 bg:238"
+
+[ruby]
+format = "[](fg:238)[ rb $version ]($style)"
+style = "fg:168 bg:238"
+
+[golang]
+format = "[](fg:238)[ go $version ]($style)"
+style = "fg:37 bg:238"
+
+[kubernetes]
+format = "[](fg:238)[ k8s $context ]($style)"
+style = "fg:134 bg:238"
+disabled = false
+
+[aws]
+format = "[](fg:238)[ aws $profile ]($style)"
+style = "fg:208 bg:238"
+
+[gcloud]
+format = "[](fg:238)[ gcp $account@$project ]($style)"
+style = "fg:32 bg:238"
+
+[battery]
+format = "[](fg:238)[ $symbol$percentage ]($style)"
+
+[[battery.display]]
+threshold = 30
+style = "fg:178 bg:238"
+
+[[battery.display]]
+threshold = 10
+style = "fg:196 bg:238 bold"
+
+[character]
+success_symbol = "[❯](fg:76)"
+error_symbol = "[❯](fg:196)"
+vimcmd_symbol = "[❮](fg:76)"
+vimcmd_visual_symbol = "[V](fg:178)"
+vimcmd_replace_symbol = "[▶](fg:177)"
+vimcmd_replace_one_symbol = "[▶](fg:177)"

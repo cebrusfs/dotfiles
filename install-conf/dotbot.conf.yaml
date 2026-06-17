@@ -68,6 +68,12 @@
         path: config/fish/completions
         force: true
 
+    # starship
+    ~/.config/starship.toml:
+        path: config/starship/starship.toml
+        force: true
+        backup: true
+
     # mise
     ~/.config/mise/config.toml: config/mise/config.toml
     ~/.config/mise/config.local.toml:

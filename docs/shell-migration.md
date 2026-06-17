@@ -18,6 +18,8 @@ Current repo state:
 - `install-conf/dotbot.conf.yaml` links `config.fish`, `functions/`, `conf.d/`,
   and `completions/` individually so `~/.config/fish/fish_variables` stays local
   and untracked.
+- `config/starship/starship.toml` is linked to `~/.config/starship.toml` for the
+  fish Starship prompt pilot.
 - No fish plugin manager is used. Fish built-ins cover autosuggestions, syntax
   highlighting, completion, and history search; `fzf --fish` and
   `jj util completion fish` are sourced dynamically from the installed binaries.
@@ -36,9 +38,9 @@ Current repo state:
 | `config/zsh/zlogout` | `functions/on_exit.fish` | Ported with interactive TTY guard. |
 | `config/zsh/zpreztorc` editor mode | `fish_default_key_bindings` | Ported: zsh uses emacs key bindings, fish default matches. |
 | `config/zsh/zpreztorc` modules | fish built-ins / dynamic binary completions | Intentionally omitted where fish already provides native behavior: autosuggestions, syntax highlighting, completion, history search. |
-| `config/zsh/p10k.zsh` prompt left side | `functions/fish_prompt.fish`, `functions/__fish_dotfiles_jj_prompt.fish` | Ported: time, context, directory, jj, git fallback, status, command duration, prompt char. |
-| P10k async jj worker | `__fish_dotfiles_jj_prompt` | Behavior is ported; fish pilot uses synchronous `jj --ignore-working-copy`. Revisit only if prompt latency is measurable. |
-| P10k right prompt environment segments | none | Intentionally omitted for pilot; most are opportunistic P10k-specific indicators and not required for shell behavior parity. |
+| `config/zsh/p10k.zsh` prompt | `config/starship/starship.toml` | Ported as the primary prompt: time, context, directory, status, command duration, jobs, selected environment modules, battery, and prompt char. |
+| P10k async jj worker | none | Out of scope for the base Starship prompt. |
+| P10k right prompt environment segments | Starship modules | Partially ported for common runtime/cloud/battery signals. P10k-specific indicators remain out of scope for the pilot. |
 | Prezto terminal auto-title | `functions/fish_title.fish` | Ported for normal terminal titles; tmux title behavior remains managed by `config/tmux/tmux.conf`. |
 | zsh completion user filters / ignored `**` | none | Not ported. Fish has different completion semantics and no stable equivalent was needed for the pilot. |
 

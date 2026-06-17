@@ -47,6 +47,7 @@ Platform-conditional links use `if:` clauses:
 |-----------------|--------------|---------|
 | `zsh/` | `~/.zshenv`, `~/.zshrc`, etc. | Zsh + prezto config |
 | `fish/` | `~/.config/fish/config.fish`, `~/.config/fish/functions`, etc. | Fish shell config |
+| `starship/` | `~/.config/starship.toml` | Starship prompt theme |
 | `vim/` | `~/.vim`, `~/.config/nvim` | Vim + Neovim (shared config) |
 | `git/` | `~/.config/git/` | Git config, ignore, themes |
 | `jj/` | `~/.config/jj/` | Jujutsu config |
