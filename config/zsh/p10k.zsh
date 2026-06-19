@@ -1694,6 +1694,90 @@
   typeset -g POWERLEVEL9K_JJ_STATS_COLOR=178
   typeset -g POWERLEVEL9K_JJ_STATS_ICON='✎'
 
+
+  # === zsh-async setup for jj ===
+  # To avoid blocking the terminal, we execute `jj log` in the background using mafredri/zsh-async.
+  # This worker spins up a separate Zsh process (via zpty).
+  source ~/.dotfiles/config/zsh/async.zsh
+  async_init
+  async_start_worker p10k_jj_worker
+  async_register_callback p10k_jj_worker p10k_jj_async_callback
+
+  # Hook into precmd so we only fetch jj log when a new prompt is about to be drawn,
+  # instead of spamming jj commands constantly in the background.
+  autoload -Uz add-zsh-hook
+  function _p10k_jj_precmd() {
+    _prompt_jj_needs_update=1
+  }
+  add-zsh-hook precmd _p10k_jj_precmd
+
+  # Global state variables used to communicate between the async callback and p10k.
+  # _prompt_jj_async_state can be "loading", "ready", or "error".
+  typeset -g _prompt_jj_async_state=""
+  typeset -g _prompt_jj_async_pwd=""
+  typeset -g _prompt_jj_needs_update=1
+  typeset -g _prompt_jj_formatted_output=""
+
+  function p10k_jj_async_callback() {
+    if [[ -n "$3" ]]; then
+      local res="$3"
+      local change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary
+      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary <<< "$res"
+
+      local segments=()
+
+      # --- Section A: Change ID (8 characters) ---
+      segments+=("%F{$POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR}${change_prefix}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR}${change_rest}%f")
+
+      # --- Section B: Bookmarks ---
+      if [[ -n "$bmarks" ]]; then
+        segments+=("%F{$POWERLEVEL9K_JJ_BOOKMARK_COLOR}${POWERLEVEL9K_JJ_BOOKMARK_ICON} ${bmarks}%f")
+      fi
+
+      # --- Section C: Status Indicators ---
+      if [[ -n "$conflict" ]]; then
+        segments+=("%F{$POWERLEVEL9K_JJ_CONFLICT_COLOR}${POWERLEVEL9K_JJ_CONFLICT_ICON}%f")
+      fi
+      if [[ -n "$divergent" ]]; then
+        segments+=("%F{$POWERLEVEL9K_JJ_DIVERGENT_COLOR}${POWERLEVEL9K_JJ_DIVERGENT_ICON}%f")
+      fi
+
+      # --- Section D: Total Files Changed ---
+      local num_changed=0
+      if [[ -n "$diff_summary" ]]; then
+        local lines
+        lines=(${(f)diff_summary})
+        num_changed=${#lines[@]}
+      fi
+
+      if [[ $num_changed -gt 0 ]]; then
+        # Use ! prefix to match p10k git style for modified files
+        segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}!${num_changed}%f")
+      elif [[ "$is_empty" == "dirty" ]]; then
+        # Fallback to icon if count is 0 but workspace is dirty
+        segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}${POWERLEVEL9K_JJ_STATS_ICON}%f")
+      fi
+
+      # --- Section E: Commit Description ---
+      if [[ -n "$desc" ]]; then
+        if [[ ${#desc} -gt $POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH ]]; then
+          desc="${desc[1,$((POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH - 3))]}..."
+        fi
+        segments+=("%F{$POWERLEVEL9K_JJ_COMMIT_DESC_COLOR}${desc}%f")
+      fi
+
+      _prompt_jj_formatted_output="${(j: :)segments}"
+      _prompt_jj_async_state="ready"
+    else
+      local err_snippet="${5//$'
+'/ }"
+      _prompt_jj_formatted_output="RC:$2|${err_snippet:0:30}"
+      _prompt_jj_async_state="error"
+    fi
+
+    p10k display -r
+  }
+
   # Custom p10k segment for Jujutsu (jj)
   function prompt_jj() {
     # 1. Zero-fork check: use pure zsh to find the .jj directory upwards.
@@ -1710,6 +1794,8 @@
     # If not in a jj repository, ensure default VCS is shown and exit.
     if [[ $is_jj -eq 0 ]]; then
       p10k display '*/vcs=show'
+      _prompt_jj_async_pwd=""
+      _prompt_jj_async_state=""
       return
     fi
 
@@ -1722,61 +1808,28 @@
     # [5] Divergent, [6] Empty status, [7] Description, [8] Diff summary
     local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(empty, "clean", "dirty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
 
-    # Use --ignore-working-copy to prevent filesystem locks and maximize speed.
-    local res
-    res=$(jj --ignore-working-copy log -r @ --no-graph -T "$jj_template" 2>/dev/null)
-    if [[ -z "$res" ]]; then
-      return
+    if [[ "$PWD" != "$_prompt_jj_async_pwd" ]]; then
+      _prompt_jj_async_pwd="$PWD"
+      _prompt_jj_async_state="loading"
     fi
 
-    # 3. Parse the jj output.
-    local change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary
-    IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary <<< "$res"
-
-    local segments=()
-
-    # --- Section A: Change ID (8 characters) ---
-    segments+=("%F{$POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR}${change_prefix}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR}${change_rest}%f")
-
-    # --- Section B: Bookmarks ---
-    if [[ -n "$bmarks" ]]; then
-      segments+=("%F{$POWERLEVEL9K_JJ_BOOKMARK_COLOR}${POWERLEVEL9K_JJ_BOOKMARK_ICON} ${bmarks}%f")
+    # 3. Trigger async job
+    if (( _prompt_jj_needs_update )); then
+      _prompt_jj_needs_update=0
+      _prompt_jj_async_state="loading"
+      async_flush_jobs p10k_jj_worker
+      async_job p10k_jj_worker sh -c 'cd "$1" && jj --ignore-working-copy log -r @ --no-graph -T "$2"' -- "$PWD" "$jj_template"
     fi
 
-    # --- Section C: Status Indicators ---
-    if [[ -n "$conflict" ]]; then
-      segments+=("%F{$POWERLEVEL9K_JJ_CONFLICT_COLOR}${POWERLEVEL9K_JJ_CONFLICT_ICON}%f")
-    fi
-    if [[ -n "$divergent" ]]; then
-      segments+=("%F{$POWERLEVEL9K_JJ_DIVERGENT_COLOR}${POWERLEVEL9K_JJ_DIVERGENT_ICON}%f")
-    fi
-
-    # --- Section D: Total Files Changed ---
-    local num_changed=0
-    if [[ -n "$diff_summary" ]]; then
-      local lines
-      lines=(${(f)diff_summary})
-      num_changed=${#lines[@]}
-    fi
-
-    if [[ $num_changed -gt 0 ]]; then
-      # Use ! prefix to match p10k git style for modified files
-      segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}!${num_changed}%f")
-    elif [[ "$is_empty" == "dirty" ]]; then
-      # Fallback to icon if count is 0 but workspace is dirty
-      segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}${POWERLEVEL9K_JJ_STATS_ICON}%f")
-    fi
-
-    # --- Section E: Commit Description ---
-    if [[ -n "$desc" ]]; then
-      if [[ ${#desc} -gt $POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH ]]; then
-        desc="${desc[1,$((POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH - 3))]}..."
-      fi
-      segments+=("%F{$POWERLEVEL9K_JJ_COMMIT_DESC_COLOR}${desc}%f")
-    fi
-
-    # 4. Render the p10k segment.
-    p10k segment -f 255 -t "${(j: :)segments}"
+    # 4. Render the p10k segment dynamically.
+    # CRITICAL: Powerlevel10k heavily caches prompt evaluation. If we conditionally hide `p10k segment`
+    # inside an `if` block, p10k will compile the prompt without it, and `p10k display -r` won't be
+    # able to reveal it later.
+    # The solution is to ALWAYS declare all possible segment states, but use `-c` (condition) to
+    # tell p10k when to show them based on our global state variable, and `-e` to evaluate the text dynamically.
+    p10k segment -s LOADING -f 244 -c '${(M)_prompt_jj_async_state:#loading}' -t 'jj …'
+    p10k segment -s READY -f 255 -e -c '${(M)_prompt_jj_async_state:#ready}' -t '${_prompt_jj_formatted_output}'
+    p10k segment -s ERROR -f 196 -e -c '${(M)_prompt_jj_async_state:#error}' -t 'jj err (${_prompt_jj_formatted_output})'
   }
 
   # Example of a user-defined prompt segment. Function prompt_example will be called on every
