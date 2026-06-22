@@ -115,6 +115,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Homebrew completion functions must be visible before Prezto runs compinit.
+typeset -gU fpath
+fpath=(
+  /opt/homebrew/share/zsh/site-functions(N)
+  $fpath
+)
 
 # Source Prezto.
 ZPREZTO_DIR="${ZPREZTO_DIR:-${ZDOTDIR:-$HOME}/.dotfiles/modules/prezto}"
