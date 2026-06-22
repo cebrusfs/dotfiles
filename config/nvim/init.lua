@@ -86,11 +86,10 @@ local pack_specs = {
     gh("jacoborus/tender.vim"),
 
     -- Indent and whitespace. `vim-indent-guides` is kept for parity; ibl below
-    -- is the active Neovim indent-guide implementation.
+    -- is the active Neovim indent-guide implementation. Native listchars is
+    -- enough for visible trailing whitespace.
     gh("preservim/vim-indent-guides"),
     gh("lukas-reineke/indent-blankline.nvim"),
-    gh("inkarkat/vim-ingo-library"),
-    gh("inkarkat/vim-ShowTrailingWhitespace"),
     gh("luochen1990/rainbow"),
 
     -- Programming stack. Native vim.lsp.config/enable is the control plane;
@@ -117,11 +116,9 @@ local pack_specs = {
     gh("vim-pandoc/vim-pandoc"),
     gh("vim-pandoc/vim-pandoc-syntax"),
 
-    -- Niche filetypes, project-local config, jump/prose tools, and remote
-    -- copy. Native exrc/trust and OSC52 are possible follow-ups after
-    -- environment checks, especially over SSH and tmux.
+    -- Niche filetypes, jump/prose tools, and remote copy. Native OSC52 is a
+    -- possible follow-up after environment checks, especially over SSH and tmux.
     gh("ShikChen/mojom.vim"),
-    gh("coquelicot/local-vimrc"),
     gh("easymotion/vim-easymotion"),
     gh("rhysd/vim-grammarous"),
     gh("ShikChen/osc52.vim"),
@@ -278,13 +275,13 @@ if ok_gitsigns then
 end
 
 local ok_ibl, ibl = pcall(require, "ibl")
+-- listchars is the native, low-maintenance replacement for the old trailing
+-- whitespace plugin. It shows trailing spaces as glyphs, not Error highlights.
+vim.opt.list = true
+vim.opt.listchars:append({ multispace = ".", trail = "." })
+vim.opt.listchars:remove("space")
+
 if ok_ibl then
-    -- Multispace markers make indentation visible. Trailing whitespace stays
-    -- with vim-ShowTrailingWhitespace to avoid duplicate markers.
-    vim.opt.list = true
-    vim.opt.listchars:append({ multispace = "." })
-    vim.opt.listchars:remove("space")
-    vim.opt.listchars:remove("trail")
     ibl.setup()
 end
 

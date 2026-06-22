@@ -26,8 +26,8 @@ Stars and activity are approximate GitHub metadata checked on the research date.
 | `jacoborus/tender.vim` | Keep installed | Airline theme / colorscheme | Small, mature | Match replacement statusline theme manually | Keep while airline is kept. |
 | `preservim/vim-indent-guides` | Keep installed | Vim indent guides | Canonical repo for old `nathanaelkane` URL, mature | For Neovim, `lukas-reineke/indent-blankline.nvim` is already installed | Keep for Vim; consider removing from Neovim after confirming it is unused there. |
 | `lukas-reineke/indent-blankline.nvim` | Keep installed | Neovim indent guides | Active enough, Neovim-specific | `mini.indentscope` from `mini.nvim`, or native `listchars` only | Keep for parity; native `listchars` is not a full scope guide. |
-| `inkarkat/vim-ingo-library` | Keep installed | Dependency for trailing whitespace plugin | Small, mature | Remove if `vim-ShowTrailingWhitespace` is removed | Keep only because dependent plugin needs it. |
-| `inkarkat/vim-ShowTrailingWhitespace` | Keep installed | Trailing whitespace highlight | Small, low activity | Native `matchadd()` / autocmd | Keep for parity; native replacement is simple but changes implementation. |
+| `inkarkat/vim-ingo-library` | Removed from Neovim | Former dependency for trailing whitespace plugin | Small, mature | No longer needed after removing `vim-ShowTrailingWhitespace` | Removed from Neovim pack list. |
+| `inkarkat/vim-ShowTrailingWhitespace` | Removed from Neovim | Trailing whitespace highlight | Small, low activity | Native `listchars` `trail` marker or native `matchadd()` / autocmd | Use `listchars` for simple visible trailing whitespace; this intentionally drops Error-colored highlighting. |
 | `luochen1990/rainbow` | Keep installed | Delimiter coloring | ~1.8k stars, mature | `HiPhish/rainbow-delimiters.nvim` ~0.9k | Keep for parity; review Tree-sitter based replacement separately. |
 | `neovim/nvim-lspconfig` | Keep installed | LSP server config database | ~13.8k stars, active | Native `vim.lsp.config` plus local configs | Keep. The deprecated part is old `require('lspconfig').setup`, not the config database. |
 | `mason-org/mason.nvim` | Keep installed | LSP/tool installer | ~10.3k stars, active | System package managers / mise / manual installs | Keep unless tool installation moves outside Neovim. |
@@ -49,7 +49,7 @@ Stars and activity are approximate GitHub metadata checked on the research date.
 | `vim-pandoc/vim-pandoc-syntax` | Keep installed | Pandoc syntax | ~0.4k stars, mature | Native markdown / Tree-sitter markdown | Keep while `vim-pandoc` is kept. |
 | `ShikChen/mojom.vim` | Keep installed | Mojom syntax | Niche, low activity | Local syntax file if needed | Keep if mojom files still matter. |
 | GN runtime from `gn.googlesource.com` | Keep installed | BUILD.gn syntax | Upstream GN repo | Local syntax copy if plugin manager friction is high | Keep if GN files still matter. |
-| `coquelicot/local-vimrc` | Keep installed | Project-local vimrc | Low activity | Native Neovim `exrc` + trust | Keep for parity; native `exrc` is a security/UX migration that needs deliberate review. |
+| `coquelicot/local-vimrc` | Removed from Neovim | Project-local vimrc | Low activity | Native Neovim `exrc` + trust | Removed because it is unused; do not enable `exrc` unless the workflow comes back. |
 | `easymotion/vim-easymotion` | Keep installed | Jump navigation | Mature, older | `folke/flash.nvim` ~4.1k, `ggandor/leap.nvim` ~5.0k | Keep for parity; replacement changes muscle memory. |
 | `rhysd/vim-grammarous` | Keep installed | Grammar checking | ~1.1k stars, low activity | LSP/external prose checker | Keep for parity; strong candidate to remove if unused. |
 | `ShikChen/osc52.vim` | Keep installed | Remote clipboard over OSC52 | Niche, low activity | Native Neovim OSC52 provider | Keep for parity; native provider is likely enough but should be tested over SSH/tmux. |
@@ -58,7 +58,7 @@ Stars and activity are approximate GitHub metadata checked on the research date.
 
 ## Suggested Review Order
 
-1. Low-risk implementation swaps: `osc52.vim`, `vim-ShowTrailingWhitespace`, `local-vimrc`.
+1. Low-risk implementation swaps: `osc52.vim`.
 2. UI workflow decisions: `vim-airline`, `NERDTree`, `indent-blankline.nvim`, `rainbow`.
 3. Editing muscle memory: `nerdcommenter`, `easymotion`, `vim-easy-align`, `vim-pasta`.
 4. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.
