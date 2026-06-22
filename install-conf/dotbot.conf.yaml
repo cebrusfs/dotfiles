@@ -55,18 +55,10 @@
     # fish
     # Keep ~/.config/fish itself as fish runtime state so fish_variables stays
     # local and untracked; only symlink repo-managed config artifacts.
-    ~/.config/fish/config.fish:
-        path: config/fish/config.fish
-        force: true
-    ~/.config/fish/functions:
-        path: config/fish/functions
-        force: true
-    ~/.config/fish/conf.d:
-        path: config/fish/conf.d
-        force: true
-    ~/.config/fish/completions:
-        path: config/fish/completions
-        force: true
+    #~/.config/fish/config.fish:
+    #    path: config/fish/config.fish
+    #~/.config/fish/functions:
+    #    path: config/fish/functions
 
     # starship
     ~/.config/starship.toml:
