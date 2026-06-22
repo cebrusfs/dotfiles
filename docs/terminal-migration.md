@@ -2,9 +2,8 @@
 
 Research date: 2026-06-22
 
-Temporary note: this document is a working research note for the iTerm2 to
-Ghostty migration. Delete it after the related TODO in `README.md` is completed
-or no longer relevant.
+Research note for the iTerm2 to Ghostty migration. Keep it until the terminal
+default is revisited.
 
 ## iTerm2 to Ghostty
 
