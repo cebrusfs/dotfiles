@@ -65,9 +65,9 @@ paths=$(printf '%s\n' "$paths" | sed '/^$/d')
 path_count=$(printf '%s\n' "$paths" | wc -l | tr -d ' ')
 min_paths=${AGENT_COMMIT_NUDGE_MIN_PATHS:-2}
 case "$min_paths" in
-    '' | *[!0-9]*)
-        min_paths=2
-        ;;
+'' | *[!0-9]*)
+    min_paths=2
+    ;;
 esac
 [ "$path_count" -ge "$min_paths" ] || exit 0
 

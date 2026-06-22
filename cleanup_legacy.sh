@@ -36,12 +36,12 @@ function cleanup_vim_nvim_legacy() {
     if [[ -L "$nvim_config" ]]; then
         target="$(readlink "$nvim_config")"
         case "$target" in
-            *config/vim|*config/vim/|*.vim|*.vim/)
-                remove_path "$nvim_config"
-                ;;
-            *)
-                echo "    keeping $nvim_config -> $target"
-                ;;
+        *config/vim | *config/vim/ | *.vim | *.vim/)
+            remove_path "$nvim_config"
+            ;;
+        *)
+            echo "    keeping $nvim_config -> $target"
+            ;;
         esac
     fi
 
