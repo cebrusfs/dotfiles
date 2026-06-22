@@ -1681,16 +1681,22 @@
 
   # Jujutsu (jj) prompt segment configuration.
   # You can customize these variables to change the appearance of the jj segment.
+  typeset -g POWERLEVEL9K_JJ_SYMBOL='󱗆 '
+  typeset -g POWERLEVEL9K_JJ_SYMBOL_COLOR=4
   typeset -g POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR=177
   typeset -g POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR=244
   typeset -g POWERLEVEL9K_JJ_BOOKMARK_COLOR=76
-  typeset -g POWERLEVEL9K_JJ_BOOKMARK_ICON=''
+  typeset -g POWERLEVEL9K_JJ_ANCESTOR_BOOKMARK_DEPTH=10
+  typeset -g POWERLEVEL9K_JJ_BOOKMARKS_DISPLAY_LIMIT=3
+  typeset -ga POWERLEVEL9K_JJ_STRIP_BOOKMARK_PREFIX=()
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_COLOR=74
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH=30
   typeset -g POWERLEVEL9K_JJ_CONFLICT_COLOR=196
   typeset -g POWERLEVEL9K_JJ_CONFLICT_ICON='💥'
   typeset -g POWERLEVEL9K_JJ_DIVERGENT_COLOR=178
   typeset -g POWERLEVEL9K_JJ_DIVERGENT_ICON='⚠'
+  typeset -g POWERLEVEL9K_JJ_REMOTE_UNSYNCED_COLOR=196
+  typeset -g POWERLEVEL9K_JJ_REMOTE_UNSYNCED_ICON='⇡'
   typeset -g POWERLEVEL9K_JJ_STATS_COLOR=178
   typeset -g POWERLEVEL9K_JJ_STATS_ICON='✎'
 
@@ -1721,17 +1727,17 @@
   function p10k_jj_async_callback() {
     if [[ -n "$3" ]]; then
       local res="$3"
-      local change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary
-      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent is_empty desc diff_summary <<< "$res"
+      local change_prefix change_rest bmarks conflict divergent remote_unsynced is_empty desc diff_summary
+      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent remote_unsynced is_empty desc diff_summary <<< "$res"
 
       local segments=()
 
       # --- Section A: Change ID (8 characters) ---
-      segments+=("%F{$POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR}${change_prefix}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR}${change_rest}%f")
+      segments+=("%F{$POWERLEVEL9K_JJ_SYMBOL_COLOR}${POWERLEVEL9K_JJ_SYMBOL}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_PREFIX_COLOR}${change_prefix}%f%F{$POWERLEVEL9K_JJ_CHANGE_ID_REST_COLOR}${change_rest}%f")
 
       # --- Section B: Bookmarks ---
       if [[ -n "$bmarks" ]]; then
-        segments+=("%F{$POWERLEVEL9K_JJ_BOOKMARK_COLOR}${POWERLEVEL9K_JJ_BOOKMARK_ICON} ${bmarks}%f")
+        segments+=("%F{$POWERLEVEL9K_JJ_BOOKMARK_COLOR}${bmarks}%f")
       fi
 
       # --- Section C: Status Indicators ---
@@ -1740,6 +1746,9 @@
       fi
       if [[ -n "$divergent" ]]; then
         segments+=("%F{$POWERLEVEL9K_JJ_DIVERGENT_COLOR}${POWERLEVEL9K_JJ_DIVERGENT_ICON}%f")
+      fi
+      if [[ -n "$remote_unsynced" ]]; then
+        segments+=("%F{$POWERLEVEL9K_JJ_REMOTE_UNSYNCED_COLOR}${POWERLEVEL9K_JJ_REMOTE_UNSYNCED_ICON}%f")
       fi
 
       # --- Section D: Total Files Changed ---
@@ -1805,8 +1814,9 @@
     # 2. Define the jj status template.
     # Separated by '|':
     # [1] Change ID Prefix, [2] Change ID Rest, [3] Bookmarks, [4] Conflict,
-    # [5] Divergent, [6] Empty status, [7] Description, [8] Diff summary
-    local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(empty, "clean", "dirty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
+    # [5] Divergent, [6] Remote sync, [7] Empty status, [8] Description,
+    # [9] Diff summary
+    local jj_worker_script="${HOME}/.dotfiles/config/zsh/p10k-jj-prompt.zsh"
 
     if [[ "$PWD" != "$_prompt_jj_async_pwd" ]]; then
       _prompt_jj_async_pwd="$PWD"
@@ -1818,7 +1828,7 @@
       _prompt_jj_needs_update=0
       _prompt_jj_async_state="loading"
       async_flush_jobs p10k_jj_worker
-      async_job p10k_jj_worker sh -c 'cd "$1" && jj --ignore-working-copy log -r @ --no-graph -T "$2"' -- "$PWD" "$jj_template"
+      async_job p10k_jj_worker zsh "$jj_worker_script" "$PWD" "$POWERLEVEL9K_JJ_ANCESTOR_BOOKMARK_DEPTH" "$POWERLEVEL9K_JJ_BOOKMARKS_DISPLAY_LIMIT" "${POWERLEVEL9K_JJ_STRIP_BOOKMARK_PREFIX[@]}"
     fi
 
     # 4. Render the p10k segment dynamically.
