@@ -1693,6 +1693,10 @@
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH=30
   typeset -g POWERLEVEL9K_JJ_STATUS_COLOR=196
   typeset -g POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR=178
+  # Keep `!N` available for file counts while making graph hazards visually distinct.
+  typeset -g POWERLEVEL9K_JJ_CONFLICT_STATUS_SYMBOL='💥'
+  typeset -g POWERLEVEL9K_JJ_DIVERGENT_STATUS_SYMBOL='⇔💥'
+  typeset -g POWERLEVEL9K_JJ_FILE_COUNT_COLOR=178
 
 
   # === zsh-async setup for jj ===
@@ -1721,8 +1725,8 @@
   function p10k_jj_async_callback() {
     if [[ -n "$3" ]]; then
       local res="$3"
-      local change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc
-      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc <<< "$res"
+      local change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc diff_summary
+      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc diff_summary <<< "$res"
       desc="${desc%%$'\n'*}"
 
       local segments=()
@@ -1738,10 +1742,10 @@
       # --- Section C: Status Indicators ---
       local jj_status=""
       if [[ -n "$conflict" ]]; then
-        jj_status+='!'
+        jj_status+="$POWERLEVEL9K_JJ_CONFLICT_STATUS_SYMBOL"
       fi
       if [[ -n "$divergent" ]]; then
-        jj_status+='⇔'
+        jj_status+="$POWERLEVEL9K_JJ_DIVERGENT_STATUS_SYMBOL"
       fi
       if [[ -n "$empty_desc" && "$empty_commit" != "empty_commit" ]]; then
         jj_status+='∅'
@@ -1755,10 +1759,19 @@
         if [[ "$jj_status" == "∅" ]]; then
           status_color=$POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR
         fi
-        segments+=("%F{$status_color}[${jj_status}]%f")
+        segments+=("%F{$status_color}(${jj_status})%f")
       fi
 
-      # --- Section D: Commit Description ---
+      # --- Section D: Changed File Count ---
+      if [[ -n "$diff_summary" ]]; then
+        local -a changed_files
+        changed_files=(${(f)diff_summary})
+        if (( ${#changed_files} > 0 )); then
+          segments+=("%F{$POWERLEVEL9K_JJ_FILE_COUNT_COLOR}!${#changed_files}%f")
+        fi
+      fi
+
+      # --- Section E: Commit Description ---
       if [[ -n "$desc" ]]; then
         if [[ ${#desc} -gt $POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH ]]; then
           desc="${desc[1,$((POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH - 3))]}..."

@@ -32,7 +32,7 @@ function _p10k_jj_build_bookmark_template() {
 
 cd "$cwd" || exit
 
-local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(description.first_line() == "", "empty_desc", "") ++ "|" ++ if(empty, "empty_commit", "non_empty") ++ "|" ++ description.first_line()'
+local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(description.first_line() == "", "empty_desc", "") ++ "|" ++ if(empty, "empty_commit", "non_empty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
 local bookmark_template=$(_p10k_jj_build_bookmark_template "$depth")
 local bookmark_revset
 if (( depth > 0 )); then
@@ -46,8 +46,8 @@ local info bookmark_rows
 info=$(jj --ignore-working-copy log -r @ --no-graph -T "$jj_template") || exit
 bookmark_rows=$(jj --ignore-working-copy log -r "$bookmark_revset" --no-graph -T "$bookmark_template") || bookmark_rows=""
 
-local change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc
-IFS='|' read -d "" -r change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc <<< "$info"
+local change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc diff_summary
+IFS='|' read -d "" -r change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc diff_summary <<< "$info"
 desc="${desc%%$'\n'*}"
 
 local rs=$'\x1e'
@@ -98,7 +98,7 @@ if (( ${#bookmark_entries} > 0 )); then
     bookmark_labels+=("…+$((total - shown))")
   fi
 
-  bmarks="(${(j:, :)bookmark_labels})"
+  bmarks="${(j:, :)bookmark_labels}"
 fi
 
 local remote_unsynced=""
@@ -139,4 +139,4 @@ if [[ -n "$closest_bookmark" ]]; then
   fi
 fi
 
-print -r -- "${change_prefix}|${change_rest}|${bmarks}|${conflict}|${divergent}|${empty_desc}|${empty_commit}|${remote_unsynced}|${desc}"
+print -r -- "${change_prefix}|${change_rest}|${bmarks}|${conflict}|${divergent}|${empty_desc}|${empty_commit}|${remote_unsynced}|${desc}|${diff_summary}"
