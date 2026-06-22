@@ -1,21 +1,16 @@
 -- vim: ts=4 sts=4 sw=4 et
 
--- Keep the historical Vim defaults in one file. The first path is the
--- dotbot-installed symlink; the second keeps repo-local smoke tests working
--- with XDG_CONFIG_HOME=$PWD/config.
-local function source_first_readable(candidates)
-    for _, file in ipairs(candidates) do
-        if vim.fn.filereadable(file) == 1 then
-            vim.cmd.source(vim.fn.fnameescape(file))
-            return
-        end
-    end
+-- Keep shared Vim defaults repo-relative. stdpath("config") is usually the
+-- ~/.config/nvim symlink, so resolve it before walking to ../vim/common.vim.
+local common_vim = vim.fn.fnamemodify(
+    vim.fn.resolve(vim.fn.stdpath("config")) .. "/../vim/common.vim",
+    ":p"
+)
+if vim.fn.filereadable(common_vim) == 1 then
+    vim.cmd.source(vim.fn.fnameescape(common_vim))
+else
+    vim.notify("Missing shared Vim config: " .. common_vim, vim.log.levels.WARN)
 end
-
-source_first_readable({
-    vim.fn.expand("~/.vim/common.vim"),
-    vim.fn.fnamemodify(vim.fn.stdpath("config") .. "/../vim/common.vim", ":p"),
-})
 
 -- Neovim-only UI defaults live here; shared Vim-compatible defaults stay in
 -- common.vim so the two editors do not drift for basic editing behavior.
@@ -79,6 +74,11 @@ let g:grammarous#default_comments_only_filetypes = {
 -- surface during migration; modern replacements are called out in comments so
 -- behavior can be swapped one workflow at a time.
 local pack_specs = {
+    -- Mini is adopted one small module at a time. Good candidates: trailspace,
+    -- align, statusline, comment, diff. Keep picker/files/git replacements
+    -- behind workflow checks because fzf-lua/fugitive/NERDTree differ sharply.
+    gh("nvim-mini/mini.nvim"),
+
     -- Themes and statusline.
     gh("tomasiser/vim-code-dark"),
     gh("Mofiqul/vscode.nvim"),
@@ -86,8 +86,8 @@ local pack_specs = {
     gh("jacoborus/tender.vim"),
 
     -- Indent and whitespace. `vim-indent-guides` is kept for parity; ibl below
-    -- is the active Neovim indent-guide implementation. Native listchars is
-    -- enough for visible trailing whitespace.
+    -- is the active Neovim indent-guide implementation. mini.trailspace handles
+    -- Error-colored trailing whitespace.
     gh("preservim/vim-indent-guides"),
     gh("lukas-reineke/indent-blankline.nvim"),
     gh("luochen1990/rainbow"),
@@ -133,6 +133,33 @@ elseif not vim.pack then
     vim.notify("vim.pack requires Neovim 0.12+", vim.log.levels.WARN)
 end
 
+if vim.pack then
+    -- TODO(nvim 0.13): drop this fallback after :packdel ++all is available
+    -- on every machine that runs ./update.
+    vim.api.nvim_create_user_command("PackClean", function()
+        if vim.env.NVIM_SKIP_PACK == "1" then
+            vim.notify("PackClean is disabled when NVIM_SKIP_PACK=1", vim.log.levels.WARN)
+            return
+        end
+
+        local inactive = vim.iter(vim.pack.get())
+            :filter(function(plugin)
+                return not plugin.active
+            end)
+            :map(function(plugin)
+                return plugin.spec.name
+            end)
+            :totable()
+
+        if #inactive == 0 then
+            vim.notify("No inactive vim.pack plugins to remove")
+            return
+        end
+
+        vim.pack.del(inactive, { force = true })
+    end, { desc = "Remove vim.pack plugins no longer declared by this config" })
+end
+
 -- The GN repo keeps its Vim runtime under misc/vim instead of the package
 -- root, so packadd alone does not expose its syntax files.
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/pack/core/opt/gn/misc/vim")
@@ -155,6 +182,20 @@ if ok_vscode then
     vim.cmd.colorscheme("vscode")
 else
     vim.cmd.colorscheme("default")
+end
+
+local ok_mini_trailspace, mini_trailspace = pcall(require, "mini.trailspace")
+if ok_mini_trailspace then
+    mini_trailspace.setup()
+
+    local function link_mini_trailspace()
+        vim.api.nvim_set_hl(0, "MiniTrailspace", { link = "Error" })
+    end
+
+    link_mini_trailspace()
+    vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = link_mini_trailspace,
+    })
 end
 
 -- Show diagnostic detail only on the current line to keep dense buffers calm.
@@ -275,11 +316,12 @@ if ok_gitsigns then
 end
 
 local ok_ibl, ibl = pcall(require, "ibl")
--- listchars is the native, low-maintenance replacement for the old trailing
--- whitespace plugin. It shows trailing spaces as glyphs, not Error highlights.
+-- listchars stays for normal spacing visibility. Trailing whitespace is not a
+-- listchar because mini.trailspace highlights it with the Error group instead.
 vim.opt.list = true
-vim.opt.listchars:append({ multispace = ".", trail = "." })
+vim.opt.listchars:append({ multispace = "." })
 vim.opt.listchars:remove("space")
+vim.opt.listchars:remove("trail")
 
 if ok_ibl then
     ibl.setup()

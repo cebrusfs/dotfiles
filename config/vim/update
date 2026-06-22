@@ -2,4 +2,6 @@
 
 # Use command to bypass alias
 command vim +PlugUpdate +qa
-command nvim --headless +'lua vim.pack.update(nil, { force = true })' +qa
+# TODO(nvim 0.13): replace PackClean fallback with plain `packdel ++all`
+# once all machines have neovim/neovim#39693.
+command nvim --headless +'lua if vim.fn.exists(":packdel") == 2 then vim.cmd("packdel ++all") elseif vim.fn.exists(":PackClean") == 2 then vim.cmd.PackClean() end' +qa
