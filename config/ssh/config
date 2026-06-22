@@ -49,11 +49,13 @@ Host free-us
 
 # Non-Corp
 Host amd-micro vpn arm-perf amd-oracle free-us ws*
-    # Auto tmux
-    RemoteCommand tmux -CC new -A -s tmux-main
+    Tag tmux-intergration
 
     # Enable tty
     RequestTTY yes
+
+Match tagged tmux-intergration
+    RemoteCommand tmux -CC new -A -s tmux-main
 
 # SSH has no "inherit"/"use" directive; `Tag NAME` on a host + a `Match tagged NAME`
 # block below is the closest. A host opts into multiplexing with a single line:
