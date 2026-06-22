@@ -1692,7 +1692,6 @@
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_COLOR=74
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH=30
   typeset -g POWERLEVEL9K_JJ_STATUS_COLOR=196
-  typeset -g POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR=178
   # Keep `!N` available for file counts while making graph hazards visually distinct.
   typeset -g POWERLEVEL9K_JJ_CONFLICT_STATUS_SYMBOL='💥'
   typeset -g POWERLEVEL9K_JJ_DIVERGENT_STATUS_SYMBOL='⇔💥'
@@ -1747,18 +1746,12 @@
       if [[ -n "$divergent" ]]; then
         jj_status+="$POWERLEVEL9K_JJ_DIVERGENT_STATUS_SYMBOL"
       fi
-      if [[ -n "$empty_desc" && "$empty_commit" != "empty_commit" ]]; then
-        jj_status+='∅'
-      fi
       if [[ -n "$remote_unsynced" ]]; then
         jj_status+='⇡'
       fi
 
       if [[ -n "$jj_status" ]]; then
         local status_color=$POWERLEVEL9K_JJ_STATUS_COLOR
-        if [[ "$jj_status" == "∅" ]]; then
-          status_color=$POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR
-        fi
         segments+=("%F{$status_color}(${jj_status})%f")
       fi
 
