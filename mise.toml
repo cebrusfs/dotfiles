@@ -1,8 +1,10 @@
 [tools]
 actionlint = "latest"
 jq = "latest"
+neovim = "latest"
 shellcheck = "latest"
 shfmt = "latest"
+stylua = "latest"
 yq = "latest"
 
 # Shell scripts are auto-collected by `shfmt -f`, which detects them via shebang —
@@ -51,17 +53,37 @@ missing=$(yq eval '.[] | select(has("link")) | .link | to_entries | .[] | (.valu
 if [ -n "$missing" ]; then printf 'dotbot link sources missing:\n%s\n' "$missing" >&2; exit 1; fi
 '''
 
+# stylua is the de-facto Lua formatter; settings live in stylua.toml so the
+# editor and CI agree. Only init.lua is hand-written Lua (the pack lock is JSON).
+[tasks."fmt:lua"]
+description = "Format all Lua files using stylua"
+run = "git ls-files '*.lua' | xargs stylua"
+
+[tasks."check-fmt:lua"]
+description = "Check if Lua files are formatted correctly"
+run = "git ls-files '*.lua' | xargs stylua --check"
+
+# Headless load test for the Neovim config: the analog of `zsh -n`. nvim exits 0
+# even when init.lua errors during startup, so load it through pcall(dofile) and
+# force a non-zero exit on failure. NVIM_SKIP_PACK=1 keeps it offline and
+# independent of installed plugin state; --clean avoids the user's real config.
+[tasks."lint:nvim"]
+description = "Headless load-check the Neovim config (init.lua)"
+run = '''
+NVIM_SKIP_PACK=1 nvim --headless --clean -c "lua local ok, err = pcall(dofile, 'config/nvim/init.lua'); if not ok then io.stderr:write(tostring(err) .. '\n'); os.exit(1) end; os.exit(0)"
+'''
+
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim"]
 
 [tasks."fmt"]
 description = "Run all formatters"
-depends = ["fmt:bash"]
+depends = ["fmt:bash", "fmt:lua"]
 
 [tasks."check-fmt"]
 description = "Check all formatters"
-depends = ["check-fmt:bash"]
+depends = ["check-fmt:bash", "check-fmt:lua"]
 
 [tasks."check"]
 description = "Run all checks (file keep unchanged)"

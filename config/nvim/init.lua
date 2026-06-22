@@ -1,11 +1,13 @@
 -- vim: ts=4 sts=4 sw=4 et
 
--- Keep shared Vim defaults repo-relative. stdpath("config") is usually the
--- ~/.config/nvim symlink, so resolve it before walking to ../vim/common.vim.
-local common_vim = vim.fn.fnamemodify(
-    vim.fn.resolve(vim.fn.stdpath("config")) .. "/../vim/common.vim",
-    ":p"
-)
+-- Resolve shared Vim defaults relative to THIS file rather than stdpath: the
+-- headless CI check loads init.lua directly with no ~/.config/nvim symlink, so a
+-- stdpath lookup would miss common.vim. debug.getinfo is the standard way to get
+-- the running script path (works under both :source and dofile); resolve()
+-- collapses the install symlink so the sibling ../vim tree (linked as ~/.vim, not
+-- ~/.config/vim) stays reachable.
+local this_file = debug.getinfo(1, "S").source:sub(2)
+local common_vim = vim.fn.fnamemodify(vim.fn.resolve(this_file) .. "/../../vim/common.vim", ":p")
 if vim.fn.filereadable(common_vim) == 1 then
     vim.cmd.source(vim.fn.fnameescape(common_vim))
 else

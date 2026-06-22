@@ -1,0 +1,4 @@
+# Match the editor settings declared in config/nvim/init.lua (`ts=4 sts=4 sw=4 et`):
+# 4-space indentation, spaces not tabs. Everything else stays on stylua defaults.
+indent_type = "Spaces"
+indent_width = 4
