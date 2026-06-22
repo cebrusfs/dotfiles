@@ -21,6 +21,9 @@ diff-editor = ":builtin"
 merge-editor = "vimdiff"
 show-cryptographic-signatures = true
 
+[snapshot]
+auto-update-stale = true
+
 [git]
 # Prevent upload
 private-commits = 'blacklist()'
