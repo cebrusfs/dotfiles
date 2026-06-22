@@ -76,9 +76,9 @@ let g:grammarous#default_comments_only_filetypes = {
 -- surface during migration; modern replacements are called out in comments so
 -- behavior can be swapped one workflow at a time.
 local pack_specs = {
-    -- Mini is adopted one small module at a time. Good candidates: trailspace,
-    -- align, statusline, comment, diff. Keep picker/files/git replacements
-    -- behind workflow checks because fzf-lua/fugitive/NERDTree differ sharply.
+    -- Mini is adopted one small module at a time. The mini review matched this
+    -- config's bias: small modules are good swaps; picker/files/git change core
+    -- workflow. Candidates here are trailspace, align, comment, and maybe diff.
     gh("nvim-mini/mini.nvim"),
 
     -- Themes and statusline.
@@ -104,14 +104,23 @@ local pack_specs = {
     gh("hrsh7th/cmp-path"),
     gh("hrsh7th/cmp-cmdline"),
     gh("hrsh7th/nvim-cmp"),
+    -- Keep fzf-lua for fd/rg search with side-by-side previews. mini.pick is
+    -- not equivalent for preview-heavy file and grep exploration.
     gh("ibhagwan/fzf-lua"),
+    -- gitsigns keeps the richer hunk workflow. mini.diff is a candidate only
+    -- if number-column hunks are worth trading off those actions.
     gh("lewis6991/gitsigns.nvim"),
 
-    -- Editing/navigation muscle memory. Native gc/gcc and netrw/fzf-lua cover
-    -- parts of this, but not the old mappings and edge-case behavior yet.
+    -- Editing/navigation muscle memory. Fugitive stays for repo/index status;
+    -- mini.git is buffer-focused. Native gc/gcc is a basic mini.comment path,
+    -- but NERDCommenter still owns <Bslash> and the armasm '@' delimiter.
     gh("tpope/vim-fugitive"),
+    -- mini.align is the closest replacement, but keep EasyAlign until
+    -- <Leader>- interactive alignment is tested.
     gh("junegunn/vim-easy-align"),
     gh("sickill/vim-pasta"),
+    -- mini.files uses a popup workflow; this keeps the existing tree toggle
+    -- until file browsing is intentionally redesigned.
     gh("preservim/nerdtree"),
     gh("preservim/nerdcommenter"),
     gh("tpope/vim-endwise"),
