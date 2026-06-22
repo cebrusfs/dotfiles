@@ -9,9 +9,16 @@ VCS use `jj` in colocated mode (Use /jj skill when needed)
 ## Key Commands
 
 ```bash
+# Run the same lint + format checks CI runs (do this before committing)
+mise run check
+
 # Re-run dotbot after editing symlink mappings
 bin/dotbot -d . -c install-conf/dotbot.conf.yaml
 ```
+
+Before committing any change, run `mise run check` and ensure it passes — CI
+(`.github/workflows/lint.yaml`) runs the identical task, so a skipped check
+becomes a red build.
 
 `./install`, `./update`, and `brew bundle install` are user workflow commands;
 run them only when explicitly requested.

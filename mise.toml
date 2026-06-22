@@ -41,9 +41,19 @@ run = "git ls-files '*.json' | grep -vE '^config/Antigravity/' | xargs jq empty"
 description = "Validate tracked YAML files"
 run = "git ls-files '*.yaml' '*.yml' | xargs yq eval '.' >/dev/null"
 
+# A dotbot link entry pointing at a deleted/renamed config/ source silently
+# breaks `install` (the failure only surfaces at link time). Assert every link
+# source path exists. `.value.path // .value` handles both map and string forms.
+[tasks."lint:dotbot"]
+description = "Verify every dotbot link source path exists"
+run = '''
+missing=$(yq eval '.[] | select(has("link")) | .link | to_entries | .[] | (.value.path // .value)' install-conf/dotbot.conf.yaml | while IFS= read -r p; do [ -n "$p" ] && [ ! -e "$p" ] && printf '%s\n' "$p"; done) || true
+if [ -n "$missing" ]; then printf 'dotbot link sources missing:\n%s\n' "$missing" >&2; exit 1; fi
+'''
+
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot"]
 
 [tasks."fmt"]
 description = "Run all formatters"
