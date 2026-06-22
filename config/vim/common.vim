@@ -19,11 +19,6 @@ scriptencoding utf-8
 
     set mouse=a
 
-    if has('nvim')
-        let g:loaded_perl_provider = 0
-        let g:loaded_ruby_provider = 0
-        let g:loaded_node_provider = 0
-    endif
 " }
 
 " User Interface {

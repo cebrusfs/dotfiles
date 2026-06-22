@@ -20,6 +20,19 @@ Before committing any change, run `mise run check` and ensure it passes — CI
 (`.github/workflows/lint.yaml`) runs the identical task, so a skipped check
 becomes a red build.
 
+For Neovim smoke tests, isolate state under `$TMPDIR` and disable ShaDa so
+headless runs do not write `nvim.log` into the repo or touch the real
+`~/.local/state/nvim`:
+
+```bash
+env XDG_CONFIG_HOME="$PWD/config" \
+  XDG_DATA_HOME="$TMPDIR/nvim-data" \
+  XDG_STATE_HOME="$TMPDIR/nvim-state" \
+  XDG_CACHE_HOME="$TMPDIR/nvim-cache" \
+  NVIM_SKIP_PACK=1 \
+  nvim --headless --cmd 'set shada=' +qa
+```
+
 `./install`, `./update`, and `brew bundle install` are user workflow commands;
 run them only when explicitly requested.
 

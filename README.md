@@ -78,7 +78,7 @@ Ref: [`config/tmux/tmux.conf`](./config/tmux/tmux.conf)
 | Quick save                 | `<Space>w`                | Save current buffer (`:w`)                   |
 | Quick reload               | `<Space>e`                | Reload current buffer (`:e`)                 |
 | Move across wrapped lines  | `<Up>` / `<Down>`         | Move visually up/down even if lines wrap     |
-| Copy to clipboard (remote) | `Y` (Visual)              | Copy via OSC52 (works over SSH/tmux)         |
+| Copy to clipboard (remote) | `Y` (Visual)              | Explicit copy via OSC52 over SSH/tmux        |
 | Trigger Easymotion         | `<Space><Space> + motion` | Quickly jump to specific targets             |
 
 #### File Explorer (NERDTree)
@@ -159,15 +159,18 @@ Neovim with LSP provides these built-in diagnostic navigation keybindings:
 
 #### Comments
 
-| Action         | Key | Description                  |
-|----------------|-----|------------------------------|
-| Toggle comment | `\` | Toggle comment for selection |
+| Action                         | Key                 | Description                                      |
+|--------------------------------|---------------------|--------------------------------------------------|
+| Toggle comment line            | `gcc`               | Neovim built-in comment toggle for current line  |
+| Toggle comment selection/range | `gc`                | Neovim built-in comment operator / Visual toggle |
+| Toggle comment alias           | `\` / `<Bslash>`    | Legacy alias mapped to `gcc` / `gc`              |
 
 #### Alignment
 
-| Action     | Key        | Description           |
-|------------|------------|-----------------------|
-| Easy align | `<Space>-` | Interactive alignment |
+| Action        | Key        | Description                |
+|---------------|------------|----------------------------|
+| Align preview | `<Space>-` | mini.align with preview    |
+| Align         | `<Space>_` | mini.align without preview |
 
 #### Language-specific
 | Action        | Key        | Description                                             |

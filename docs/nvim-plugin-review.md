@@ -4,8 +4,9 @@ Research date: 2026-06-24
 
 Migration note for moving Neovim from vim-plug to built-in `vim.pack` without
 changing editor behavior too aggressively. `config/nvim/init.lua` intentionally
-keeps the old enabled plugin surface installed first. Use this table to review
-one dependency at a time before removing or replacing it.
+keeps the old enabled plugin surface installed first. This file tracks plugins
+that still need review; completed migrations keep their rationale beside the
+new behavior in `config/nvim/init.lua`.
 
 Stars and activity are approximate GitHub metadata checked on the research date.
 Plugin follow-up data was refreshed on 2026-06-25.
@@ -32,10 +33,7 @@ replace an existing behavior cleanly.
 
 | Mini module | Compared with | Recommendation |
 |---|---|---|
-| `mini.trailspace` | `listchars` `trail`, `vim-ShowTrailingWhitespace`, `vim-better-whitespace`, `whitespace.nvim` | Enable now. It gives Error-colored trailing whitespace without coloring all `listchars`; stops in Insert mode and normal buffers by default. |
-| `mini.align` | `vim-easy-align` | Good candidate, but test `<Leader>-` muscle memory and interactive alignment prompts first. |
 | `mini.statusline` | `vim-airline`, `lualine.nvim`, native `statusline` | Candidate only after screenshots and statusline feature parity; airline remains familiar. |
-| `mini.comment` | Native `gc/gcc`, `NERDCommenter` | Defer. Built-in commenting may already be enough; NERDCommenter still has custom `armasm` delimiter and old `<Bslash>` behavior. |
 | `mini.diff` | `gitsigns.nvim` | Defer. Reddit review liked number-column hunks, but gitsigns is proven and already configured. |
 | `mini.files` | `NERDTree`, `oil.nvim`, netrw | Defer. Popup/file-explorer workflow differs from the current tree toggle. |
 | `mini.pick` | `fzf-lua`, Telescope, snacks picker | Do not switch now. The Reddit review found fzf-lua faster/better for preview-heavy exploration, which matches the current `fd`/`rg` workflow. |
@@ -50,10 +48,6 @@ feature the old plugin exposes.
 
 | Current plugin | Built-in replacement | mini.nvim replacement | Equivalence | Recommendation |
 |---|---|---|---|---|
-| `inkarkat/vim-ShowTrailingWhitespace` | `listchars` can mark trailing spaces but cannot give independent Error-style highlighting | `mini.trailspace` | Mini is equivalent for the desired behavior | Already replaced with `mini.trailspace`. |
-| `ShikChen/osc52.vim` | Native OSC52 clipboard provider can copy through OSC52; tmux may need explicit `g:clipboard = 'osc52'` | None needed | Built-in is likely equivalent for copy workflow | Replace after SSH/tmux test. |
-| `preservim/nerdcommenter` | Native `gc/gcc` supports comment toggling via `commentstring` and Tree-sitter commentstring metadata | `mini.comment` | Built-in/mini are mostly equivalent, but custom `<Bslash>` and `armasm` `@` delimiter must be preserved | Test native first; keep if delimiter parity fails. |
-| `junegunn/vim-easy-align` | No direct interactive align operator | `mini.align` | Mini is the closest equivalent | Candidate replacement; preserve `<Leader>-` mapping if adopted. |
 | `vim-airline/vim-airline` | Native `statusline` can reproduce output manually | `mini.statusline` | Not equivalent out of the box; both need visual/component parity work | Defer until screenshot parity. |
 | `jacoborus/tender.vim` | None unless airline is removed | `mini.statusline` does not need airline themes | Equivalent only after airline replacement | Remove together with airline if statusline changes. |
 | `preservim/nerdtree` | netrw is built-in but different; fzf-lua already covers file finding, not tree browsing | `mini.files` | Not equivalent to the current tree toggle workflow | Keep until file-tree workflow is redesigned. |
@@ -77,12 +71,9 @@ feature the old plugin exposes.
 
 | Area | Current data | Candidate data | Recommendation |
 |---|---|---|---|
-| Remote clipboard | `ShikChen/osc52.vim`: 10 stars, pushed 2020-08-07, no release | Native Neovim OSC52 provider exists; docs note tmux can inhibit auto-detection | Replace candidate. Test SSH/tmux copy behavior first, then map visual yank to native OSC52 or force `g:clipboard = 'osc52'`. |
-| Alignment | `vim-easy-align`: ~4.2k stars, pushed 2024-07-23, no release | `mini.align` ships with active `mini.nvim` | Candidate. Keep `<Leader>-` until a short trial proves `mini.align` preserves interactive alignment muscle memory. |
 | Statusline | `vim-airline`: ~18.0k stars, latest release `v0.12` on 2026-05-02 | `lualine.nvim`: ~8.0k stars, pushed 2026-05-31; `mini.statusline` ships with active `mini.nvim` | No urgency. Airline is old-style Vimscript but still maintained; replace only with screenshot parity and component parity. |
 | File explorer | `NERDTree`: ~20.1k stars, pushed 2025-09-26 | `oil.nvim`: ~6.7k stars, latest release `v2.16.0` on 2026-05-24; `nvim-tree.lua`: ~8.6k stars, latest release `v1.17.0` on 2026-04-07; `mini.files` ships with active `mini.nvim` | Keep for now. Choose `oil.nvim` only if buffer-style filesystem edits are desired; choose `nvim-tree.lua` if tree parity matters more. |
 | Indent and delimiters | `indent-blankline.nvim`: ~5.0k stars, latest release `v3.9.1` on 2026-02-17; `rainbow`: ~1.8k stars, last release 2014, pushed 2024-07-27 | `rainbow-delimiters.nvim`: ~0.9k stars, pushed 2026-05-18 | Keep `indent-blankline.nvim`. `rainbow` is a good replacement candidate, but only after Tree-sitter coverage is checked for the languages here. |
-| Commenting | `NERDCommenter`: ~5.0k stars, latest release `2.6.0` on 2021-11-27, pushed 2025-11-19 | Native `gc/gcc` exists in Neovim; `mini.comment` ships with active `mini.nvim` | Test native first. Remove NERDCommenter only if `<Bslash>` mapping and `armasm` `@` delimiter behavior are preserved. |
 | Jump navigation | `vim-easymotion`: ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `leap.nvim`: ~5.0k stars, pushed 2026-04-11; `flash.nvim`: ~4.1k stars, latest release `v2.1.0` on 2024-07-07 | Keep until a replacement is chosen intentionally. `leap.nvim` is the smaller motion-focused candidate; `flash.nvim` is broader and changes more behavior. |
 | Prose and Markdown | `vim-grammarous`: ~1.1k stars, pushed 2022-10-25; `vim-pandoc`: ~1.0k stars, pushed 2025-11-07; `vim-pandoc-syntax`: ~0.4k stars, pushed 2025-09-22 | `render-markdown.nvim`: ~4.7k stars, latest release `v8.13.0` on 2026-06-18; `markview.nvim`: ~3.5k stars, latest release `v28.3.0` on 2026-05-16 | `vim-grammarous` is the strongest removal candidate if unused. Markdown renderers do not replace Pandoc workflow features; evaluate them only for visual preview. |
 | Auto insertion and paste | `vim-endwise`: ~1.2k stars, pushed 2025-11-05; `vim-pasta`: ~0.3k stars, pushed 2023-08-12 | `nvim-autopairs`: ~4.1k stars, latest release `0.10.0` on 2025-09-26 | Keep `vim-endwise` unless adopting broader autopairs. `vim-pasta` is a removal candidate after paste indentation testing. |
@@ -91,15 +82,13 @@ feature the old plugin exposes.
 
 | Plugin | Current Neovim action | Role | Status / activity | Candidate / native path | Recommendation |
 |---|---|---|---|---|---|
-| `nvim-mini/mini.nvim` | Keep installed | Lua module library for small focused replacements | ~9.3k stars, latest release `v0.18.0` on 2026-06-21 | Enable modules selectively | Keep; currently only `mini.trailspace` is enabled. |
+| `nvim-mini/mini.nvim` | Keep installed | Lua module library for small focused replacements | ~9.3k stars, latest release `v0.18.0` on 2026-06-21 | Enable modules selectively | Keep; active module rationale belongs in `config/nvim/init.lua`. |
 | `tomasiser/vim-code-dark` | Keep installed | Vim-compatible colorscheme fallback | Small, stable theme | Keep only in Vim if Neovim always uses `vscode.nvim` | Later decide whether Neovim needs this fallback. |
 | `Mofiqul/vscode.nvim` | Keep installed | Active Neovim colorscheme | ~1.0k stars, active in 2025 | `folke/tokyonight.nvim`, `loctvl842/monokai-pro.nvim` | Keep unless changing visual theme. |
 | `vim-airline/vim-airline` | Keep installed | Statusline | ~18.0k stars, latest release `v0.12` on 2026-05-02 | `nvim-lualine/lualine.nvim` ~8.0k, `mini.statusline` from `mini.nvim` ~9.3k, native `statusline` | Keep for parity; review replacement only with screenshots and statusline feature parity. |
 | `jacoborus/tender.vim` | Keep installed | Airline theme / colorscheme | Small, mature | Match replacement statusline theme manually | Keep while airline is kept. |
 | `preservim/vim-indent-guides` | Keep installed | Vim indent guides | Canonical repo for old `nathanaelkane` URL, mature | For Neovim, `lukas-reineke/indent-blankline.nvim` is already installed | Keep for Vim; consider removing from Neovim after confirming it is unused there. |
 | `lukas-reineke/indent-blankline.nvim` | Keep installed | Neovim indent guides | ~5.0k stars, latest release `v3.9.1` on 2026-02-17 | `mini.indentscope` from `mini.nvim`, or native `listchars` only | Keep for parity; native `listchars` is not a full scope guide. |
-| `inkarkat/vim-ingo-library` | Removed from Neovim | Former dependency for trailing whitespace plugin | Small, mature | No longer needed after removing `vim-ShowTrailingWhitespace` | Removed from Neovim pack list. |
-| `inkarkat/vim-ShowTrailingWhitespace` | Replaced in Neovim | Trailing whitespace highlight | Small, low activity | `mini.trailspace`, native `matchadd()` / autocmd, or `listchars` `trail` marker | Use `mini.trailspace` for Error-colored highlighting without coloring all `listchars`. |
 | `luochen1990/rainbow` | Keep installed | Delimiter coloring | ~1.8k stars, latest release `v3.3.1` in 2014, pushed 2024-07-27 | `HiPhish/rainbow-delimiters.nvim` ~0.9k, pushed 2026-05-18 | Good replacement candidate after Tree-sitter language coverage testing. |
 | `neovim/nvim-lspconfig` | Keep installed | LSP server config database | ~13.8k stars, active | Native `vim.lsp.config` plus local configs | Keep. The deprecated part is old `require('lspconfig').setup`, not the config database. |
 | `mason-org/mason.nvim` | Keep installed | LSP/tool installer | ~10.3k stars, active | System package managers / mise / manual installs | Keep unless tool installation moves outside Neovim. |
@@ -112,31 +101,26 @@ feature the old plugin exposes.
 | `ibhagwan/fzf-lua` | Keep installed | Fuzzy files/grep/buffers/help | ~4.3k stars, active | `folke/snacks.nvim` picker, Telescope | Keep; actively maintained and already replaces several older navigation plugins. |
 | `lewis6991/gitsigns.nvim` | Keep installed | Git signs/hunks | ~6.9k stars, active | Native signs plus fugitive, or mini.diff | Keep. |
 | `tpope/vim-fugitive` | Keep installed | Git command workflow | ~21.7k stars, mature | Neogit, Lazygit, native git commands | Keep; small and proven. |
-| `junegunn/vim-easy-align` | Keep installed | Alignment operator | ~4.2k stars, pushed 2024-07-23 | `mini.align` or built-in formatting per filetype | Keep unless an alignment workflow replacement is chosen. |
 | `sickill/vim-pasta` | Keep installed | Paste indentation adjustment | Redirects to `ku1ik/vim-pasta`, ~0.3k stars, pushed 2023-08-12 | Native paste/indent behavior | Good removal candidate after paste workflow testing. |
 | `preservim/nerdtree` | Keep installed | File tree | ~20.1k stars, pushed 2025-09-26 | `stevearc/oil.nvim` ~6.7k, `nvim-tree.lua` ~8.6k, netrw + fzf-lua | Keep for parity; review replacement as a workflow decision, not a quick swap. |
-| `preservim/nerdcommenter` | Keep installed | Comment toggling | ~5.0k stars, latest release `2.6.0` on 2021-11-27, pushed 2025-11-19 | Native `gc/gcc`, `mini.comment`, `numToStr/Comment.nvim` | Test native first; remove only if custom delimiter behavior is preserved. |
 | `tpope/vim-endwise` | Keep installed | Auto `end` insertion | ~1.2k stars, pushed 2025-11-05 | `windwp/nvim-autopairs` ~4.1k or language-specific snippets | Keep; small and low risk. |
 | `vim-pandoc/vim-pandoc` | Keep installed | Pandoc markdown workflow | ~1.0k stars, pushed 2025-11-07 | Native markdown, `render-markdown.nvim`, `markview.nvim` | Keep until Pandoc-specific behavior is checked. |
 | `vim-pandoc/vim-pandoc-syntax` | Keep installed | Pandoc syntax | ~0.4k stars, pushed 2025-09-22 | Native markdown / Tree-sitter markdown | Keep while `vim-pandoc` is kept. |
 | `ShikChen/mojom.vim` | Keep installed | Mojom syntax | Niche, low activity | Local syntax file if needed | Keep if mojom files still matter. |
 | GN runtime from `gn.googlesource.com` | Keep installed | BUILD.gn syntax | Upstream GN repo | Local syntax copy if plugin manager friction is high | Keep if GN files still matter. |
-| `coquelicot/local-vimrc` | Removed from Neovim | Project-local vimrc | Low activity | Native Neovim `exrc` + trust | Removed because it is unused; do not enable `exrc` unless the workflow comes back. |
 | `easymotion/vim-easymotion` | Keep installed | Jump navigation | ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `folke/flash.nvim` ~4.1k, `ggandor/leap.nvim` ~5.0k | Keep for parity; replacement changes muscle memory. |
 | `rhysd/vim-grammarous` | Keep installed | Grammar checking | ~1.1k stars, pushed 2022-10-25 | LSP/external prose checker | Strong removal candidate if unused. |
-| `ShikChen/osc52.vim` | Keep installed | Remote clipboard over OSC52 | 10 stars, pushed 2020-08-07, no release | Native Neovim OSC52 provider | Strong replacement candidate after SSH/tmux testing. |
 | `github/copilot.vim` | Not installed; old config had it commented | AI completion candidate | ~11.6k stars | Native LSP inline completion path or vendor plugin | Keep commented unless explicitly adopting AI completion. |
 | `supermaven-inc/supermaven-nvim` | Not installed; old config had it commented | AI completion candidate | ~1.4k stars, lower recent activity | Copilot or no AI plugin | Keep commented unless explicitly adopting AI completion. |
 
 ## Suggested Review Order
 
-1. Low-risk replacement tests: `osc52.vim`, `rainbow`.
+1. Next low-risk replacement test: `rainbow`.
 2. Removal candidates that need usage confirmation: `vim-grammarous`, `vim-pasta`.
-3. Mini/native muscle memory checks: `mini.align`, native `gc/gcc`, `mini.comment`.
-4. UI workflow decisions: `vim-airline`, `NERDTree`, `indent-blankline.nvim`.
-5. Navigation workflow: `easymotion` versus `leap.nvim` or `flash.nvim`.
-6. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.
-7. Niche filetypes and prose tools: `vim-pandoc*`, `mojom.vim`, GN runtime.
+3. UI workflow decisions: `vim-airline`, `NERDTree`, `indent-blankline.nvim`.
+4. Navigation workflow: `easymotion` versus `leap.nvim` or `flash.nvim`.
+5. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.
+6. Niche filetypes and prose tools: `vim-pandoc*`, `mojom.vim`, GN runtime.
 
 ## Verification Notes
 
@@ -148,7 +132,7 @@ env XDG_CONFIG_HOME="$PWD/config" \
   XDG_STATE_HOME="$TMPDIR/nvim-state" \
   XDG_CACHE_HOME="$TMPDIR/nvim-cache" \
   NVIM_SKIP_PACK=1 \
-  nvim --headless +qa
+  nvim --headless --cmd 'set shada=' +qa
 ```
 
 Then test interactively with the actual plugin installed, because `NVIM_SKIP_PACK`

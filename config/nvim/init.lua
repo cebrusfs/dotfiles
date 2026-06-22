@@ -14,17 +14,45 @@ else
     vim.notify("Missing shared Vim config: " .. common_vim, vim.log.levels.WARN)
 end
 
+-- Host providers are Neovim-only startup policy. Set them before any provider
+-- checks so common.vim stays limited to shared Vim-compatible defaults.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+
 -- Neovim-only UI defaults live here; shared Vim-compatible defaults stay in
 -- common.vim so the two editors do not drift for basic editing behavior.
 vim.o.laststatus = 2
 vim.opt.completeopt:append({ "menuone", "noselect", "popup" })
 
+-- Clipboard routing:
+-- `clipboard^=unnamed,unnamedplus` in common.vim changes the 'clipboard'
+-- option so normal y/p use the system registers. `g:clipboard` is a different
+-- Neovim provider override; leave it alone when built-in detection is enough.
+-- * Local macOS/no SSH: no override; Neovim auto-selects pbcopy/pbpaste.
+-- * SSH without tmux: force the built-in OSC52 provider because Neovim's
+--   automatic OSC52 fallback only runs when the 'clipboard' option is empty,
+--   and common.vim intentionally makes it non-empty.
+-- * SSH + tmux -CC: no override; Neovim's tmux provider is the same path, and
+--   iTerm2 can mirror the tmux paste buffer. tmux exposes -CC as
+--   #{client_control_mode}=1, but this config does not need a runtime branch.
+-- * SSH + tmux not -CC: no override; Neovim writes with `tmux load-buffer -w`
+--   on tmux 3.2+, then tmux publishes via set-clipboard/Ms/OSC52 if configured.
+--   Direct OSC52 from inside the pane is avoided because tmux's default
+--   set-clipboard=external blocks pane apps from setting the clipboard.
+-- Paste uses the selected provider too; iTerm2/terminal/tmux policy controls
+-- whether OSC52 clipboard reads are allowed.
+if (vim.env.SSH_TTY or vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT) and not vim.env.TMUX then
+    vim.g.clipboard = "osc52"
+end
+
 local function gh(repo)
     return { src = "https://github.com/" .. repo }
 end
 
--- Keep the old Neovim plugin surface installed first. Review
--- docs/nvim-plugin-review.md before removing or replacing each dependency.
+-- Keep the old Neovim plugin surface installed first. Replacement rationale
+-- lives beside each migrated plugin or module so it stays close to behavior.
 vim.cmd([=[
 " Statusline parity: airline/tender was the previously enabled stack.
 " lualine, mini.statusline, or native statusline are better Neovim candidates,
@@ -51,16 +79,8 @@ let g:rainbow_conf = {
     \   }
     \}
 
-" Keep NERDCommenter for <Bslash> muscle memory and the armasm '@' delimiter.
-" Native gc/gcc can replace this once commentstring parity is verified.
-let g:NERDCreateDefaultMappings = 0
-let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
-let g:NERDCommentEmptyLines = 1
-let g:NERDToggleCheckAllLines = 1
-let g:NERDCustomDelimiters = {
-    \'armasm': {'left': '@'},
-\}
+" Native gc/gcc covers the Neovim comment workflow. Lua below keeps the old
+" <Bslash> alias and restores armasm's '@' delimiter via 'commentstring'.
 
 " Pandoc URL conceal keeps prose buffers readable. Grammarous checks comments
 " only in source files, while help/markdown remain full-document prose checks.
@@ -78,7 +98,8 @@ let g:grammarous#default_comments_only_filetypes = {
 local pack_specs = {
     -- Mini is adopted one small module at a time. The mini review matched this
     -- config's bias: small modules are good swaps; picker/files/git change core
-    -- workflow. Candidates here are trailspace, align, comment, and maybe diff.
+    -- workflow. Adopted modules are trailspace and align; diff/files/pick/git
+    -- still need workflow-specific review before replacing larger tools.
     gh("nvim-mini/mini.nvim"),
 
     -- Themes and statusline.
@@ -112,27 +133,22 @@ local pack_specs = {
     gh("lewis6991/gitsigns.nvim"),
 
     -- Editing/navigation muscle memory. Fugitive stays for repo/index status;
-    -- mini.git is buffer-focused. Native gc/gcc is a basic mini.comment path,
-    -- but NERDCommenter still owns <Bslash> and the armasm '@' delimiter.
+    -- mini.git is buffer-focused. Native gc/gcc now covers commenting with the
+    -- old <Bslash> alias below. EasyAlign moved to mini.align.
     gh("tpope/vim-fugitive"),
-    -- mini.align is the closest replacement, but keep EasyAlign until
-    -- <Leader>- interactive alignment is tested.
-    gh("junegunn/vim-easy-align"),
     gh("sickill/vim-pasta"),
     -- mini.files uses a popup workflow; this keeps the existing tree toggle
     -- until file browsing is intentionally redesigned.
     gh("preservim/nerdtree"),
-    gh("preservim/nerdcommenter"),
     gh("tpope/vim-endwise"),
     gh("vim-pandoc/vim-pandoc"),
     gh("vim-pandoc/vim-pandoc-syntax"),
 
-    -- Niche filetypes, jump/prose tools, and remote copy. Native OSC52 is a
-    -- possible follow-up after environment checks, especially over SSH and tmux.
+    -- Niche filetypes and jump/prose tools. Remote copy is handled by the
+    -- provider routing above; visual Y remains an explicit OSC52 fallback.
     gh("ShikChen/mojom.vim"),
     gh("easymotion/vim-easymotion"),
     gh("rhysd/vim-grammarous"),
-    gh("ShikChen/osc52.vim"),
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
 
@@ -177,9 +193,36 @@ vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/pack/core/opt/gn/mis
 
 -- Preserve old mappings after packadd so plugin-defined <Plug> targets exist.
 vim.keymap.set("n", "<S-Tab>", "<cmd>NERDTreeToggle<CR>", { desc = "Toggle NERDTree" })
-vim.keymap.set("n", "<Bslash>", "<Plug>NERDCommenterToggle", { remap = true, desc = "Toggle comment" })
-vim.keymap.set("x", "<Bslash>", "<Plug>NERDCommenterToggle", { remap = true, desc = "Toggle comment" })
-vim.keymap.set("x", "Y", [[y:call SendViaOSC52(getreg('"'))<CR>]], { desc = "Yank via OSC52" })
+
+-- Native commenting keeps the built-in gc/gcc mapping available while
+-- preserving the old <Bslash> muscle memory. armasm has no default
+-- 'commentstring', so restore the '@' delimiter previously owned by
+-- NERDCommenter.
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "armasm",
+    callback = function()
+        vim.bo.commentstring = "@ %s"
+    end,
+})
+vim.keymap.set("n", "<Bslash>", "gcc", { remap = true, desc = "Toggle comment line" })
+vim.keymap.set("x", "<Bslash>", "gc", { remap = true, desc = "Toggle comment" })
+
+-- Keep visual Y as an explicit OSC52 fallback for sessions where the selected
+-- provider path is surprising. Normal y still follows the case table above.
+local function copy_unnamed_register_to_osc52()
+    local ok_osc52, osc52 = pcall(require, "vim.ui.clipboard.osc52")
+    if not ok_osc52 then
+        vim.notify("Native OSC52 clipboard helper is unavailable", vim.log.levels.WARN)
+        return
+    end
+
+    osc52.copy("+")(vim.fn.getreg('"', 1, true))
+end
+
+vim.keymap.set("x", "Y", function()
+    vim.cmd.normal({ args = { "y" }, bang = true })
+    copy_unnamed_register_to_osc52()
+end, { desc = "Yank via OSC52" })
 
 -- vscode.nvim was the active Neovim colorscheme. Fall back to default instead
 -- of codedark because codedark is kept only as legacy/Vim parity.
@@ -206,6 +249,19 @@ if ok_mini_trailspace then
     link_mini_trailspace()
     vim.api.nvim_create_autocmd("ColorScheme", {
         callback = link_mini_trailspace,
+    })
+end
+
+local ok_mini_align, mini_align = pcall(require, "mini.align")
+if ok_mini_align then
+    -- mini.align is the closest EasyAlign replacement. Keep <Leader>- as the
+    -- primary muscle-memory entry, but default it to preview so alignment can
+    -- be inspected before <CR> applies the edit.
+    mini_align.setup({
+        mappings = {
+            start = "<Leader>_",
+            start_with_preview = "<Leader>-",
+        },
     })
 end
 
@@ -345,11 +401,6 @@ vim.keymap.set("n", "<Leader>gs", "<cmd>Git<CR>", { desc = "Git status" })
 vim.keymap.set("n", "<Leader>gd", "<cmd>Gdiffsplit<CR>", { desc = "Git diff" })
 vim.keymap.set("n", "<Leader>gb", "<cmd>Git blame<CR>", { desc = "Git blame" })
 vim.keymap.set("n", "<Leader>gm", "<cmd>Git mergetool<CR>", { desc = "Git mergetool" })
-
--- EasyAlign is still the smallest change for the existing alignment muscle
--- memory; native formatting and mini.align are separate workflow choices.
-vim.keymap.set("x", "<Leader>-", "<Plug>(EasyAlign)", { remap = true, desc = "EasyAlign" })
-vim.keymap.set("n", "<Leader>-", "<Plug>(EasyAlign)", { remap = true, desc = "EasyAlign" })
 
 local ok_fzf, fzf = pcall(require, "fzf-lua")
 if ok_fzf then
