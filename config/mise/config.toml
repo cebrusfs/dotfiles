@@ -33,6 +33,7 @@ codex = "latest"
 
 # Fish porting
 #starship = "latest"
+#"github:dmmulroy/jj-starship" = { version = "latest", postinstall = "chmod +x $MISE_TOOL_INSTALL_PATH/jj-starship" }
 
 [settings]
 minimum_release_age = "7d"

@@ -3,7 +3,7 @@
 
 add_newline = true
 format = """
-$time$username$hostname$directory[](fg:238)$fill$status$cmd_duration$jobs$direnv$python$nodejs$rust$ruby$golang$kubernetes$aws$gcloud$battery
+$time$username$hostname$directory${custom.jj}[](fg:238)$fill$status$cmd_duration$jobs$direnv$python$nodejs$rust$ruby$golang$kubernetes$aws$gcloud$battery
 $character"""
 
 [fill]
@@ -36,6 +36,25 @@ read_only_style = "fg:196 bg:238"
 truncation_length = 8
 truncate_to_repo = false
 truncation_symbol = ".../"
+
+[custom.jj]
+description = "Jujutsu and Git repository state via jj-starship"
+when = "jj-starship detect"
+command = '''
+bg=$(printf '\033[48;5;238m')
+reset=$(printf '\033[0m')
+
+paint_jj_bg() {
+    esc=$(printf '\033')
+    sed "s/${esc}\\[0m/${esc}[0m${bg}/g"
+}
+
+state=$(jj-starship --no-jj-prefix --no-git-prefix 2>/dev/null | paint_jj_bg)
+printf '%s%s%s\n' "$bg" "$state" "$reset"
+'''
+format = "[│](fg:246 bg:238)[ ](bg:238)$output[ ](bg:238)"
+style = "bg:238"
+shell = ["sh"]
 
 [git_branch]
 disabled = true

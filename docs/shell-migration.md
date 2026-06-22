@@ -38,8 +38,8 @@ Current repo state:
 | `config/zsh/zlogout` | `functions/on_exit.fish` | Ported with interactive TTY guard. |
 | `config/zsh/zpreztorc` editor mode | `fish_default_key_bindings` | Ported: zsh uses emacs key bindings, fish default matches. |
 | `config/zsh/zpreztorc` modules | fish built-ins / dynamic binary completions | Intentionally omitted where fish already provides native behavior: autosuggestions, syntax highlighting, completion, history search. |
-| `config/zsh/p10k.zsh` prompt | `config/starship/starship.toml` | Ported as the primary prompt: time, context, directory, status, command duration, jobs, selected environment modules, battery, and prompt char. |
-| P10k async jj worker | none | Out of scope for the base Starship prompt. |
+| `config/zsh/p10k.zsh` prompt | `config/starship/starship.toml` | Ported as the primary prompt: time, context, directory, jj-starship change/bookmark/status display, git fallback, status, command duration, jobs, selected environment modules, battery, and prompt char. |
+| P10k async jj worker | Starship `custom.jj` | Replaced by a thin wrapper around `jj-starship`, which handles change id, bookmark distance, and status formatting. Revisit only if prompt latency is measurable. |
 | P10k right prompt environment segments | Starship modules | Partially ported for common runtime/cloud/battery signals. P10k-specific indicators remain out of scope for the pilot. |
 | Prezto terminal auto-title | `functions/fish_title.fish` | Ported for normal terminal titles; tmux title behavior remains managed by `config/tmux/tmux.conf`. |
 | zsh completion user filters / ignored `**` | none | Not ported. Fish has different completion semantics and no stable equivalent was needed for the pilot. |
