@@ -1691,14 +1691,8 @@
   typeset -ga POWERLEVEL9K_JJ_STRIP_BOOKMARK_PREFIX=()
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_COLOR=74
   typeset -g POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH=30
-  typeset -g POWERLEVEL9K_JJ_CONFLICT_COLOR=196
-  typeset -g POWERLEVEL9K_JJ_CONFLICT_ICON='💥'
-  typeset -g POWERLEVEL9K_JJ_DIVERGENT_COLOR=178
-  typeset -g POWERLEVEL9K_JJ_DIVERGENT_ICON='⚠'
-  typeset -g POWERLEVEL9K_JJ_REMOTE_UNSYNCED_COLOR=196
-  typeset -g POWERLEVEL9K_JJ_REMOTE_UNSYNCED_ICON='⇡'
-  typeset -g POWERLEVEL9K_JJ_STATS_COLOR=178
-  typeset -g POWERLEVEL9K_JJ_STATS_ICON='✎'
+  typeset -g POWERLEVEL9K_JJ_STATUS_COLOR=196
+  typeset -g POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR=178
 
 
   # === zsh-async setup for jj ===
@@ -1727,8 +1721,9 @@
   function p10k_jj_async_callback() {
     if [[ -n "$3" ]]; then
       local res="$3"
-      local change_prefix change_rest bmarks conflict divergent remote_unsynced is_empty desc diff_summary
-      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent remote_unsynced is_empty desc diff_summary <<< "$res"
+      local change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc
+      IFS='|' read -d "" -r change_prefix change_rest bmarks conflict divergent empty_desc empty_commit remote_unsynced desc <<< "$res"
+      desc="${desc%%$'\n'*}"
 
       local segments=()
 
@@ -1741,33 +1736,29 @@
       fi
 
       # --- Section C: Status Indicators ---
+      local jj_status=""
       if [[ -n "$conflict" ]]; then
-        segments+=("%F{$POWERLEVEL9K_JJ_CONFLICT_COLOR}${POWERLEVEL9K_JJ_CONFLICT_ICON}%f")
+        jj_status+='!'
       fi
       if [[ -n "$divergent" ]]; then
-        segments+=("%F{$POWERLEVEL9K_JJ_DIVERGENT_COLOR}${POWERLEVEL9K_JJ_DIVERGENT_ICON}%f")
+        jj_status+='⇔'
+      fi
+      if [[ -n "$empty_desc" && "$empty_commit" != "empty_commit" ]]; then
+        jj_status+='∅'
       fi
       if [[ -n "$remote_unsynced" ]]; then
-        segments+=("%F{$POWERLEVEL9K_JJ_REMOTE_UNSYNCED_COLOR}${POWERLEVEL9K_JJ_REMOTE_UNSYNCED_ICON}%f")
+        jj_status+='⇡'
       fi
 
-      # --- Section D: Total Files Changed ---
-      local num_changed=0
-      if [[ -n "$diff_summary" ]]; then
-        local lines
-        lines=(${(f)diff_summary})
-        num_changed=${#lines[@]}
+      if [[ -n "$jj_status" ]]; then
+        local status_color=$POWERLEVEL9K_JJ_STATUS_COLOR
+        if [[ "$jj_status" == "∅" ]]; then
+          status_color=$POWERLEVEL9K_JJ_EMPTY_DESC_STATUS_COLOR
+        fi
+        segments+=("%F{$status_color}[${jj_status}]%f")
       fi
 
-      if [[ $num_changed -gt 0 ]]; then
-        # Use ! prefix to match p10k git style for modified files
-        segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}!${num_changed}%f")
-      elif [[ "$is_empty" == "dirty" ]]; then
-        # Fallback to icon if count is 0 but workspace is dirty
-        segments+=("%F{$POWERLEVEL9K_JJ_STATS_COLOR}${POWERLEVEL9K_JJ_STATS_ICON}%f")
-      fi
-
-      # --- Section E: Commit Description ---
+      # --- Section D: Commit Description ---
       if [[ -n "$desc" ]]; then
         if [[ ${#desc} -gt $POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH ]]; then
           desc="${desc[1,$((POWERLEVEL9K_JJ_COMMIT_DESC_MAX_LENGTH - 3))]}..."
@@ -1814,8 +1805,8 @@
     # 2. Define the jj status template.
     # Separated by '|':
     # [1] Change ID Prefix, [2] Change ID Rest, [3] Bookmarks, [4] Conflict,
-    # [5] Divergent, [6] Remote sync, [7] Empty status, [8] Description,
-    # [9] Diff summary
+    # [5] Divergent, [6] Empty description, [7] Empty commit, [8] Remote sync,
+    # [9] Description
     local jj_worker_script="${HOME}/.dotfiles/config/zsh/p10k-jj-prompt.zsh"
 
     if [[ "$PWD" != "$_prompt_jj_async_pwd" ]]; then

@@ -32,7 +32,7 @@ function _p10k_jj_build_bookmark_template() {
 
 cd "$cwd" || exit
 
-local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(empty, "clean", "dirty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
+local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(description.first_line() == "", "empty_desc", "") ++ "|" ++ if(empty, "empty_commit", "non_empty") ++ "|" ++ description.first_line()'
 local bookmark_template=$(_p10k_jj_build_bookmark_template "$depth")
 local bookmark_revset
 if (( depth > 0 )); then
@@ -46,8 +46,9 @@ local info bookmark_rows
 info=$(jj --ignore-working-copy log -r @ --no-graph -T "$jj_template") || exit
 bookmark_rows=$(jj --ignore-working-copy log -r "$bookmark_revset" --no-graph -T "$bookmark_template") || bookmark_rows=""
 
-local change_prefix change_rest direct_bmarks conflict divergent is_empty desc diff_summary
-IFS='|' read -d "" -r change_prefix change_rest direct_bmarks conflict divergent is_empty desc diff_summary <<< "$info"
+local change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc
+IFS='|' read -d "" -r change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc <<< "$info"
+desc="${desc%%$'\n'*}"
 
 local rs=$'\x1e'
 local -a bookmark_entries bookmark_labels
@@ -138,4 +139,4 @@ if [[ -n "$closest_bookmark" ]]; then
   fi
 fi
 
-print -r -- "${change_prefix}|${change_rest}|${bmarks}|${conflict}|${divergent}|${remote_unsynced}|${is_empty}|${desc}|${diff_summary}"
+print -r -- "${change_prefix}|${change_rest}|${bmarks}|${conflict}|${divergent}|${empty_desc}|${empty_commit}|${remote_unsynced}|${desc}"
