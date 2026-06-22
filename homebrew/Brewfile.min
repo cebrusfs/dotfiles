@@ -21,5 +21,7 @@ brew "mise"
 
 cask "iterm2"
 
-# Font support ligatures
-cask "font-fira-code"
+# Font support ligatures. Suggested by VS Code
+cask "font-fira-code-nerd-font"
+# Fallback font. Suggested by p10k.
+cask "font-meslo-lg-nerd-font"
