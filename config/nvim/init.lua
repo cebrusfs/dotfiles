@@ -1,5 +1,8 @@
 -- vim: ts=4 sts=4 sw=4 et
 
+-- Keep the historical Vim defaults in one file. The first path is the
+-- dotbot-installed symlink; the second keeps repo-local smoke tests working
+-- with XDG_CONFIG_HOME=$PWD/config.
 local function source_first_readable(candidates)
     for _, file in ipairs(candidates) do
         if vim.fn.filereadable(file) == 1 then
@@ -14,6 +17,8 @@ source_first_readable({
     vim.fn.fnamemodify(vim.fn.stdpath("config") .. "/../vim/common.vim", ":p"),
 })
 
+-- Neovim-only UI defaults live here; shared Vim-compatible defaults stay in
+-- common.vim so the two editors do not drift for basic editing behavior.
 vim.o.laststatus = 2
 vim.opt.completeopt:append({ "menuone", "noselect", "popup" })
 
@@ -24,9 +29,15 @@ end
 -- Keep the old Neovim plugin surface installed first. Review
 -- docs/nvim-plugin-review.md before removing or replacing each dependency.
 vim.cmd([=[
+" Statusline parity: airline/tender was the previously enabled stack.
+" lualine, mini.statusline, or native statusline are better Neovim candidates,
+" but replacing this needs visual parity checks instead of a migration drive-by.
 let g:airline_theme = 'tender'
 let g:airline_powerline_fonts = 1
 
+" Keep the old filetype exceptions. HTML gets a custom start/end pattern so
+" void tags are not treated as paired tags; CSS/C/C++/Python stay disabled
+" because their syntax/highlighting already made rainbow noisy.
 let g:rainbow_active = 1
 let g:rainbow_conf = {
     \   'separately': {
@@ -43,6 +54,8 @@ let g:rainbow_conf = {
     \   }
     \}
 
+" Keep NERDCommenter for <Bslash> muscle memory and the armasm '@' delimiter.
+" Native gc/gcc can replace this once commentstring parity is verified.
 let g:NERDCreateDefaultMappings = 0
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
@@ -52,6 +65,8 @@ let g:NERDCustomDelimiters = {
     \'armasm': {'left': '@'},
 \}
 
+" Pandoc URL conceal keeps prose buffers readable. Grammarous checks comments
+" only in source files, while help/markdown remain full-document prose checks.
 let g:pandoc#syntax#conceal#urls = 1
 let g:grammarous#default_comments_only_filetypes = {
     \ '*' : 1,
@@ -60,16 +75,26 @@ let g:grammarous#default_comments_only_filetypes = {
     \ }
 ]=])
 
+-- `vim.pack` uses Neovim's native package layout. Keep the old dependency
+-- surface during migration; modern replacements are called out in comments so
+-- behavior can be swapped one workflow at a time.
 local pack_specs = {
+    -- Themes and statusline.
     gh("tomasiser/vim-code-dark"),
     gh("Mofiqul/vscode.nvim"),
     gh("vim-airline/vim-airline"),
     gh("jacoborus/tender.vim"),
+
+    -- Indent and whitespace. `vim-indent-guides` is kept for parity; ibl below
+    -- is the active Neovim indent-guide implementation.
     gh("preservim/vim-indent-guides"),
     gh("lukas-reineke/indent-blankline.nvim"),
     gh("inkarkat/vim-ingo-library"),
     gh("inkarkat/vim-ShowTrailingWhitespace"),
     gh("luochen1990/rainbow"),
+
+    -- Programming stack. Native vim.lsp.config/enable is the control plane;
+    -- nvim-cmp remains for buffer/path/cmdline completion polish.
     gh("neovim/nvim-lspconfig"),
     gh("mason-org/mason.nvim"),
     gh("mason-org/mason-lspconfig.nvim"),
@@ -80,6 +105,9 @@ local pack_specs = {
     gh("hrsh7th/nvim-cmp"),
     gh("ibhagwan/fzf-lua"),
     gh("lewis6991/gitsigns.nvim"),
+
+    -- Editing/navigation muscle memory. Native gc/gcc and netrw/fzf-lua cover
+    -- parts of this, but not the old mappings and edge-case behavior yet.
     gh("tpope/vim-fugitive"),
     gh("junegunn/vim-easy-align"),
     gh("sickill/vim-pasta"),
@@ -88,6 +116,10 @@ local pack_specs = {
     gh("tpope/vim-endwise"),
     gh("vim-pandoc/vim-pandoc"),
     gh("vim-pandoc/vim-pandoc-syntax"),
+
+    -- Niche filetypes, project-local config, jump/prose tools, and remote
+    -- copy. Native exrc/trust and OSC52 are possible follow-ups after
+    -- environment checks, especially over SSH and tmux.
     gh("ShikChen/mojom.vim"),
     gh("coquelicot/local-vimrc"),
     gh("easymotion/vim-easymotion"),
@@ -96,19 +128,26 @@ local pack_specs = {
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
 
+-- NVIM_SKIP_PACK keeps headless syntax checks offline and independent of
+-- installed plugin state.
 if vim.pack and vim.env.NVIM_SKIP_PACK ~= "1" then
     vim.pack.add(pack_specs, { confirm = false, load = true })
 elseif not vim.pack then
     vim.notify("vim.pack requires Neovim 0.12+", vim.log.levels.WARN)
 end
 
+-- The GN repo keeps its Vim runtime under misc/vim instead of the package
+-- root, so packadd alone does not expose its syntax files.
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/pack/core/opt/gn/misc/vim")
 
+-- Preserve old mappings after packadd so plugin-defined <Plug> targets exist.
 vim.keymap.set("n", "<S-Tab>", "<cmd>NERDTreeToggle<CR>", { desc = "Toggle NERDTree" })
 vim.keymap.set("n", "<Bslash>", "<Plug>NERDCommenterToggle", { remap = true, desc = "Toggle comment" })
 vim.keymap.set("x", "<Bslash>", "<Plug>NERDCommenterToggle", { remap = true, desc = "Toggle comment" })
 vim.keymap.set("x", "Y", [[y:call SendViaOSC52(getreg('"'))<CR>]], { desc = "Yank via OSC52" })
 
+-- vscode.nvim was the active Neovim colorscheme. Fall back to default instead
+-- of codedark because codedark is kept only as legacy/Vim parity.
 local ok_vscode, vscode = pcall(require, "vscode")
 if ok_vscode then
     vscode.setup({
@@ -121,12 +160,15 @@ else
     vim.cmd.colorscheme("default")
 end
 
+-- Show diagnostic detail only on the current line to keep dense buffers calm.
 vim.diagnostic.config({
     virtual_lines = {
         current_line = true,
     },
 })
 
+-- Apply completion capabilities through the native LSP config chain. nvim-cmp
+-- augments the client only when installed; otherwise builtin LSP still works.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 local ok_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
@@ -138,6 +180,8 @@ vim.lsp.config("*", {
     capabilities = capabilities,
 })
 
+-- Keep nvim-cmp for path, buffer, and cmdline sources. Native LSP completion is
+-- a good fallback but does not replace those workflow details yet.
 local ok_cmp, cmp = pcall(require, "cmp")
 if ok_cmp then
     cmp.setup({
@@ -185,6 +229,8 @@ if ok_cmp then
     })
 end
 
+-- When nvim-cmp is intentionally skipped, use Neovim's builtin LSP completion
+-- instead of leaving attached servers with only manual omnifunc completion.
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
         if ok_cmp then
@@ -197,6 +243,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
+-- Mason still owns server installation. mason-lspconfig bridges installed
+-- servers to nvim-lspconfig configs and lets Neovim's native enable path attach
+-- them automatically.
 local ok_mason, mason = pcall(require, "mason")
 if ok_mason then
     mason.setup()
@@ -221,6 +270,8 @@ if ok_mason_lspconfig then
     })
 end
 
+-- gitsigns covers inline hunk state; fugitive mappings below stay for command
+-- workflows like blame, diff, and mergetool.
 local ok_gitsigns, gitsigns = pcall(require, "gitsigns")
 if ok_gitsigns then
     gitsigns.setup()
@@ -228,6 +279,8 @@ end
 
 local ok_ibl, ibl = pcall(require, "ibl")
 if ok_ibl then
+    -- Multispace markers make indentation visible. Trailing whitespace stays
+    -- with vim-ShowTrailingWhitespace to avoid duplicate markers.
     vim.opt.list = true
     vim.opt.listchars:append({ multispace = "." })
     vim.opt.listchars:remove("space")
@@ -235,12 +288,16 @@ if ok_ibl then
     ibl.setup()
 end
 
+-- Keep the old Git prefix stable. These are Git-backed commands even when the
+-- repository is operated through jj outside the editor.
 vim.keymap.set("n", "<Leader>g", "<Nop>", { desc = "Git prefix" })
 vim.keymap.set("n", "<Leader>gs", "<cmd>Git<CR>", { desc = "Git status" })
 vim.keymap.set("n", "<Leader>gd", "<cmd>Gdiffsplit<CR>", { desc = "Git diff" })
 vim.keymap.set("n", "<Leader>gb", "<cmd>Git blame<CR>", { desc = "Git blame" })
 vim.keymap.set("n", "<Leader>gm", "<cmd>Git mergetool<CR>", { desc = "Git mergetool" })
 
+-- EasyAlign is still the smallest change for the existing alignment muscle
+-- memory; native formatting and mini.align are separate workflow choices.
 vim.keymap.set("x", "<Leader>-", "<Plug>(EasyAlign)", { remap = true, desc = "EasyAlign" })
 vim.keymap.set("n", "<Leader>-", "<Plug>(EasyAlign)", { remap = true, desc = "EasyAlign" })
 
@@ -251,13 +308,19 @@ if ok_fzf then
             file_ignore_patterns = { "node_modules", ".git", "__pycache__" },
         },
         files = {
+            -- Prefer fd for file listing; it matches the repo-wide default tool
+            -- preference and avoids shelling through slower generic find flows.
             fd_opts = "--color=never --type f --hidden --follow --exclude .git",
         },
         grep = {
+            -- Keep ripgrep hidden-file coverage, but exclude rules remain the
+            -- project's responsibility via .gitignore/.ignore.
             rg_opts = "--color=never --hidden --follow",
         },
     })
 
+    -- fzf-lua keeps file, text, buffer, and help search on one picker stack.
+    -- The current-word mapping is intentionally project-wide, not LSP-scoped.
     vim.keymap.set("n", "<Leader>fo", fzf.files, { desc = "Find files" })
     vim.keymap.set("n", "<Leader>r", fzf.live_grep, { desc = "Live grep in project" })
     vim.keymap.set("n", "<Leader><Space>r", function()
