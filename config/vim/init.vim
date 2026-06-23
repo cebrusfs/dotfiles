@@ -253,12 +253,6 @@ endif
 " }
 
 
-" vim-polyglot: All language syntax highlight {
-    Plug 'sheerun/vim-polyglot'
-
-    " Use vim-pandoc instead
-    let g:polyglot_disabled = ['markdown']
-" }
 " vim-pandoc: Syntax highlight for markdown {
     Plug 'vim-pandoc/vim-pandoc'
     Plug 'vim-pandoc/vim-pandoc-syntax'
