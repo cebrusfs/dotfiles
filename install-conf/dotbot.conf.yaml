@@ -118,8 +118,7 @@
 
 # nvim
 - link:
-    ~/.config/nvim: config/vim
-    ~/.local/share/nvim/site/autoload/plug.vim: config/vim/autoload/plug.vim
+    ~/.config/nvim: config/nvim
 
 # Linux specific links
 - link:

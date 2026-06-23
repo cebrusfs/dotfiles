@@ -1,1 +1,87 @@
-init.vim
+" vim: ts=4 sts=4 sw=4 et foldmarker={,} foldlevel=0 foldmethod=marker
+
+scriptencoding utf-8
+
+execute 'source' fnameescape(expand('<sfile>:p:h') . '/common.vim')
+
+" Vim plugins {
+call plug#begin('~/.vim/plugged')
+
+" Color Scheme {
+    Plug 'tomasiser/vim-code-dark'
+" }
+
+" Vim-only visual helpers {
+    Plug 'preservim/vim-indent-guides'
+    Plug 'inkarkat/vim-ingo-library'
+    Plug 'inkarkat/vim-ShowTrailingWhitespace'
+
+    let g:indent_guides_auto_colors=0
+    autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey27 ctermbg=238
+    autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey42 ctermbg=242
+    let g:indent_guides_guide_size=1
+    let g:indent_guides_enable_on_vim_startup=1
+" }
+
+" Git {
+    Plug 'tpope/vim-fugitive'
+
+    nmap <Leader>g <Plug>(key-git)
+    nnoremap <silent> <Plug>(key-git)s :<C-u>Git<CR>
+    nnoremap <silent> <Plug>(key-git)d :<C-u>Gdiff<CR>
+    nnoremap <silent> <Plug>(key-git)b :<C-u>Git blame<CR>
+    nnoremap <silent> <Plug>(key-git)m :<C-u>Git mergetool<CR>
+" }
+
+" Editing helpers {
+    Plug 'junegunn/vim-easy-align'
+    Plug 'preservim/nerdcommenter'
+    Plug 'tpope/vim-endwise'
+
+    xmap <Leader>- <Plug>(EasyAlign)
+    nmap <Leader>- <Plug>(EasyAlign)
+
+    let g:NERDCreateDefaultMappings = 0
+    let g:NERDSpaceDelims = 1
+    let g:NERDCompactSexyComs = 1
+    let g:NERDCommentEmptyLines = 1
+    let g:NERDToggleCheckAllLines = 1
+    let g:NERDCustomDelimiters = {
+        \'armasm': {'left': '@'},
+    \}
+
+    nmap <Bslash> <Plug>NERDCommenterToggle
+    xmap <Bslash> <Plug>NERDCommenterToggle
+" }
+
+" Filetype support {
+    Plug 'vim-pandoc/vim-pandoc'
+    Plug 'vim-pandoc/vim-pandoc-syntax'
+    Plug 'ShikChen/mojom.vim'
+    Plug 'https://gn.googlesource.com/gn', { 'rtp': 'misc/vim' }
+
+    let g:pandoc#syntax#conceal#urls = 1
+" }
+
+" Project-local config and remote clipboard {
+    Plug 'coquelicot/local-vimrc'
+    Plug 'ShikChen/osc52.vim'
+
+    vnoremap Y y:call SendViaOSC52(getreg('"'))<CR>
+" }
+
+call plug#end()
+" }
+
+" Plugin review {
+" Removed from Vim's minimal set: airline/tender, NERDTree, vim-pasta,
+" EasyMotion, rainbow, and grammarous. Keep Vim as a fallback editor; use
+" Neovim for richer LSP/completion/search workflows.
+" }
+
+" Colorscheme settings {
+    set laststatus=2
+    set statusline=%f%m%r%h%w\ [%{&ff}/%Y]\ [%l,%c]\ [%p%%]
+
+    colorscheme codedark
+" }

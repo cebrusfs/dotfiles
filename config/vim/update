@@ -2,4 +2,4 @@
 
 # Use command to bypass alias
 command vim +PlugUpdate +qa
-command nvim +PlugClean +PlugUpdate +qa
+command nvim --headless +'lua vim.pack.update(nil, { force = true })' +qa
