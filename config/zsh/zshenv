@@ -18,6 +18,13 @@ export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 # GPG
 export GPG_TTY=`tty`
 
+# Corp tool configuration
+# roadwarrior (rw)
+export AUTH_CHECK_REMAINING=true
+export AUTH_TMUX=true
+export AUTH_TMUX_ITERM=true
+export AUTH_TMUX_SESSION=tmux-main
+
 # Machine-local/private environment lives outside tracked dotfiles.
 _zshenv_local="${${(%):-%x}:A:h}/config.local.zsh"
 if [[ -r "$_zshenv_local" ]]; then
