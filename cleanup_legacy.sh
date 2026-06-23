@@ -5,6 +5,53 @@
 
 set -e
 
+function remove_path() {
+    local path="$1"
+
+    if [[ -e "$path" || -L "$path" ]]; then
+        echo "    rm -rf $path"
+        rm -rf "$path"
+    fi
+}
+
+function remove_vim_plug_file() {
+    local path="$1"
+
+    if [[ -L "$path" ]]; then
+        remove_path "$path"
+    elif [[ -f "$path" ]] && grep -q "vim-plug: Vim plugin manager" "$path"; then
+        remove_path "$path"
+    elif [[ -e "$path" ]]; then
+        echo "    keeping $path (not a vim-plug file or symlink)"
+    fi
+}
+
+function cleanup_vim_nvim_legacy() {
+    local nvim_config="${HOME}/.config/nvim"
+    local nvim_plug_autoload="${HOME}/.local/share/nvim/site/autoload/plug.vim"
+    local target
+
+    echo " -> Removing legacy Vim/Neovim config links..."
+
+    if [[ -L "$nvim_config" ]]; then
+        target="$(readlink "$nvim_config")"
+        case "$target" in
+            *config/vim|*config/vim/|*.vim|*.vim/)
+                remove_path "$nvim_config"
+                ;;
+            *)
+                echo "    keeping $nvim_config -> $target"
+                ;;
+        esac
+    fi
+
+    # Neovim now uses vim.pack from config/nvim/init.lua. Vim still uses
+    # vim-plug, so do not remove ~/.vim/autoload/plug.vim or ~/.vim/plugged.
+    remove_vim_plug_file "$nvim_plug_autoload"
+    rmdir "${HOME}/.local/share/nvim/site/autoload" 2>/dev/null || true
+    rmdir "${HOME}/.local/share/nvim/site" 2>/dev/null || true
+}
+
 echo "Starting legacy package cleanup..."
 
 if [[ "$OSTYPE" == darwin* ]]; then
@@ -29,6 +76,8 @@ echo " -> Removing old Dotbot symlinks (e.g. ~/.config/mise)..."
 if [[ -L ~/.config/mise ]]; then
     rm ~/.config/mise
 fi
+
+cleanup_vim_nvim_legacy
 
 echo " -> Removing Node.js legacy environments (~/.nvm, ~/.npm, etc)..."
 rm -rf ~/.nvm ~/.n-install ~/.n ~/.npm-global ~/.node-gyp ~/.npm || true
