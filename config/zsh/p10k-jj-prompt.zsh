@@ -12,7 +12,7 @@ local -a strip_prefixes=("$@")
 [[ "$display_limit" == <-> ]] || display_limit=3
 
 # Keep zsh/p10k self-contained while matching jj-starship bookmark display.
-function _p10k_jj_build_bookmark_template() {
+function _p10k_jj_build_combined_template() {
   emulate -L zsh
 
   local depth=$1
@@ -27,36 +27,58 @@ function _p10k_jj_build_bookmark_template() {
   done
   distance_expr="${distance_expr})"
 
-  print -r -- "self.local_bookmarks().map(|b| b.name() ++ \"\\x1e\" ++ ${distance_expr}).join(\"\\n\") ++ \"\\n\""
+  local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(description.first_line() == "", "empty_desc", "") ++ "|" ++ if(empty, "empty_commit", "non_empty") ++ "|" ++ description.first_line() ++ "|" ++ if(current_working_copy, diff.summary(), "")'
+  local bookmark_template="self.local_bookmarks().map(|b| \"BOOKMARK\\x1e\" ++ b.name() ++ \"\\x1f\" ++ ${distance_expr}).join(\"\\n\")"
+
+  print -r -- "if(current_working_copy, \"CURRENT\\x1e\" ++ ${jj_template} ++ \"\\n\", \"\") ++ if(self.local_bookmarks(), ${bookmark_template} ++ \"\\n\", \"\")"
 }
 
 cd "$cwd" || exit
 
-local jj_template='change_id.shortest(8).prefix() ++ "|" ++ change_id.shortest(8).rest() ++ "|" ++ bookmarks.join(", ") ++ "|" ++ if(conflict, "conflict", "") ++ "|" ++ if(divergent, "divergent", "") ++ "|" ++ if(description.first_line() == "", "empty_desc", "") ++ "|" ++ if(empty, "empty_commit", "non_empty") ++ "|" ++ description.first_line() ++ "|" ++ diff.summary()'
-local bookmark_template=$(_p10k_jj_build_bookmark_template "$depth")
-local bookmark_revset
+local combined_template=$(_p10k_jj_build_combined_template "$depth")
+local combined_revset
 if (( depth > 0 )); then
   local search_depth=$((depth + 1))
-  bookmark_revset="(ancestors(@, ${search_depth}) & bookmarks()) ~ ::parents(immutable_heads() & ancestors(@, ${search_depth}))"
+  combined_revset="(ancestors(@, ${search_depth}) & bookmarks()) ~ ::parents(immutable_heads() & ancestors(@, ${search_depth})) | @"
 else
-  bookmark_revset='@ & bookmarks()'
+  combined_revset='@'
 fi
 
-local info bookmark_rows
-info=$(jj --ignore-working-copy log -r @ --no-graph -T "$jj_template") || exit
-bookmark_rows=$(jj --ignore-working-copy log -r "$bookmark_revset" --no-graph -T "$bookmark_template") || bookmark_rows=""
+local output
+output=$(jj --ignore-working-copy log -r "$combined_revset" --no-graph -T "$combined_template") || exit
+
+local rs=$'\x1e'
+local us=$'\x1f'
+local info=""
+local -a bookmark_rows=()
+local mode=""
+local row
+
+for row in ${(f)output}; do
+  if [[ "$row" == CURRENT${rs}* ]]; then
+    mode="current"
+    info="${row#CURRENT${rs}}"
+  elif [[ "$row" == BOOKMARK${rs}* ]]; then
+    mode="bookmark"
+    bookmark_rows+=("${row#BOOKMARK${rs}}")
+  elif [[ -n "$row" ]]; then
+    if [[ "$mode" == "current" ]]; then
+      info="${info}"$'\n'"${row}"
+    fi
+  fi
+done
 
 local change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc diff_summary
 IFS='|' read -d "" -r change_prefix change_rest direct_bmarks conflict divergent empty_desc empty_commit desc diff_summary <<< "$info"
 desc="${desc%%$'\n'*}"
 
-local rs=$'\x1e'
 local -a bookmark_entries bookmark_labels
-local row name display_name distance prefix
-for row in ${(f)bookmark_rows}; do
-  [[ "$row" == *"$rs"* ]] || continue
-  name="${row%%$rs*}"
-  distance="${row##*$rs}"
+local name display_name distance prefix
+local has_seen_cl=0
+
+for row in "${bookmark_rows[@]}"; do
+  name="${row%%$us*}"
+  distance="${row##*$us}"
   [[ -n "$name" && "$distance" == <-> ]] || continue
 
   display_name=$name
@@ -66,6 +88,13 @@ for row in ${(f)bookmark_rows}; do
       break
     fi
   done
+
+  if [[ "$name" == cl/* ]]; then
+    if (( has_seen_cl )); then
+      continue
+    fi
+    has_seen_cl=1
+  fi
 
   bookmark_entries+=("$(printf "%06d" "$distance")${rs}${name}${rs}${display_name}")
 done
