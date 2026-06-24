@@ -20,9 +20,10 @@ Before committing any change, run `mise run check` and ensure it passes — CI
 (`.github/workflows/lint.yaml`) runs the identical task, so a skipped check
 becomes a red build.
 
-For Neovim smoke tests, isolate state under `$TMPDIR`, disable plugin loading,
-disable ShaDa, and disable swapfiles so headless runs do not write `nvim.log`
-into the repo or touch the real `~/.local/state/nvim`:
+For Neovim smoke tests and ad hoc headless probes, isolate state under `$TMPDIR`,
+disable plugin loading, disable ShaDa, and disable swapfiles so headless runs do
+not write `nvim.log` into the repo, touch the real `~/.local/state/nvim`, or
+emit swapfile warnings:
 
 ```bash
 env XDG_CONFIG_HOME="$PWD/config" \
