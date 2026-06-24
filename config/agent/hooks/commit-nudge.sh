@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# commit-nudge: on turn end, continue once when a jj working copy has tracked
-# changes that may need a local checkpoint. Generic: no project layout baked in.
+# commit-nudge: on turn end, continue once when a jj working copy has enough
+# tracked paths to suggest a missed local commit. Generic: no project layout baked in.
 #
 # Optional per-project ignore:
 #   <project>/.agents/commit-nudge-ignore
@@ -63,6 +63,14 @@ paths=$(printf '%s\n' "$paths" | sed '/^$/d')
 [ -n "$paths" ] || exit 0
 
 path_count=$(printf '%s\n' "$paths" | wc -l | tr -d ' ')
+min_paths=${AGENT_COMMIT_NUDGE_MIN_PATHS:-2}
+case "$min_paths" in
+    '' | *[!0-9]*)
+        min_paths=2
+        ;;
+esac
+[ "$path_count" -ge "$min_paths" ] || exit 0
+
 tracked_paths=()
 while IFS= read -r path; do
     tracked_paths+=("$path")
@@ -119,7 +127,7 @@ printf '%s\n' "$fingerprint" >"$state_file" 2>/dev/null || exit 0
 dir_word=directories
 [ "$dir_count" = 1 ] && dir_word=directory
 
-message="Commit checkpoint: jj @ has ${path_count} tracked change(s) across ${dir_count} ${dir_word}. If this turn completed a coherent implementation change and relevant checks are done or reported, create a local jj commit/checkpoint for only your changes before the final response. If committing is unsafe or inappropriate, leave it uncommitted and say why. Never include unrelated pre-existing user changes."
+message="Commit nudge: jj @ has ${path_count} tracked change(s) across ${dir_count} ${dir_word}. If this turn completed a topic, follow the project VCS rules: commit it, or squash same-topic follow-ups into the existing local commit. If leaving changes uncommitted is intentional, say why."
 escaped_message=$(printf '%s' "$message" | sed 's/\\/\\\\/g; s/"/\\"/g')
 
 printf '{"decision":"block","reason":"%s"}\n' "$escaped_message"

@@ -18,8 +18,8 @@
 * Follow repo jj guidance when present, such as `config/agent/rules/jj.md`.
 * One topic = one commit; squash same-topic follow-ups into that local commit.
 * In jj, `jj commit`/`jj split` leaves a fresh empty `@`; do not run `jj new` from an empty `@`.
-* Checkpoint only completed implementation topics after relevant checks, unless I say not to. Report the change id or why no checkpoint was created.
-* Do not checkpoint exploration, planning, review-only work, failed experiments, or incomplete work.
+* Commit only completed implementation topics after relevant checks, unless I say not to. Report the change id or why no commit was created.
+* Do not commit exploration, planning, review-only work, failed experiments, or incomplete work.
 * Leave unrelated dirty files untouched.
 * Do not run destructive ops (`git reset --hard`, `git push --force`, `git checkout --`, `jj abandon`, `jj undo`, `jj squash`, `jj rebase`) unless I explicitly instruct or a skill explicitly requires it.
 * Never bypass VCS safety or immutability protections, such as `jj --ignore-immutable`.
