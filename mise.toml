@@ -65,12 +65,16 @@ run = "git ls-files '*.lua' | xargs stylua --check"
 
 # Headless load test for the Neovim config: the analog of `zsh -n`. nvim exits 0
 # even when init.lua errors during startup, so load it through pcall(dofile) and
-# force a non-zero exit on failure. NVIM_SKIP_PACK=1 keeps it offline and
+# force a non-zero exit on failure. `set noloadplugins` keeps it offline and
 # independent of installed plugin state; --clean avoids the user's real config.
 [tasks."lint:nvim"]
 description = "Headless load-check the Neovim config (init.lua)"
 run = '''
-NVIM_SKIP_PACK=1 nvim --headless --clean -c "lua local ok, err = pcall(dofile, 'config/nvim/init.lua'); if not ok then io.stderr:write(tostring(err) .. '\n'); os.exit(1) end; os.exit(0)"
+tmpdir="${TMPDIR:-$(mktemp -d)}"
+XDG_DATA_HOME="$tmpdir/nvim-data" \
+XDG_STATE_HOME="$tmpdir/nvim-state" \
+XDG_CACHE_HOME="$tmpdir/nvim-cache" \
+nvim --headless --clean -n --cmd 'set noloadplugins' --cmd 'set shada=' -c "lua local ok, err = pcall(dofile, 'config/nvim/init.lua'); if not ok then io.stderr:write(tostring(err) .. '\n'); os.exit(1) end; os.exit(0)"
 '''
 
 [tasks."lint"]

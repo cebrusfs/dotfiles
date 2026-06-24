@@ -128,9 +128,8 @@ env XDG_CONFIG_HOME="$PWD/config" \
   XDG_DATA_HOME="$TMPDIR/nvim-data" \
   XDG_STATE_HOME="$TMPDIR/nvim-state" \
   XDG_CACHE_HOME="$TMPDIR/nvim-cache" \
-  NVIM_SKIP_PACK=1 \
-  nvim --headless --cmd 'set shada=' +qa
+  nvim --headless -n --cmd 'set noloadplugins' --cmd 'set shada=' +qa
 ```
 
-Then test interactively with the actual plugin installed, because `NVIM_SKIP_PACK`
-only proves the config has a clean no-plugin fallback path.
+Then test interactively with the actual plugin installed, because
+`set noloadplugins` only proves the config has a clean no-plugin fallback path.

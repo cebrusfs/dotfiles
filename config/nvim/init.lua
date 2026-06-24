@@ -141,9 +141,12 @@ local pack_specs = {
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
 
--- NVIM_SKIP_PACK keeps headless syntax checks offline and independent of
--- installed plugin state.
-if vim.pack and vim.env.NVIM_SKIP_PACK ~= "1" then
+local plugins_enabled = vim.o.loadplugins
+
+-- Respect Neovim's plugin-loading switch so `--noplugin` or
+-- `--cmd 'set noloadplugins'` can load-check this config without external
+-- packages.
+if vim.pack and plugins_enabled then
     vim.pack.add(pack_specs, { confirm = false, load = true })
 elseif not vim.pack then
     vim.notify("vim.pack requires Neovim 0.12+", vim.log.levels.WARN)
@@ -153,8 +156,8 @@ if vim.pack then
     -- TODO(nvim 0.13): drop this fallback after :packdel ++all is available
     -- on every machine that runs ./update.
     vim.api.nvim_create_user_command("PackClean", function()
-        if vim.env.NVIM_SKIP_PACK == "1" then
-            vim.notify("PackClean is disabled when NVIM_SKIP_PACK=1", vim.log.levels.WARN)
+        if not vim.o.loadplugins then
+            vim.notify("PackClean is disabled when 'loadplugins' is off", vim.log.levels.WARN)
             return
         end
 
@@ -198,8 +201,8 @@ vim.keymap.set("x", "<Bslash>", "gc", { remap = true, desc = "Toggle comment" })
 
 -- vscode.nvim was the active Neovim colorscheme. Fall back to default instead
 -- of codedark because codedark is kept only as legacy/Vim parity.
-local ok_vscode, vscode = pcall(require, "vscode")
-if ok_vscode then
+if plugins_enabled then
+    local vscode = require("vscode")
     vscode.setup({
         transparent = true,
         italic_comments = true,
@@ -210,8 +213,8 @@ else
     vim.cmd.colorscheme("default")
 end
 
-local ok_mini_trailspace, mini_trailspace = pcall(require, "mini.trailspace")
-if ok_mini_trailspace then
+if plugins_enabled then
+    local mini_trailspace = require("mini.trailspace")
     mini_trailspace.setup()
 
     local function link_mini_trailspace()
@@ -224,8 +227,8 @@ if ok_mini_trailspace then
     })
 end
 
-local ok_mini_align, mini_align = pcall(require, "mini.align")
-if ok_mini_align then
+if plugins_enabled then
+    local mini_align = require("mini.align")
     -- mini.align is the closest EasyAlign replacement. Keep <Leader>- as the
     -- primary muscle-memory entry, but default it to preview so alignment can
     -- be inspected before <CR> applies the edit.
@@ -237,8 +240,8 @@ if ok_mini_align then
     })
 end
 
-local ok_mini_jump2d, mini_jump2d = pcall(require, "mini.jump2d")
-if ok_mini_jump2d then
+if plugins_enabled then
+    local mini_jump2d = require("mini.jump2d")
     mini_jump2d.setup({
         mappings = {
             start_jumping = "<Leader><Leader>",
@@ -257,8 +260,8 @@ vim.diagnostic.config({
 -- augments the client only when installed; otherwise builtin LSP still works.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local ok_cmp_nvim_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if ok_cmp_nvim_lsp then
+if plugins_enabled then
+    local cmp_nvim_lsp = require("cmp_nvim_lsp")
     capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 end
 
@@ -268,8 +271,10 @@ vim.lsp.config("*", {
 
 -- Keep nvim-cmp for path, buffer, and cmdline sources. Native LSP completion is
 -- a good fallback but does not replace those workflow details yet.
-local ok_cmp, cmp = pcall(require, "cmp")
-if ok_cmp then
+local cmp_enabled = false
+if plugins_enabled then
+    local cmp = require("cmp")
+    cmp_enabled = true
     cmp.setup({
         snippet = {
             expand = function(args)
@@ -315,11 +320,11 @@ if ok_cmp then
     })
 end
 
--- When nvim-cmp is intentionally skipped, use Neovim's builtin LSP completion
--- instead of leaving attached servers with only manual omnifunc completion.
+-- When plugin loading is disabled, use Neovim's builtin LSP completion instead
+-- of leaving attached servers with only manual omnifunc completion.
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
-        if ok_cmp then
+        if cmp_enabled then
             return
         end
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -334,13 +339,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- them automatically.
 -- harper_ls replaces vim-grammarous for prose diagnostics. Its nvim-lspconfig
 -- defaults cover Markdown plus Harper's comments-only programming filetypes.
-local ok_mason, mason = pcall(require, "mason")
-if ok_mason then
+if plugins_enabled then
+    local mason = require("mason")
     mason.setup()
 end
 
-local ok_mason_lspconfig, mason_lspconfig = pcall(require, "mason-lspconfig")
-if ok_mason_lspconfig then
+if plugins_enabled then
+    local mason_lspconfig = require("mason-lspconfig")
     mason_lspconfig.setup({
         ensure_installed = {
             "clangd",
@@ -361,12 +366,11 @@ end
 
 -- gitsigns covers inline hunk state; fugitive mappings below stay for command
 -- workflows like blame, diff, and mergetool.
-local ok_gitsigns, gitsigns = pcall(require, "gitsigns")
-if ok_gitsigns then
+if plugins_enabled then
+    local gitsigns = require("gitsigns")
     gitsigns.setup()
 end
 
-local ok_ibl, ibl = pcall(require, "ibl")
 -- listchars stays for normal spacing visibility. Trailing whitespace is not a
 -- listchar because mini.trailspace highlights it with the Error group instead.
 vim.opt.list = true
@@ -374,7 +378,8 @@ vim.opt.listchars:append({ multispace = "." })
 vim.opt.listchars:remove("space")
 vim.opt.listchars:remove("trail")
 
-if ok_ibl then
+if plugins_enabled then
+    local ibl = require("ibl")
     ibl.setup()
 end
 
@@ -386,8 +391,8 @@ vim.keymap.set("n", "<Leader>gd", "<cmd>Gdiffsplit<CR>", { desc = "Git diff" })
 vim.keymap.set("n", "<Leader>gb", "<cmd>Git blame<CR>", { desc = "Git blame" })
 vim.keymap.set("n", "<Leader>gm", "<cmd>Git mergetool<CR>", { desc = "Git mergetool" })
 
-local ok_fzf, fzf = pcall(require, "fzf-lua")
-if ok_fzf then
+if plugins_enabled then
+    local fzf = require("fzf-lua")
     fzf.setup({
         defaults = {
             file_ignore_patterns = { "node_modules", ".git", "__pycache__" },
