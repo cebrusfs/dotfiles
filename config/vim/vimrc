@@ -74,8 +74,8 @@ call plug#end()
 " }
 
 " Plugin review {
-" Removed from Vim's minimal set: airline/tender, NERDTree, vim-pasta,
-" EasyMotion, rainbow, and grammarous. Keep Vim as a fallback editor; use
+" Removed from Vim's minimal set: `airline`/`tender`, `NERDTree`, `vim-pasta`,
+" `EasyMotion`, `rainbow`, and `grammarous`. Keep Vim as a fallback editor; use
 " Neovim for richer LSP/completion/search workflows.
 " }
 

@@ -12,34 +12,34 @@ else
 end
 
 -- Host providers are Neovim-only startup policy. Set them before any provider
--- checks so common.vim stays limited to shared Vim-compatible defaults.
+-- checks so `common.vim` stays limited to shared Vim-compatible defaults.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
 -- Neovim-only UI defaults live here; shared Vim-compatible defaults stay in
--- common.vim so the two editors do not drift for basic editing behavior.
+-- `common.vim` so the two editors do not drift for basic editing behavior.
 vim.o.laststatus = 2
 vim.opt.completeopt:append({ "menuone", "noselect", "popup" })
 
 -- Clipboard routing:
--- `clipboard^=unnamed,unnamedplus` in common.vim changes the 'clipboard'
+-- `clipboard^=unnamed,unnamedplus` in `common.vim` changes the 'clipboard'
 -- option so normal y/p use the system registers. `g:clipboard` is a different
 -- Neovim provider override; leave it alone when built-in detection is enough.
--- * Local macOS/no SSH: no override; Neovim auto-selects pbcopy/pbpaste.
--- * SSH without tmux: force the built-in OSC52 provider because Neovim's
---   automatic OSC52 fallback only runs when the 'clipboard' option is empty,
---   and common.vim intentionally makes it non-empty.
+-- * Local macOS/no SSH: no override; Neovim selects `pbcopy`/`pbpaste`.
+-- * SSH without tmux: force the built-in `OSC52` provider because Neovim's
+--   automatic `OSC52` fallback only runs when the 'clipboard' option is empty,
+--   and `common.vim` intentionally makes it nonempty.
 -- * SSH + tmux -CC: no override; Neovim's tmux provider is the same path, and
 --   iTerm2 can mirror the tmux paste buffer. tmux exposes -CC as
 --   #{client_control_mode}=1, but this config does not need a runtime branch.
 -- * SSH + tmux not -CC: no override; Neovim writes with `tmux load-buffer -w`
---   on tmux 3.2+, then tmux publishes via set-clipboard/Ms/OSC52 if configured.
---   Direct OSC52 from inside the pane is avoided because tmux's default
+--   on tmux 3.2+, then tmux publishes via set-clipboard/Ms/`OSC52` if configured.
+--   Direct `OSC52` from inside the pane is avoided because tmux's default
 --   set-clipboard=external blocks pane apps from setting the clipboard.
 -- Paste uses the selected provider too; iTerm2/terminal/tmux policy controls
--- whether OSC52 clipboard reads are allowed.
+-- whether `OSC52` clipboard reads are allowed.
 if (vim.env.SSH_TTY or vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT) and not vim.env.TMUX then
     vim.g.clipboard = "osc52"
 end
@@ -89,25 +89,25 @@ let g:pandoc#syntax#conceal#urls = 1
 local pack_specs = {
     -- Mini is adopted one small module at a time. The mini review matched this
     -- config's bias: small modules are good swaps; picker/files/git change core
-    -- workflow. Adopted modules are trailspace, align, and jump2d;
+    -- workflow. Adopted modules are `trailspace`, `align`, and `jump2d`;
     -- diff/files/pick/git still need workflow-specific review before replacing larger tools.
     gh("nvim-mini/mini.nvim"),
 
-    -- Themes and statusline.
+    -- Themes and `statusline`.
     gh("tomasiser/vim-code-dark"),
     gh("Mofiqul/vscode.nvim"),
     gh("vim-airline/vim-airline"),
     gh("jacoborus/tender.vim"),
 
-    -- Indent and whitespace. `vim-indent-guides` is kept for parity; ibl below
-    -- is the active Neovim indent-guide implementation. mini.trailspace handles
+    -- Indent and whitespace. `vim-indent-guides` is kept for parity; `ibl` below
+    -- is the active Neovim indent-guide implementation. `mini.trailspace` handles
     -- Error-colored trailing whitespace.
     gh("preservim/vim-indent-guides"),
     gh("lukas-reineke/indent-blankline.nvim"),
     gh("luochen1990/rainbow"),
 
-    -- Programming stack. Native vim.lsp.config/enable is the control plane;
-    -- nvim-cmp remains for buffer/path/cmdline completion polish.
+    -- Programming stack. Native `vim.lsp.config`/`enable` is the control plane;
+    -- `nvim-cmp` remains for buffer/path/cmdline completion polish.
     gh("neovim/nvim-lspconfig"),
     gh("mason-org/mason.nvim"),
     gh("mason-org/mason-lspconfig.nvim"),
@@ -116,19 +116,19 @@ local pack_specs = {
     gh("hrsh7th/cmp-path"),
     gh("hrsh7th/cmp-cmdline"),
     gh("hrsh7th/nvim-cmp"),
-    -- Keep fzf-lua for fd/rg search with side-by-side previews. mini.pick is
+    -- Keep `fzf-lua` for `fd`/`rg` search with side-by-side previews. `mini.pick` is
     -- not equivalent for preview-heavy file and grep exploration.
     gh("ibhagwan/fzf-lua"),
-    -- gitsigns keeps the richer hunk workflow. mini.diff is a candidate only
+    -- `gitsigns` keeps the richer hunk workflow. `mini.diff` is a candidate only
     -- if number-column hunks are worth trading off those actions.
     gh("lewis6991/gitsigns.nvim"),
 
     -- Editing/navigation muscle memory. Fugitive stays for repo/index status;
-    -- mini.git is buffer-focused. Native gc/gcc now covers commenting with the
-    -- old <Bslash> alias below. EasyAlign moved to mini.align.
+    -- `mini.git` is buffer-focused. Native `gc`/`gcc` now covers commenting with
+    -- the old <Bslash> alias below. `EasyAlign` now lives in `mini.align`.
     gh("tpope/vim-fugitive"),
     gh("sickill/vim-pasta"),
-    -- mini.files uses a popup workflow; this keeps the existing tree toggle
+    -- `mini.files` uses a popup workflow; this keeps the existing tree toggle
     -- until file browsing is intentionally redesigned.
     gh("preservim/nerdtree"),
     gh("tpope/vim-endwise"),
@@ -136,7 +136,7 @@ local pack_specs = {
     gh("vim-pandoc/vim-pandoc-syntax"),
 
     -- Niche filetypes. Remote copy is handled by the
-    -- provider routing above; visual Y remains an explicit OSC52 fallback.
+    -- provider routing above; visual Y remains an explicit `OSC52` fallback.
     gh("ShikChen/mojom.vim"),
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
@@ -153,8 +153,8 @@ elseif not vim.pack then
 end
 
 if vim.pack then
-    -- TODO(nvim 0.13): drop this fallback after :packdel ++all is available
-    -- on every machine that runs ./update.
+    -- TODO(Neovim 0.13): drop this fallback once `:packdel ++all` is available
+    -- on every machine that runs `./update`.
     vim.api.nvim_create_user_command("PackClean", function()
         if not vim.o.loadplugins then
             vim.notify("PackClean is disabled when 'loadplugins' is off", vim.log.levels.WARN)
@@ -179,17 +179,17 @@ if vim.pack then
     end, { desc = "Remove vim.pack plugins no longer declared by this config" })
 end
 
--- The GN repo keeps its Vim runtime under misc/vim instead of the package
--- root, so packadd alone does not expose its syntax files.
+-- The `GN` repo keeps its Vim runtime under misc/vim instead of the package
+-- root, so `packadd` alone does not expose its syntax files.
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/pack/core/opt/gn/misc/vim")
 
--- Preserve old mappings after packadd so plugin-defined <Plug> targets exist.
+-- Preserve old mappings after `packadd` so plugin-defined <Plug> targets exist.
 vim.keymap.set("n", "<S-Tab>", "<cmd>NERDTreeToggle<CR>", { desc = "Toggle NERDTree" })
 
--- Native commenting keeps the built-in gc/gcc mapping available while
--- preserving the old <Bslash> muscle memory. armasm has no default
+-- Native commenting keeps the built-in `gc`/`gcc` mapping available while
+-- preserving the old <Bslash> muscle memory. `armasm` has no default
 -- 'commentstring', so restore the '@' delimiter previously owned by
--- NERDCommenter.
+-- `NERDCommenter`.
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "armasm",
     callback = function()
@@ -199,8 +199,8 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<Bslash>", "gcc", { remap = true, desc = "Toggle comment line" })
 vim.keymap.set("x", "<Bslash>", "gc", { remap = true, desc = "Toggle comment" })
 
--- vscode.nvim was the active Neovim colorscheme. Fall back to default instead
--- of codedark because codedark is kept only as legacy/Vim parity.
+-- `vscode.nvim` was the active Neovim colorscheme. Fall back to default instead
+-- of `codedark` because `codedark` is kept only as legacy/Vim parity.
 if plugins_enabled then
     local vscode = require("vscode")
     vscode.setup({
@@ -229,7 +229,7 @@ end
 
 if plugins_enabled then
     local mini_align = require("mini.align")
-    -- mini.align is the closest EasyAlign replacement. Keep <Leader>- as the
+    -- `mini.align` is the closest `EasyAlign` replacement. Keep <Leader>- as the
     -- primary muscle-memory entry, but default it to preview so alignment can
     -- be inspected before <CR> applies the edit.
     mini_align.setup({
@@ -256,7 +256,7 @@ vim.diagnostic.config({
     },
 })
 
--- Apply completion capabilities through the native LSP config chain. nvim-cmp
+-- Apply completion capabilities through the native LSP config chain. `nvim-cmp`
 -- augments the client only when installed; otherwise builtin LSP still works.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
@@ -269,7 +269,22 @@ vim.lsp.config("*", {
     capabilities = capabilities,
 })
 
--- Keep nvim-cmp for path, buffer, and cmdline sources. Native LSP completion is
+-- Global Harper tweaks. `ToDoHyphen` rewrites `TODO` markers to a hyphenated
+-- form, which is noise for code; turn it off and whitelist `TODO` through
+-- `userDictPath` so the markers stay clean in every project. Proper nouns are
+-- silenced with backticks at each call site instead.
+vim.lsp.config("harper_ls", {
+    settings = {
+        ["harper-ls"] = {
+            userDictPath = vim.fn.stdpath("config") .. "/harper-userdict.txt",
+            linters = {
+                ToDoHyphen = false,
+            },
+        },
+    },
+})
+
+-- Keep `nvim-cmp` for path, buffer, and cmdline sources. Native LSP completion is
 -- a good fallback but does not replace those workflow details yet.
 local cmp_enabled = false
 if plugins_enabled then
@@ -321,7 +336,7 @@ if plugins_enabled then
 end
 
 -- When plugin loading is disabled, use Neovim's builtin LSP completion instead
--- of leaving attached servers with only manual omnifunc completion.
+-- of leaving attached servers with only manual `omnifunc` completion.
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
         if cmp_enabled then
@@ -334,10 +349,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- Mason still owns server installation. mason-lspconfig bridges installed
--- servers to nvim-lspconfig configs and lets Neovim's native enable path attach
+-- Mason still owns server installation. `mason-lspconfig` bridges installed
+-- servers to `nvim-lspconfig` configs and lets Neovim's native enable path attach
 -- them automatically.
--- harper_ls replaces vim-grammarous for prose diagnostics. Its nvim-lspconfig
+-- `harper_ls` replaces `vim-grammarous` for prose diagnostics. Its `nvim-lspconfig`
 -- defaults cover Markdown plus Harper's comments-only programming filetypes.
 if plugins_enabled then
     local mason = require("mason")
@@ -364,15 +379,15 @@ if plugins_enabled then
     })
 end
 
--- gitsigns covers inline hunk state; fugitive mappings below stay for command
--- workflows like blame, diff, and mergetool.
+-- `gitsigns` covers inline hunk state; fugitive mappings below stay for command
+-- workflows like blame, diff, and `mergetool`.
 if plugins_enabled then
     local gitsigns = require("gitsigns")
     gitsigns.setup()
 end
 
--- listchars stays for normal spacing visibility. Trailing whitespace is not a
--- listchar because mini.trailspace highlights it with the Error group instead.
+-- `listchars` stays for normal spacing visibility. Trailing whitespace is not a
+-- `listchar` because `mini.trailspace` highlights it with the Error group instead.
 vim.opt.list = true
 vim.opt.listchars:append({ multispace = "." })
 vim.opt.listchars:remove("space")
@@ -384,7 +399,7 @@ if plugins_enabled then
 end
 
 -- Keep the old Git prefix stable. These are Git-backed commands even when the
--- repository is operated through jj outside the editor.
+-- repository is operated through `jj` outside the editor.
 vim.keymap.set("n", "<Leader>g", "<Nop>", { desc = "Git prefix" })
 vim.keymap.set("n", "<Leader>gs", "<cmd>Git<CR>", { desc = "Git status" })
 vim.keymap.set("n", "<Leader>gd", "<cmd>Gdiffsplit<CR>", { desc = "Git diff" })
@@ -398,18 +413,18 @@ if plugins_enabled then
             file_ignore_patterns = { "node_modules", ".git", "__pycache__" },
         },
         files = {
-            -- Prefer fd for file listing; it matches the repo-wide default tool
+            -- Prefer `fd` for file listing; it matches the repo-wide default tool
             -- preference and avoids shelling through slower generic find flows.
             fd_opts = "--color=never --type f --hidden --follow --exclude .git",
         },
         grep = {
-            -- Keep ripgrep hidden-file coverage, but exclude rules remain the
-            -- project's responsibility via .gitignore/.ignore.
+            -- Keep `ripgrep` hidden-file coverage, but exclude rules remain the
+            -- project's responsibility via `.gitignore`/`.ignore`.
             rg_opts = "--color=never --hidden --follow",
         },
     })
 
-    -- fzf-lua keeps file, text, buffer, and help search on one picker stack.
+    -- `fzf-lua` keeps file, text, buffer, and help search on one picker stack.
     -- The current-word mapping is intentionally project-wide, not LSP-scoped.
     vim.keymap.set("n", "<Leader>fo", fzf.files, { desc = "Find files" })
     vim.keymap.set("n", "<Leader>r", fzf.live_grep, { desc = "Live grep in project" })
