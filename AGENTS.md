@@ -56,10 +56,12 @@ Platform-conditional links use `if:` clauses:
 | `tmux/` | `~/.tmux.conf` | Tmux config |
 | `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.agents/skills` | Shared agent instructions plus Claude/Codex adapters; `~/.agents/skills` is the user Agent Skills path for Codex and Gemini CLI |
 
-`config/agent/skills/` is the only skill source of truth. Link it to
-`~/.claude/skills` for Claude and `~/.agents/skills` for Codex/Gemini-compatible
-user skills. Do not put custom skills under `~/.codex/skills`; Codex uses that
-directory for its own state and bundled system skills.
+`config/agent/` is the source of truth for shared agent guidance and skills; the
+tool-specific home dirs are only adapters. `config/agent/skills/` is the only
+skill source of truth — do not put custom skills under `~/.codex/skills` (Codex
+owns that dir). `config/agent/codex/config.toml` is a template, not a symlink
+target; sync it with `config/agent/codex/sync-config.py --apply`. Full details in
+[docs/agent-config.md](docs/agent-config.md).
 
 ### Homebrew
 
