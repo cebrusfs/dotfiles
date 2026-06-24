@@ -73,13 +73,13 @@ Ref: [`config/tmux/tmux.conf`](./config/tmux/tmux.conf)
 - `<Space>` is set as the leader key.
 
 #### General & Navigation
-| Action                     | Key                       | Description                                  |
-|----------------------------|---------------------------|----------------------------------------------|
-| Quick save                 | `<Space>w`                | Save current buffer (`:w`)                   |
-| Quick reload               | `<Space>e`                | Reload current buffer (`:e`)                 |
-| Move across wrapped lines  | `<Up>` / `<Down>`         | Move visually up/down even if lines wrap     |
-| Copy to clipboard (remote) | `Y` (Visual)              | Explicit copy via OSC52 over SSH/tmux        |
-| Trigger Easymotion         | `<Space><Space> + motion` | Quickly jump to specific targets             |
+| Action                       | Key                         | Description                                    |
+| ---------------------------- | --------------------------- | ---------------------------------------------- |
+| Quick save                   | `<Space>w`                  | Save current buffer (`:w`)                     |
+| Quick reload                 | `<Space>e`                  | Reload current buffer (`:e`)                   |
+| Move across wrapped lines    | `<Up>` / `<Down>`           | Move visually up/down even if lines wrap       |
+| Copy to clipboard (vim only) | `Y` (Visual)                | Explicit copy via OSC52 over SSH/tmux          |
+| Trigger Easymotion           | `<Space><Space> + motion`   | Quickly jump to specific targets               |
 
 #### File Explorer (NERDTree)
 | Action           | Key       | Description         |

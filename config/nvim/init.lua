@@ -204,23 +204,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<Bslash>", "gcc", { remap = true, desc = "Toggle comment line" })
 vim.keymap.set("x", "<Bslash>", "gc", { remap = true, desc = "Toggle comment" })
 
--- Keep visual Y as an explicit OSC52 fallback for sessions where the selected
--- provider path is surprising. Normal y still follows the case table above.
-local function copy_unnamed_register_to_osc52()
-    local ok_osc52, osc52 = pcall(require, "vim.ui.clipboard.osc52")
-    if not ok_osc52 then
-        vim.notify("Native OSC52 clipboard helper is unavailable", vim.log.levels.WARN)
-        return
-    end
-
-    osc52.copy("+")(vim.fn.getreg('"', 1, true))
-end
-
-vim.keymap.set("x", "Y", function()
-    vim.cmd.normal({ args = { "y" }, bang = true })
-    copy_unnamed_register_to_osc52()
-end, { desc = "Yank via OSC52" })
-
 -- vscode.nvim was the active Neovim colorscheme. Fall back to default instead
 -- of codedark because codedark is kept only as legacy/Vim parity.
 local ok_vscode, vscode = pcall(require, "vscode")
