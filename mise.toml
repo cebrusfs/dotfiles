@@ -77,9 +77,15 @@ XDG_CACHE_HOME="$tmpdir/nvim-cache" \
 nvim --headless --clean -n --cmd 'set noloadplugins' --cmd 'set shada=' -c "lua local ok, err = pcall(dofile, 'config/nvim/init.lua'); if not ok then io.stderr:write(tostring(err) .. '\n'); os.exit(1) end; os.exit(0)"
 '''
 
+[tasks."test:hooks"]
+description = "Run unit tests for agent hooks"
+# PYTHONDONTWRITEBYTECODE keeps the run from littering __pycache__ into the repo.
+env = { PYTHONDONTWRITEBYTECODE = "1" }
+run = "python3 -m unittest discover -s config/agent/hooks -p 'test_*.py'"
+
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "test:hooks"]
 
 [tasks."fmt"]
 description = "Run all formatters"

@@ -23,6 +23,28 @@ MESSAGE_COMMANDS = {
     ("git", "commit"),
 }
 
+# Flags that supply or derive the commit message without opening an editor, so
+# the '<component>: <title>' text is intentionally absent from the command line.
+# Scoped per subcommand because each command exposes a different flag set (e.g.
+# -u is jj squash, --stdin is jj describe, -C/-F are git commit).
+NONINTERACTIVE_MESSAGE_FLAGS: dict[str, set[str]] = {
+    "jj squash": {"-u", "--use-destination-message"},
+    "jj describe": {"--stdin"},
+    "jj new": {"--no-edit"},
+    "git commit": {
+        "-C",
+        "--reuse-message",
+        "-F",
+        "--file",
+        "--no-edit",
+        "--fixup",
+        "--squash",
+    },
+}
+
+# Short flags that carry an inline value, e.g. -CHEAD or -Ffile.
+VALUE_SHORT_FLAGS = {"-C", "-F"}
+
 
 def hook_string(data: dict[str, Any], *paths: tuple[str, ...]) -> str:
     for path in paths:
@@ -96,6 +118,20 @@ def split_segments(command: str) -> list[list[str]]:
     if current:
         segments.append(current)
     return segments
+
+
+def has_noninteractive_message(segment: list[str], kind: str) -> bool:
+    allowed = NONINTERACTIVE_MESSAGE_FLAGS.get(kind)
+    if not allowed:
+        return False
+    for token in segment:
+        if token in allowed:
+            return True
+        if token.startswith("--") and token.split("=", 1)[0] in allowed:
+            return True
+        if len(token) > 2 and token[:2] in VALUE_SHORT_FLAGS and token[:2] in allowed:
+            return True
+    return False
 
 
 def command_kind(segment: list[str]) -> str:
@@ -206,6 +242,8 @@ def validate_command(command: str, root: Path | None) -> int:
 
         message_commands.append(kind)
         if not messages:
+            if has_noninteractive_message(segment, kind):
+                continue
             errors.append(f"{kind}: use -m '<component>: <title>' instead of an editor")
             continue
 
