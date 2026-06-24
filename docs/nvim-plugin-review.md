@@ -56,7 +56,6 @@ feature the old plugin exposes.
 | `lewis6991/gitsigns.nvim` | Native signs plus `vim.diff()` are building blocks, not hunk UI | `mini.diff` | Mini partially equivalent for signs/hunks, but gitsigns has richer hunk actions | Keep unless intentionally simplifying Git hunk workflow. |
 | `tpope/vim-fugitive` | Native `:terminal git` / shell commands are not an editor Git UI | `mini.git` | Not equivalent to fugitive's `:Git` status/edit workflow | Keep. |
 | `ibhagwan/fzf-lua` | `vim.ui.select` is not a picker stack | `mini.pick` | Mini covers core picking, but current fd/rg preview workflow is stronger in fzf-lua | Keep. |
-| `easymotion/vim-easymotion` | Native motions/search are not label-jump UI | `mini.jump`/`mini.jump2d` | Mini can cover jump-by-pattern/2d labels, but muscle memory differs | Candidate only with mapping trial. |
 | `sickill/vim-pasta` | Neovim 0.11 improved paste redo/macros and ignores autoindent during redo, but it is not destination-context paste adjustment | None | Not clearly equivalent | Removal candidate only after paste tests. |
 | `tpope/vim-endwise` | No built-in auto `end` insertion | `mini.pairs` can pair delimiters, not language-aware Ruby/Lua `end` | Not equivalent | Keep unless adopting a snippet/autopairs workflow. |
 | `vim-pandoc/vim-pandoc` | Built-in markdown does not provide Pandoc workflow commands | None | Not equivalent | Keep if Pandoc workflow is still used. |
@@ -74,7 +73,6 @@ feature the old plugin exposes.
 | Statusline | `vim-airline`: ~18.0k stars, latest release `v0.12` on 2026-05-02 | `lualine.nvim`: ~8.0k stars, pushed 2026-05-31; `mini.statusline` ships with active `mini.nvim` | No urgency. Airline is old-style Vimscript but still maintained; replace only with screenshot parity and component parity. |
 | File explorer | `NERDTree`: ~20.1k stars, pushed 2025-09-26 | `oil.nvim`: ~6.7k stars, latest release `v2.16.0` on 2026-05-24; `nvim-tree.lua`: ~8.6k stars, latest release `v1.17.0` on 2026-04-07; `mini.files` ships with active `mini.nvim` | Keep for now. Choose `oil.nvim` only if buffer-style filesystem edits are desired; choose `nvim-tree.lua` if tree parity matters more. |
 | Indent and delimiters | `indent-blankline.nvim`: ~5.0k stars, latest release `v3.9.1` on 2026-02-17; `rainbow`: ~1.8k stars, last release 2014, pushed 2024-07-27 | `rainbow-delimiters.nvim`: ~0.9k stars, pushed 2026-05-18 | Keep `indent-blankline.nvim`. `rainbow` is a good replacement candidate, but only after Tree-sitter coverage is checked for the languages here. |
-| Jump navigation | `vim-easymotion`: ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `leap.nvim`: ~5.0k stars, pushed 2026-04-11; `flash.nvim`: ~4.1k stars, latest release `v2.1.0` on 2024-07-07 | Keep until a replacement is chosen intentionally. `leap.nvim` is the smaller motion-focused candidate; `flash.nvim` is broader and changes more behavior. |
 | Prose and Markdown | `vim-grammarous`: ~1.1k stars, pushed 2022-10-25; `vim-pandoc`: ~1.0k stars, pushed 2025-11-07; `vim-pandoc-syntax`: ~0.4k stars, pushed 2025-09-22 | `harper-ls`: ~10.9k stars, latest release `v2.6.0` on 2026-06-24; `ltex-ls-plus`: ~0.2k stars, latest release `18.7.0` on 2026-06-13; `vale`: ~5.5k stars, latest release `v3.15.1` on 2026-06-12 | Replace `vim-grammarous` with `harper-ls` through Mason. Harper is lightweight and its official LSP docs match the desired comments plus Markdown workflow; use LTeX+ only if LanguageTool depth or multilingual checking matters. |
 | Auto insertion and paste | `vim-endwise`: ~1.2k stars, pushed 2025-11-05; `vim-pasta`: ~0.3k stars, pushed 2023-08-12 | `nvim-autopairs`: ~4.1k stars, latest release `0.10.0` on 2025-09-26 | Keep `vim-endwise` unless adopting broader autopairs. `vim-pasta` is a removal candidate after paste indentation testing. |
 
@@ -109,7 +107,6 @@ feature the old plugin exposes.
 | `vim-pandoc/vim-pandoc-syntax` | Keep installed | Pandoc syntax | ~0.4k stars, pushed 2025-09-22 | Native markdown / Tree-sitter markdown | Keep while `vim-pandoc` is kept. |
 | `ShikChen/mojom.vim` | Keep installed | Mojom syntax | Niche, low activity | Local syntax file if needed | Keep if mojom files still matter. |
 | GN runtime from `gn.googlesource.com` | Keep installed | BUILD.gn syntax | Upstream GN repo | Local syntax copy if plugin manager friction is high | Keep if GN files still matter. |
-| `easymotion/vim-easymotion` | Keep installed | Jump navigation | ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `folke/flash.nvim` ~4.1k, `ggandor/leap.nvim` ~5.0k | Keep for parity; replacement changes muscle memory. |
 | `rhysd/vim-grammarous` | Removed | Grammar checking | ~1.1k stars, pushed 2022-10-25 | `harper-ls` through Mason and native LSP | Removed from Neovim after adopting Harper LS. |
 | `github/copilot.vim` | Not installed; old config had it commented | AI completion candidate | ~11.6k stars | Native LSP inline completion path or vendor plugin | Keep commented unless explicitly adopting AI completion. |
 | `supermaven-inc/supermaven-nvim` | Not installed; old config had it commented | AI completion candidate | ~1.4k stars, lower recent activity | Copilot or no AI plugin | Keep commented unless explicitly adopting AI completion. |
@@ -119,9 +116,8 @@ feature the old plugin exposes.
 1. Next low-risk replacement test: `rainbow`.
 2. Removal candidate that needs paste tests: `vim-pasta`.
 3. UI workflow decisions: `vim-airline`, `NERDTree`, `indent-blankline.nvim`.
-4. Navigation workflow: `easymotion` versus `leap.nvim` or `flash.nvim`.
-5. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.
-6. Niche filetypes and prose tools: `vim-pandoc*`, `mojom.vim`, GN runtime.
+4. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.
+5. Niche filetypes and prose tools: `vim-pandoc*`, `mojom.vim`, GN runtime.
 
 ## Verification Notes
 

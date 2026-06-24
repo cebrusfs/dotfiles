@@ -79,7 +79,7 @@ Ref: [`config/tmux/tmux.conf`](./config/tmux/tmux.conf)
 | Quick reload                 | `<Space>e`                  | Reload current buffer (`:e`)                   |
 | Move across wrapped lines    | `<Up>` / `<Down>`           | Move visually up/down even if lines wrap       |
 | Copy to clipboard (vim only) | `Y` (Visual)                | Explicit copy via OSC52 over SSH/tmux          |
-| Trigger Easymotion           | `<Space><Space> + motion`   | Quickly jump to specific targets               |
+| Jump to visible target       | `<Space><Space>`            | Start mini.jump2d label jump                   |
 
 #### File Explorer (NERDTree)
 | Action           | Key       | Description         |

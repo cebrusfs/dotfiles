@@ -89,8 +89,8 @@ let g:pandoc#syntax#conceal#urls = 1
 local pack_specs = {
     -- Mini is adopted one small module at a time. The mini review matched this
     -- config's bias: small modules are good swaps; picker/files/git change core
-    -- workflow. Adopted modules are trailspace and align; diff/files/pick/git
-    -- still need workflow-specific review before replacing larger tools.
+    -- workflow. Adopted modules are trailspace, align, and jump2d;
+    -- diff/files/pick/git still need workflow-specific review before replacing larger tools.
     gh("nvim-mini/mini.nvim"),
 
     -- Themes and statusline.
@@ -135,10 +135,9 @@ local pack_specs = {
     gh("vim-pandoc/vim-pandoc"),
     gh("vim-pandoc/vim-pandoc-syntax"),
 
-    -- Niche filetypes and jump tools. Remote copy is handled by the
+    -- Niche filetypes. Remote copy is handled by the
     -- provider routing above; visual Y remains an explicit OSC52 fallback.
     gh("ShikChen/mojom.vim"),
-    gh("easymotion/vim-easymotion"),
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
 
@@ -234,6 +233,15 @@ if ok_mini_align then
         mappings = {
             start = "<Leader>_",
             start_with_preview = "<Leader>-",
+        },
+    })
+end
+
+local ok_mini_jump2d, mini_jump2d = pcall(require, "mini.jump2d")
+if ok_mini_jump2d then
+    mini_jump2d.setup({
+        mappings = {
+            start_jumping = "<Leader><Leader>",
         },
     })
 end
