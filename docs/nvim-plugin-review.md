@@ -61,7 +61,7 @@ feature the old plugin exposes.
 | `tpope/vim-endwise` | No built-in auto `end` insertion | `mini.pairs` can pair delimiters, not language-aware Ruby/Lua `end` | Not equivalent | Keep unless adopting a snippet/autopairs workflow. |
 | `vim-pandoc/vim-pandoc` | Built-in markdown does not provide Pandoc workflow commands | None | Not equivalent | Keep if Pandoc workflow is still used. |
 | `vim-pandoc/vim-pandoc-syntax` | Built-in markdown/Tree-sitter markdown may cover highlighting, but Pandoc-specific syntax can differ | None | Partially equivalent for generic Markdown only | Keep while `vim-pandoc` remains. |
-| `rhysd/vim-grammarous` | Built-in spell checks spelling only, not grammar | None | Not equivalent | Remove only if grammar checking is unused or moved to external LSP/tool. |
+| `rhysd/vim-grammarous` | Native LSP client plus `harper-ls` via Mason | None | Equivalent for the requested code-comment plus Markdown prose workflow; does not keep Grammarous help-buffer full-document checking | Removed from `vim.pack`; `harper_ls` uses nvim-lspconfig defaults. |
 | `tomasiser/vim-code-dark` | Built-in `default` only | None | Not equivalent as a theme, but redundant if `vscode.nvim` is always active | Candidate to drop from Neovim after theme fallback decision. |
 | `Mofiqul/vscode.nvim` | Built-in themes are available but visually different | `mini.base16`/`mini.hues` can create themes, not equivalent to VS Code theme | Not equivalent | Keep if this visual theme is desired. |
 | `ShikChen/mojom.vim` | No built-in Mojom syntax confirmed | None | Not equivalent | Keep if Mojom files still matter. |
@@ -75,7 +75,7 @@ feature the old plugin exposes.
 | File explorer | `NERDTree`: ~20.1k stars, pushed 2025-09-26 | `oil.nvim`: ~6.7k stars, latest release `v2.16.0` on 2026-05-24; `nvim-tree.lua`: ~8.6k stars, latest release `v1.17.0` on 2026-04-07; `mini.files` ships with active `mini.nvim` | Keep for now. Choose `oil.nvim` only if buffer-style filesystem edits are desired; choose `nvim-tree.lua` if tree parity matters more. |
 | Indent and delimiters | `indent-blankline.nvim`: ~5.0k stars, latest release `v3.9.1` on 2026-02-17; `rainbow`: ~1.8k stars, last release 2014, pushed 2024-07-27 | `rainbow-delimiters.nvim`: ~0.9k stars, pushed 2026-05-18 | Keep `indent-blankline.nvim`. `rainbow` is a good replacement candidate, but only after Tree-sitter coverage is checked for the languages here. |
 | Jump navigation | `vim-easymotion`: ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `leap.nvim`: ~5.0k stars, pushed 2026-04-11; `flash.nvim`: ~4.1k stars, latest release `v2.1.0` on 2024-07-07 | Keep until a replacement is chosen intentionally. `leap.nvim` is the smaller motion-focused candidate; `flash.nvim` is broader and changes more behavior. |
-| Prose and Markdown | `vim-grammarous`: ~1.1k stars, pushed 2022-10-25; `vim-pandoc`: ~1.0k stars, pushed 2025-11-07; `vim-pandoc-syntax`: ~0.4k stars, pushed 2025-09-22 | `render-markdown.nvim`: ~4.7k stars, latest release `v8.13.0` on 2026-06-18; `markview.nvim`: ~3.5k stars, latest release `v28.3.0` on 2026-05-16 | `vim-grammarous` is the strongest removal candidate if unused. Markdown renderers do not replace Pandoc workflow features; evaluate them only for visual preview. |
+| Prose and Markdown | `vim-grammarous`: ~1.1k stars, pushed 2022-10-25; `vim-pandoc`: ~1.0k stars, pushed 2025-11-07; `vim-pandoc-syntax`: ~0.4k stars, pushed 2025-09-22 | `harper-ls`: ~10.9k stars, latest release `v2.6.0` on 2026-06-24; `ltex-ls-plus`: ~0.2k stars, latest release `18.7.0` on 2026-06-13; `vale`: ~5.5k stars, latest release `v3.15.1` on 2026-06-12 | Replace `vim-grammarous` with `harper-ls` through Mason. Harper is lightweight and its official LSP docs match the desired comments plus Markdown workflow; use LTeX+ only if LanguageTool depth or multilingual checking matters. |
 | Auto insertion and paste | `vim-endwise`: ~1.2k stars, pushed 2025-11-05; `vim-pasta`: ~0.3k stars, pushed 2023-08-12 | `nvim-autopairs`: ~4.1k stars, latest release `0.10.0` on 2025-09-26 | Keep `vim-endwise` unless adopting broader autopairs. `vim-pasta` is a removal candidate after paste indentation testing. |
 
 ## Review Table
@@ -93,6 +93,7 @@ feature the old plugin exposes.
 | `neovim/nvim-lspconfig` | Keep installed | LSP server config database | ~13.8k stars, active | Native `vim.lsp.config` plus local configs | Keep. The deprecated part is old `require('lspconfig').setup`, not the config database. |
 | `mason-org/mason.nvim` | Keep installed | LSP/tool installer | ~10.3k stars, active | System package managers / mise / manual installs | Keep unless tool installation moves outside Neovim. |
 | `mason-org/mason-lspconfig.nvim` | Keep installed | Mason to lspconfig bridge | ~3.9k stars, active | Manual `vim.lsp.enable()` list | Keep for now; later review whether auto-enable is desired. |
+| `harper-ls` Mason package | Ensure installed | Grammar checking LSP for Markdown and code comments | ~10.9k stars, latest release `v2.6.0` on 2026-06-24 | `ltex-ls-plus` for LanguageTool, `vale` for style-guide linting | Adopted as the `vim-grammarous` replacement using nvim-lspconfig defaults, which include Markdown and code-comment filetypes plus a few prose formats. |
 | `hrsh7th/nvim-cmp` | Keep installed | Completion UI/engine | ~9.5k stars, active enough | Native `vim.lsp.completion`, `saghen/blink.cmp` ~6.4k | Keep for parity. Native completion loses current buffer/path/cmdline polish. |
 | `hrsh7th/cmp-nvim-lsp` | Keep installed | LSP source for nvim-cmp | Companion plugin | Native LSP completion or blink source | Keep while `nvim-cmp` is kept. |
 | `hrsh7th/cmp-buffer` | Keep installed | Buffer words source | Companion plugin | Native insert completion | Keep while `nvim-cmp` is kept. |
@@ -109,14 +110,14 @@ feature the old plugin exposes.
 | `ShikChen/mojom.vim` | Keep installed | Mojom syntax | Niche, low activity | Local syntax file if needed | Keep if mojom files still matter. |
 | GN runtime from `gn.googlesource.com` | Keep installed | BUILD.gn syntax | Upstream GN repo | Local syntax copy if plugin manager friction is high | Keep if GN files still matter. |
 | `easymotion/vim-easymotion` | Keep installed | Jump navigation | ~7.7k stars, latest release `v3.0.1` on 2016-01-21, pushed 2024-02-05 | `folke/flash.nvim` ~4.1k, `ggandor/leap.nvim` ~5.0k | Keep for parity; replacement changes muscle memory. |
-| `rhysd/vim-grammarous` | Keep installed | Grammar checking | ~1.1k stars, pushed 2022-10-25 | LSP/external prose checker | Strong removal candidate if unused. |
+| `rhysd/vim-grammarous` | Removed | Grammar checking | ~1.1k stars, pushed 2022-10-25 | `harper-ls` through Mason and native LSP | Removed from Neovim after adopting Harper LS. |
 | `github/copilot.vim` | Not installed; old config had it commented | AI completion candidate | ~11.6k stars | Native LSP inline completion path or vendor plugin | Keep commented unless explicitly adopting AI completion. |
 | `supermaven-inc/supermaven-nvim` | Not installed; old config had it commented | AI completion candidate | ~1.4k stars, lower recent activity | Copilot or no AI plugin | Keep commented unless explicitly adopting AI completion. |
 
 ## Suggested Review Order
 
 1. Next low-risk replacement test: `rainbow`.
-2. Removal candidates that need usage confirmation: `vim-grammarous`, `vim-pasta`.
+2. Removal candidate that needs paste tests: `vim-pasta`.
 3. UI workflow decisions: `vim-airline`, `NERDTree`, `indent-blankline.nvim`.
 4. Navigation workflow: `easymotion` versus `leap.nvim` or `flash.nvim`.
 5. Programming stack: `nvim-cmp` family, `mason*`, `nvim-lspconfig`.

@@ -79,14 +79,8 @@ let g:rainbow_conf = {
 " Native gc/gcc covers the Neovim comment workflow. Lua below keeps the old
 " <Bslash> alias and restores armasm's '@' delimiter via 'commentstring'.
 
-" Pandoc URL conceal keeps prose buffers readable. Grammarous checks comments
-" only in source files, while help/markdown remain full-document prose checks.
+" Pandoc URL conceal keeps prose buffers readable.
 let g:pandoc#syntax#conceal#urls = 1
-let g:grammarous#default_comments_only_filetypes = {
-    \ '*' : 1,
-    \ 'help' : 0,
-    \ 'markdown' : 0,
-    \ }
 ]=])
 
 -- `vim.pack` uses Neovim's native package layout. Keep the old dependency
@@ -141,11 +135,10 @@ local pack_specs = {
     gh("vim-pandoc/vim-pandoc"),
     gh("vim-pandoc/vim-pandoc-syntax"),
 
-    -- Niche filetypes and jump/prose tools. Remote copy is handled by the
+    -- Niche filetypes and jump tools. Remote copy is handled by the
     -- provider routing above; visual Y remains an explicit OSC52 fallback.
     gh("ShikChen/mojom.vim"),
     gh("easymotion/vim-easymotion"),
-    gh("rhysd/vim-grammarous"),
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
 
@@ -331,6 +324,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Mason still owns server installation. mason-lspconfig bridges installed
 -- servers to nvim-lspconfig configs and lets Neovim's native enable path attach
 -- them automatically.
+-- harper_ls replaces vim-grammarous for prose diagnostics. Its nvim-lspconfig
+-- defaults cover Markdown plus Harper's comments-only programming filetypes.
 local ok_mason, mason = pcall(require, "mason")
 if ok_mason then
     mason.setup()
@@ -350,6 +345,7 @@ if ok_mason_lspconfig then
             "yamlls",
             "taplo",
             "lua_ls",
+            "harper_ls",
         },
         automatic_enable = true,
     })
