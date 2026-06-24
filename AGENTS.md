@@ -1,29 +1,20 @@
 # Agent Instructions
 
-This file provides guidance to Claude Code and Codex when working with code in this repository. `CLAUDE.md` delegates here so the repository instructions stay in one format.
-
 ## Overview
 
 Personal dotfiles managed by [dotbot](https://github.com/anishathalye/dotbot). Files in `config/` are symlinked into `~` by dotbot; `install-conf/dotbot.conf.yaml` is the single source of truth for all symlink mappings.
 
-Version control uses **jj (Jujutsu)** in colocated mode. See `config/agent/rules/jj.md` for jj baseline rules.
+VCS use `jj` in colocated mode (Use /jj skill when needed)
 
 ## Key Commands
 
 ```bash
-# Fresh install
-./install
-
-# Pull updates + refresh submodules + update vim plugins
-./update
-
-# Re-run dotbot only (re-create symlinks, no package installs)
-./install-conf/dotbot.conf.yaml   # not directly; run via:
+# Re-run dotbot after editing symlink mappings
 bin/dotbot -d . -c install-conf/dotbot.conf.yaml
-
-# macOS: install Homebrew packages
-brew bundle install -v --no-lock --file="homebrew/Brewfile.home"
 ```
+
+`./install`, `./update`, and `brew bundle install` are user workflow commands;
+run them only when explicitly requested.
 
 ## Architecture
 
@@ -72,7 +63,7 @@ Four Brewfiles for different contexts:
 | `Brewfile.home` | Personal macOS setup |
 | `Brewfile.work` | Work machine |
 | `Brewfile.min` | Minimal/server setup |
-| `Brewfile.ctf` | CTF / security tools |
+| `Brewfile.ctf` | CTF / security tools / Full setup |
 
 ### Submodules
 

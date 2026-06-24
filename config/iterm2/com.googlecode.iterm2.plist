@@ -30,10 +30,10 @@
 	<true/>
 	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
 	<integer>1</integer>
-	<key>ConvertItalicsToReverseVideoForTmux</key>
-	<false/>
 	<key>Default Bookmark Guid</key>
 	<string>F1BDF495-E8BD-4F64-A90E-244376D9519F</string>
+	<key>EnableAPIServer</key>
+	<false/>
 	<key>FallbackLCCType</key>
 	<string>en_US.UTF-8</string>
 	<key>HapticFeedbackForEsc</key>
@@ -953,63 +953,6 @@
 			<real>0.095242686170212754</real>
 			<key>Treat Option as Alt</key>
 			<false/>
-			<key>Triggers</key>
-			<array>
-				<dict>
-					<key>action</key>
-					<string>iTermHyperlinkTrigger</string>
-					<key>contentregex</key>
-					<string></string>
-					<key>disabled</key>
-					<integer>0</integer>
-					<key>matchType</key>
-					<integer>0</integer>
-					<key>name</key>
-					<string>Critique</string>
-					<key>parameter</key>
-					<string>https://critique.corp.google.com/#review/\1</string>
-					<key>partial</key>
-					<false/>
-					<key>regex</key>
-					<string>cl/(\d+)</string>
-				</dict>
-				<dict>
-					<key>action</key>
-					<string>iTermHyperlinkTrigger</string>
-					<key>contentregex</key>
-					<string></string>
-					<key>disabled</key>
-					<integer>0</integer>
-					<key>matchType</key>
-					<integer>0</integer>
-					<key>name</key>
-					<string>Buganizer</string>
-					<key>parameter</key>
-					<string>https://b.corp.google.com/issues/\1</string>
-					<key>partial</key>
-					<false/>
-					<key>regex</key>
-					<string>b/(\d+)</string>
-				</dict>
-				<dict>
-					<key>action</key>
-					<string>iTermHyperlinkTrigger</string>
-					<key>contentregex</key>
-					<string></string>
-					<key>disabled</key>
-					<integer>0</integer>
-					<key>matchType</key>
-					<integer>0</integer>
-					<key>name</key>
-					<string>Go Links</string>
-					<key>parameter</key>
-					<string>https://goto2.corp.google.com/\1</string>
-					<key>partial</key>
-					<false/>
-					<key>regex</key>
-					<string>go/([^ ().]+)</string>
-				</dict>
-			</array>
 			<key>Unlimited Scrollback</key>
 			<true/>
 			<key>Use Bold Font</key>
@@ -1058,7 +1001,44 @@
 	<false/>
 	<key>OpenNoWindowsAtStartup</key>
 	<false/>
+	<key>PointerActions</key>
+	<dict>
+		<key>Button,1,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kContextMenuPointerAction</string>
+		</dict>
+		<key>Button,2,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPasteFromClipboardPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeDown,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevWindowPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeLeft,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeRight,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeUp,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextWindowPointerAction</string>
+		</dict>
+	</dict>
+	<key>Print In Black And White</key>
+	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
+	<true/>
+	<key>ShowFullScreenTabBar</key>
 	<true/>
 	<key>SoundForEsc</key>
 	<false/>
