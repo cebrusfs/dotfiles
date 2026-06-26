@@ -12,6 +12,9 @@ VCS use `jj` in colocated mode (Use /jj skill when needed)
 # Run the same lint + format checks CI runs (do this before committing)
 mise run check
 
+# Run agent hook tests without writing __pycache__ into the repo
+mise run test:hooks
+
 # Re-run dotbot after editing symlink mappings
 bin/dotbot -d . -c install-conf/dotbot.conf.yaml
 ```
@@ -19,6 +22,10 @@ bin/dotbot -d . -c install-conf/dotbot.conf.yaml
 Before committing any change, run `mise run check` and ensure it passes — CI
 (`.github/workflows/lint.yaml`) runs the identical task, so a skipped check
 becomes a red build.
+
+For direct hook-test probes, set `PYTHONDONTWRITEBYTECODE=1` when invoking
+`python3 -m unittest`; bare Python test runs write `__pycache__` into
+`config/agent/hooks/`.
 
 For Neovim smoke tests and ad hoc headless probes, isolate state under `$TMPDIR`,
 disable plugin loading, disable ShaDa, and disable swapfiles so headless runs do
