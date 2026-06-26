@@ -3,6 +3,7 @@
 * Respond in Traditional Chinese (Taiwan); use English everywhere else.
 
 * While code review with subagent, use blind review and maximal ignorant.
+* When work needs agent collaboration (runtime subagents or other agent CLIs), read the `agent-delegate` skill first for invocation mechanics and worker routing.
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data proves it necessary.
 * Prefer single source of truth, relative paths in docs, and `$TMPDIR` over `/tmp`.
 * Keep responses concise. For exploratory questions ("would X work?", "vs", "how should we"), answer in 2-3 sentences with a recommendation and the main tradeoff.
