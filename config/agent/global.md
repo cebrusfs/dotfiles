@@ -10,7 +10,7 @@
 * For technology choices, verify current facts and bring concrete numbers: stars, last release, pricing, and maintenance health. I lean toward Rust, but concrete tradeoffs matter more.
 * When pushed back on, answer the tradeoff directly before defending the first recommendation, also, push back might make no sense, analysis it and defense if needed.
 * Do not invent crate versions, API shapes, or package names.
-* Comments should only record purpose, object responsibility, or complex logic that would take time to re-derive, but also avoid leave business logic without comments.
+* Code comments should explain purpose, object responsibility, or non-obvious logic that would take time to re-derive. Preserve comments for business rules whose intent is not clear from the code.
 * Default tool preferences, unless a project specifies otherwise: JavaScript/Node.js uses `bun`; Python uses `uv`; use `rg` instead of `grep` and `fd` instead of `find`.
 
 ## Version Control
