@@ -6,7 +6,7 @@
       "Bash(jj op *)"
     ]
   },
-  "model": "opus",
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -68,6 +68,7 @@
   "language": "台灣繁體中文",
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
+  "tui": "fullscreen",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true
 }
