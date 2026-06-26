@@ -34,7 +34,8 @@ command below just maintains this — for an uncovered case, derive from the inv
 
 | Command | Non-interactive form |
 |---------|---------------------|
-| `jj describe` / `jj commit` | `-m "..."` |
+| `jj describe` | `-m "..."` for one line, or `--stdin` for a body |
+| `jj commit` | `-m "..."` |
 | `jj squash` | `-m "..."` or `--use-destination-message` |
 | `jj split <files>` | specify explicit file paths |
 | `jj split` (diff-based) | read `/jj` skill first |

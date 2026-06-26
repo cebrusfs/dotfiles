@@ -19,23 +19,25 @@ _spec.loader.exec_module(hook)
 
 
 def check(command: str) -> int:
-    # root=None keeps validation in the generic (non-google3) path. The validator
-    # prints failures to stderr; swallow it so expected-block cases stay quiet.
+    # The validator prints failures to stderr; swallow it so expected-block cases
+    # stay quiet.
     with contextlib.redirect_stderr(io.StringIO()):
-        return hook.validate_command(command, None)
+        return hook.validate_command(command)
 
 
 class NonInteractiveFlags(unittest.TestCase):
-    def test_allowed_per_subcommand(self) -> None:
+    def test_message_source_flags_pass(self) -> None:
         for command in (
             "jj squash -u",
             "jj squash --use-destination-message",
             "jj describe --stdin",
+            "jj describe --stdin < $TMPDIR/commit-message",
             "git commit -C HEAD",
             "git commit -CHEAD",
             "git commit --reuse-message=HEAD",
             "git commit --file=msg.txt",
             "git commit -F msg.txt",
+            "git commit -F-",
             "git commit --no-edit --amend",
             "git commit --fixup=abc123",
         ):
@@ -74,6 +76,22 @@ class MessageValidation(unittest.TestCase):
         ):
             with self.subTest(command=command):
                 self.assertEqual(check(command), 2)
+
+    def test_title_limit_counts_full_first_line(self) -> None:
+        self.assertEqual(
+            check(
+                'jj commit -m "server: '
+                'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"'
+            ),
+            0,
+        )
+        self.assertEqual(
+            check(
+                'jj commit -m "server: '
+                'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"'
+            ),
+            2,
+        )
 
 
 class NonMessageCommandsIgnored(unittest.TestCase):

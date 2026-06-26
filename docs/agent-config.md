@@ -8,6 +8,7 @@ Tool-specific home directories are only adapters.
 | `config/agent/global.md` | Shared durable guidance for personal and corp-safe use |
 | `config/agent/claude/` | Claude-only settings and hook wiring |
 | `config/agent/codex/` | Codex-only hooks, rules, and stable config template |
+| `config/agent/hooks/` | Shared hook implementations used by Claude and Codex adapters |
 | `config/agent/skills/` | Shared Agent Skills source |
 | `~/.claude/skills` | Claude skill adapter |
 | `~/.agents/skills` | User-level Agent Skills adapter for Codex and Gemini CLI |
@@ -15,6 +16,35 @@ Tool-specific home directories are only adapters.
 `config/agent/skills/` is the only skill source of truth. Do not put custom
 skills under `~/.codex/skills`; Codex keeps its own state, cache, and bundled
 system skills there.
+
+## Agent Hooks
+
+`config/agent/hooks/commit-message-check.py` is the shared commit-message style
+validator. It accepts native hook JSON on stdin for global Claude/Codex
+PreToolUse hooks, and also supports `AGENT_COMMIT_COMMAND` for project wrapper
+scripts that already extracted a shell command from hook JSON.
+
+When a project should use the same policy, keep a project-local copy of this
+script and call that copy from the project's hook wrapper. Do not make a shared
+project depend on `$HOME/.dotfiles` at runtime; sync the standalone script
+manually so collaborators get the same behavior.
+
+Keep this checker generic: it validates `<component>: <title>`, rejects common
+Conventional Commit type prefixes, AI attribution trailers, overlong first
+lines, and interactive commit-message editors. Project-specific gates such as
+`make fmt`, `make lint`, or product-specific examples belong in the project
+wrapper script or project docs, not in this shared checker.
+
+The checker intentionally stays short of being a shell parser. It validates
+simple inline `-m/--message` values and allows non-inline message sources such
+as `jj describe --stdin` and `git commit -F/--file`, but it does not decode
+shell-specific multiline quoting such as `$'...\n...'`. For multiline commit
+messages, feed the message through stdin or a temporary message file under
+`$TMPDIR` instead of relying on shell escape syntax.
+
+Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
+when invoking `python3 -m unittest` directly. Bare Python test runs write
+`__pycache__` into `config/agent/hooks/`.
 
 ## Codex Config Template
 

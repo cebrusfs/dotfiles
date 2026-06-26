@@ -7,7 +7,23 @@
 - Diff: !`jj diff`
 - History: !`jj log -r 'ancestors(@, 5)' --no-graph -T 'change_id.short() ++ " " ++ description.first_line() ++ "\n"'`
 
-Apply with `jj describe -m "..."`.
+Apply a simple one-line message with `jj describe -m "..."`.
+
+For a message body or other multiline text, do not use shell-specific ANSI-C
+quoting such as `$'...\n...'`. Use stdin instead:
+
+```bash
+jj describe --stdin <<'MSG'
+component: title
+
+Summary body.
+MSG
+```
+
+If composing the message in a file is clearer, write it under `$TMPDIR` and feed
+it with `jj describe --stdin < "$message_file"`. `jj describe` supports
+`--stdin`, not a message-file flag; Git's equivalent is `git commit -F <file>`
+or `git commit -F -`.
 
 **Format (priority order):**
 1. Match project history pattern (most important)

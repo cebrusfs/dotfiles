@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Default commit-message style validator for personal agent hooks."""
+"""Standalone commit-message style validator for agent hooks."""
 
 from __future__ import annotations
 
@@ -186,15 +186,13 @@ def validate_message(message: str, kind: str, errors: list[str], root: Path | No
     if title_line == "fixup":
         return
 
-    if is_google3(root):
-        title = title_line
-    else:
+    if not is_google3(root):
         match = re.match(r"^([a-z0-9][a-z0-9_-]*(?:\([a-z0-9_-]+\))?): (.+)$", title_line)
         if not match:
             errors.append(f"{kind}: first line must be '<component>: <title>'")
             return
 
-        component, title = match.groups()
+        component, _title = match.groups()
         bare_component = component.split("(", 1)[0]
         if bare_component in DISALLOWED_COMPONENTS:
             errors.append(
@@ -202,9 +200,9 @@ def validate_message(message: str, kind: str, errors: list[str], root: Path | No
             )
 
     if len(title_line) > 72:
-        errors.append(f"{kind}: title is {len(title_line)} chars; keep it <= 72")
+        errors.append(f"{kind}: first line is {len(title_line)} chars; keep it <= 72")
     if title_line.endswith("."):
-        errors.append(f"{kind}: title should not end with a period")
+        errors.append(f"{kind}: first line should not end with a period")
 
 
 def print_failure(errors: list[str]) -> None:
@@ -215,13 +213,13 @@ def print_failure(errors: list[str]) -> None:
     print(
         """
 Use:
-  config: update agent hooks
-  zsh: adjust prompt defaults
+  core: tighten commit validation
   docs: clarify setup steps
+  agent: share hook scripts
 
 Avoid:
-  feat: update agent hooks
-  chore: adjust prompt defaults
+  feat: tighten commit validation
+  chore: update hooks
 
 Body:
   Optional for simple self-explanatory changes.
@@ -233,7 +231,7 @@ Body:
     )
 
 
-def validate_command(command: str, root: Path | None) -> int:
+def validate_command(command: str, root: Path | None = None) -> int:
     errors: list[str] = []
     message_commands: list[str] = []
     for segment in split_segments(command):
@@ -265,6 +263,10 @@ def validate_command(command: str, root: Path | None) -> int:
 
 
 def main() -> int:
+    command = os.environ.get("AGENT_COMMIT_COMMAND", "")
+    if command:
+        return validate_command(command, current_repo_root())
+
     try:
         data = json.load(sys.stdin)
     except json.JSONDecodeError:
