@@ -113,7 +113,7 @@ Dependency direction: `--add-dependency <issue> <blocker...>` means `<issue>` is
 Advanced filtering, jq patterns, GraphQL, PR queries: `examples/issues_metadata_examples.md`
 
 ## Issue resolution flow
-This skill covers issue CRUD and metadata only. When a repo defines its own
-implementation workflow (e.g. Aureus `eng-implement`), that workflow owns the
+This skill covers issue CRUD and metadata only. When a repo's agent guide or
+skills define their own implementation workflow, that workflow owns the
 plan → implement → verify → close loop and its close semantics (such as
 auto-close via `Closes #N`); do not manually `gh issue close` around it.
