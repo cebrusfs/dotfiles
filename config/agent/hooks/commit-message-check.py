@@ -44,6 +44,7 @@ NONINTERACTIVE_MESSAGE_FLAGS: dict[str, set[str]] = {
 
 # Short flags that carry an inline value, e.g. -CHEAD or -Ffile.
 VALUE_SHORT_FLAGS = {"-C", "-F"}
+HELP_FLAGS = {"-h", "--help"}
 
 
 def hook_string(data: dict[str, Any], *paths: tuple[str, ...]) -> str:
@@ -132,6 +133,10 @@ def has_noninteractive_message(segment: list[str], kind: str) -> bool:
         if len(token) > 2 and token[:2] in VALUE_SHORT_FLAGS and token[:2] in allowed:
             return True
     return False
+
+
+def is_help_request(segment: list[str]) -> bool:
+    return any(token in HELP_FLAGS for token in segment)
 
 
 def command_kind(segment: list[str]) -> str:
@@ -234,6 +239,8 @@ def validate_command(command: str, root: Path | None) -> int:
     for segment in split_segments(command):
         kind = command_kind(segment)
         if not kind:
+            continue
+        if is_help_request(segment):
             continue
 
         messages = extract_messages(segment, errors)

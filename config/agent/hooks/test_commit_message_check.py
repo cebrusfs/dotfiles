@@ -82,6 +82,17 @@ class NonMessageCommandsIgnored(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertEqual(check(command), 0)
 
+    def test_help_requests_pass(self) -> None:
+        for command in (
+            "jj describe --help",
+            "jj describe -h",
+            "jj commit --help",
+            "jj squash --help",
+            "git commit --help",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(check(command), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
