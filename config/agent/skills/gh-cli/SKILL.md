@@ -112,11 +112,8 @@ Dependency direction: `--add-dependency <issue> <blocker...>` means `<issue>` is
 ## Reference
 Advanced filtering, jq patterns, GraphQL, PR queries: `examples/issues_metadata_examples.md`
 
-## 🔄 Autonomous Issue Resolution Loop (Loop Engineering)
-When instructed to resolve an issue, use GitHub as your state backend to maintain a transparent, resilient loop:
-1. **Plan & Context**: Write the plan comment to a body file, add it with `gh issue comment <issue> --body-file <body.md>`, and mark it `in-progress` (if labels are used).
-2. **Act & Verify**: Write the code and run local tests/linters.
-3. **Observe & Evaluate**:
-   - 🟢 **Success**: Create a PR or commit, and close the issue (`gh issue close <issue> --reason completed`).
-   - 🔴 **Failure**: Document the error in a new comment to maintain a persistent history of the inner loop, and retry.
-4. **🛑 Safety Brake (Escalate)**: If the exact same opaque error occurs 3 times, or you exceed 5-7 iterations without progress, stop. Comment `@user Blocked on [error]`, add a `blocked` label, and wait for human guidance.
+## Issue resolution flow
+This skill covers issue CRUD and metadata only. When a repo defines its own
+implementation workflow (e.g. Aureus `eng-implement`), that workflow owns the
+plan → implement → verify → close loop and its close semantics (such as
+auto-close via `Closes #N`); do not manually `gh issue close` around it.
