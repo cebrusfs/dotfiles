@@ -25,6 +25,13 @@ def check(command: str) -> int:
         return hook.validate_command(command)
 
 
+def check_error(command: str) -> str:
+    stderr = io.StringIO()
+    with contextlib.redirect_stderr(stderr):
+        hook.validate_command(command)
+    return stderr.getvalue()
+
+
 class NonInteractiveFlags(unittest.TestCase):
     def test_message_source_flags_pass(self) -> None:
         for command in (
@@ -61,6 +68,12 @@ class InteractiveStillBlocked(unittest.TestCase):
         for command in ("jj squash", "jj commit", "jj describe", "git commit"):
             with self.subTest(command=command):
                 self.assertEqual(check(command), 2)
+
+    def test_squash_error_mentions_cautious_destination_message_option(self) -> None:
+        error = check_error("jj squash")
+
+        self.assertIn("jj squash: use -m '<component>: <title>'", error)
+        self.assertIn("-u only when discarding the source description is intended", error)
 
 
 class MessageValidation(unittest.TestCase):

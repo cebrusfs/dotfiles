@@ -33,4 +33,9 @@ jj new --after <target> -m "<component>: fix up <target>"
 jj squash --from <fixup> --into <target>
 ```
 
+Use `jj squash -u` / `--use-destination-message` only when the destination
+description is already the right final message; it keeps the destination
+description and discards the source description. If both descriptions contain
+useful context, write the combined message explicitly with `-m` instead.
+
 A→B→C becomes A→fixupA→B→fixupB→C→fixupC; squash each before finalizing.

@@ -249,7 +249,13 @@ def validate_command(command: str, root: Path | None = None) -> int:
         if not messages:
             if has_noninteractive_message(segment, kind):
                 continue
-            errors.append(f"{kind}: use -m '<component>: <title>' instead of an editor")
+            if kind == "jj squash":
+                errors.append(
+                    f"{kind}: use -m '<component>: <title>', or -u only when "
+                    "discarding the source description is intended"
+                )
+            else:
+                errors.append(f"{kind}: use -m '<component>: <title>' instead of an editor")
             continue
 
         validate_message("\n\n".join(messages), kind, errors, root)
