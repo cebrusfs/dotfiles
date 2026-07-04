@@ -23,5 +23,5 @@ By default, follow belows unless repo preference presents.
 * For large work, commit temporarily for small checkpoints, then squash into a topic for a ready commit after relevant checks, unless I say not to. For small work, commit with a topic directly.
 * Leave unrelated dirty files untouched.
 * Do not run destructive ops (`git reset --hard`, `git push --force`, `git checkout --`) unless I explicitly instruct or a skill explicitly requires it. `jj abandon`, `jj undo`, `jj squash`, `jj rebase` should be use carefully and should read skill before uses.
-* Do not run `jj git *` or `jj op *`; syncing with remotes and operation-log recovery are my job. Never bypass VCS safety or immutability protections, such as `jj --ignore-immutable`.
+* Do not run `jj git *` or mutating `jj op` commands (`abandon`, `integrate`, `restore`, `revert`); syncing with remotes and operation-log recovery are my job. `jj op log` is allowed for read-only inspection. Never bypass VCS safety or immutability protections, such as `jj --ignore-immutable`.
 * Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`) for commit messages. Use `coponent: ...` instead.

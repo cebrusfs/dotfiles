@@ -3,7 +3,10 @@
   "permissions": {
     "deny": [
       "Bash(jj git *)",
-      "Bash(jj op *)"
+      "Bash(jj op abandon*)",
+      "Bash(jj op integrate*)",
+      "Bash(jj op restore*)",
+      "Bash(jj op revert*)"
     ]
   },
   "model": "claude-fable-5[1m]",

@@ -28,12 +28,24 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["jj", "op"],
-    decision = "forbidden",
-    justification = "Operation-log recovery is destructive enough to require explicit user instruction.",
+    pattern = ["jj", "op", "log"],
+    decision = "allow",
+    justification = "Inspecting the jj operation log is read-only and useful before recovery.",
     match = [
         "jj op log",
+        "jj op log -n 5",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "op", ["abandon", "integrate", "restore", "revert"]],
+    decision = "forbidden",
+    justification = "Operation-log mutation and recovery commands are destructive enough to require explicit user instruction.",
+    match = [
+        "jj op abandon old-op",
+        "jj op integrate old-op",
         "jj op restore abc123",
+        "jj op revert abc123",
     ],
 )
 
