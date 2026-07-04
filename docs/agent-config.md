@@ -8,14 +8,61 @@ Tool-specific home directories are only adapters.
 | `config/agent/global.md` | Shared durable guidance for personal and corp-safe use |
 | `config/agent/claude/` | Claude-only settings and hook wiring |
 | `config/agent/codex/` | Codex-only hooks, rules, and stable config template |
+| `config/agent/gemini/` | Gemini CLI settings needed to read shared project instructions |
 | `config/agent/hooks/` | Shared hook implementations used by Claude and Codex adapters |
 | `config/agent/skills/` | Shared Agent Skills source |
-| `~/.claude/skills` | Claude skill adapter |
-| `~/.agents/skills` | User-level Agent Skills adapter for Codex and Gemini CLI |
 
 `config/agent/skills/` is the only skill source of truth. Do not put custom
 skills under `~/.codex/skills`; Codex keeps its own state, cache, and bundled
 system skills there.
+
+## Instruction Layers
+
+Keep durable instruction content in one of two places:
+
+- `config/agent/global.md`: personal defaults for every repository and agent.
+- `AGENTS.md`: instructions that only apply to this dotfiles repository.
+
+Adapters should point at those files instead of copying their contents. In this
+repo, `CLAUDE.md` is a symlink to `AGENTS.md` for Claude Code. Do not add a
+root `GEMINI.md` unless Gemini CLI stops honoring the managed
+`context.fileName` setting; Antigravity can read both `AGENTS.md` and
+`GEMINI.md`, so a duplicate root adapter can load the same rules twice.
+
+## This Repo's Local Layout
+
+The root of this repository should stay minimal:
+
+| Path | Purpose |
+|---|---|
+| `AGENTS.md` | Canonical repo-local instructions for every agent |
+| `CLAUDE.md -> AGENTS.md` | Claude Code adapter for the same repo-local instructions |
+
+Do not add `.agents/AGENTS.md`; `.agents/` is for repo-scoped skills and
+Antigravity workspace MCP config, not instruction shims. Do not add
+`.agents/skills -> config/agent/skills` in this repo either: `config/agent/skills`
+is the source for managed user-global skills, not repo-local skills. Symlinking
+it into `.agents/skills` would make the same skills appear as both user and
+workspace skills.
+
+## Adapter Map
+
+| Agent | Global instruction adapter | Project instruction adapter | Skills adapter |
+|---|---|---|---|
+| Claude Code | `~/.claude/CLAUDE.md -> config/agent/global.md` | `CLAUDE.md -> AGENTS.md` | `~/.claude/skills -> config/agent/skills` |
+| Codex | `~/.codex/AGENTS.md -> config/agent/global.md` | `AGENTS.md` | `~/.agents/skills -> config/agent/skills` |
+| Gemini CLI | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` via `context.fileName` in `~/.gemini/settings.json` | `~/.agents/skills -> config/agent/skills` |
+| Antigravity CLI | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` | `~/.gemini/antigravity-cli/skills -> config/agent/skills` |
+| Antigravity IDE / 2.0 | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` | `~/.gemini/antigravity/skills` and `~/.gemini/config/skills` -> `config/agent/skills` |
+
+Gemini CLI also supports `~/.gemini/skills`; avoid wiring it here because
+`~/.agents/skills` already covers Gemini and Codex. Keeping one Gemini-visible
+general skill adapter avoids duplicate skill discovery.
+
+`config/agent/gemini/settings.json` is intentionally sparse. Keep only stable,
+non-secret user defaults there, especially `context.fileName`, so Gemini CLI can
+read `AGENTS.md` in any repository without requiring per-repo `GEMINI.md`
+shims.
 
 ## Agent Hooks
 

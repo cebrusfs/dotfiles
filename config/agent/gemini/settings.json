@@ -1,0 +1,12 @@
+{
+  "theme": "Default",
+  "selectedAuthType": "oauth-personal",
+  "preferredEditor": "windsurf",
+  "usageStatisticsEnabled": false,
+  "context": {
+    "fileName": [
+      "AGENTS.md",
+      "GEMINI.md"
+    ]
+  }
+}

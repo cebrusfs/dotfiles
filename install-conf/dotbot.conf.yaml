@@ -21,6 +21,9 @@
     ~/.agents:
     ~/.claude:
     ~/.codex:
+    ~/.gemini:
+    ~/.gemini/antigravity:
+    ~/.gemini/antigravity-cli:
     ~/.config/mise:
     ~/.gemini/config:
     ~/working:
@@ -87,8 +90,8 @@
     ~/.ssh/authorized_keys: config/ssh/authorized_keys
 
     # agents
-    # Codex stores config/state in ~/.codex, while Codex and Gemini CLI
-    # discover user Agent Skills from ~/.agents/skills.
+    # config/agent is the source of truth. Tool-specific homes are adapters
+    # for each CLI's hard-coded discovery paths.
     ~/.claude/CLAUDE.md:
         path: config/agent/global.md
         force: true
@@ -99,7 +102,18 @@
     ~/.codex/AGENTS.md: config/agent/global.md
     ~/.codex/hooks.json: config/agent/codex/hooks.json
     ~/.codex/rules/agent.rules: config/agent/codex/rules/agent.rules
+    ~/.gemini/GEMINI.md:
+        path: config/agent/global.md
+        force: true
+        backup: true
+    ~/.gemini/settings.json:
+        path: config/agent/gemini/settings.json
+        force: true
+        backup: true
     ~/.agents/skills: config/agent/skills
+    ~/.gemini/config/skills: config/agent/skills
+    ~/.gemini/antigravity/skills: config/agent/skills
+    ~/.gemini/antigravity-cli/skills: config/agent/skills
     ~/.gemini/config/hooks: config/agent/hooks
 
 

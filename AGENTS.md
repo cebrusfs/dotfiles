@@ -16,7 +16,7 @@ mise run check
 mise run test:hooks
 
 # Re-run dotbot after editing symlink mappings
-bin/dotbot -d . -c install-conf/dotbot.conf.yaml
+modules/dotbot/bin/dotbot -d . -c install-conf/dotbot.conf.yaml --only create link
 ```
 
 Before committing any change, run `mise run check` and ensure it passes — CI
@@ -72,14 +72,17 @@ Platform-conditional links use `if:` clauses:
 | `ssh/` | `~/.ssh/config`, `~/.ssh/authorized_keys` | SSH config |
 | `mise/` | `~/.config/mise/` | mise tool version manager |
 | `tmux/` | `~/.tmux.conf` | Tmux config |
-| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.agents/skills` | Shared agent instructions plus Claude/Codex adapters; `~/.agents/skills` is the user Agent Skills path for Codex and Gemini CLI |
+| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.gemini/*`, `~/.agents/skills` | Shared agent instructions, settings adapters, hooks, and skills for Claude, Codex, Gemini CLI, and Antigravity |
 
 `config/agent/` is the source of truth for shared agent guidance and skills; the
-tool-specific home dirs are only adapters. `config/agent/skills/` is the only
-skill source of truth — do not put custom skills under `~/.codex/skills` (Codex
-owns that dir). `config/agent/codex/config.toml` is a template, not a symlink
-target; sync it with `config/agent/codex/sync-config.py --apply`. Full details in
-[docs/agent-config.md](docs/agent-config.md).
+tool-specific home dirs are only adapters. `config/agent/global.md` is global
+personal guidance; root `AGENTS.md` is this repo's local guidance. `config/agent/skills/`
+is the only skill source of truth — do not put custom skills under
+`~/.codex/skills`, `~/.gemini/skills`, or tool-owned cache directories.
+`config/agent/codex/config.toml` is a template, not a symlink target; sync it
+with `config/agent/codex/sync-config.py --apply`. Full details in
+[docs/agent-config.md](docs/agent-config.md). Use the `agent-config` skill when
+changing cross-agent layout, instruction files, or agent symlink mappings.
 
 ### Homebrew
 
