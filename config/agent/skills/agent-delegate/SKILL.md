@@ -1,6 +1,6 @@
 ---
 name: agent-delegate
-description: Lead delegated agent workers for complex or multi-part work — invoke another agent CLI non-interactively (claude -p, codex exec) or runtime subagents for blind review, code exploration, or bounded implementation help. Use when coordinating work that benefits from parallel workers, when a repo workflow says to lead subagent/CLI workers, or before calling another agent CLI.
+description: Lead delegated agent workers for complex or multi-part work. Prefer same-runtime subagent APIs for same-family delegation; use agent CLIs only for cross-family or fallback delegation. Use for blind review, code exploration, bounded implementation help, repo workflows that call for workers, or before invoking another agent CLI.
 ---
 
 # agent-delegate
@@ -11,10 +11,18 @@ the repo's agent guide (e.g. AGENTS.md); read it first. The caller always
 owns repo rules, final edits, verification, commits, and user-facing claims;
 worker output is advisory until inspected against the current worktree.
 
-## General rules (any agent CLI)
+## Route first
 
-- Always use the CLI's non-interactive mode; never open a TUI.
-- Flags rot as CLIs update: when an invocation fails, re-verify with
+- Same family + runtime subagent tool available: use the subagent API, not the
+  CLI. Examples: Codex→Codex uses `spawn_agent`/`send_input`/`wait_agent`;
+  Claude→Claude uses Task/subagent tools.
+- Use CLI only for cross-family delegation, missing/insufficient subagent
+  tools, or an explicit user request. State the fallback reason briefly.
+
+## General rules (subagents or agent CLI)
+
+- When using a CLI, use non-interactive mode; never open a TUI.
+- CLI flags rot: when an invocation fails, re-verify with
   `--help` instead of retrying variations from memory.
 - Choose worker strength by role, not by model name: strongest available for
   correctness-sensitive review, balanced/cheap for routine or read-only work.
