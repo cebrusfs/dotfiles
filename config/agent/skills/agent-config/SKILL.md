@@ -9,7 +9,10 @@ Use this skill to set up agent config inside a normal application, library, or
 tooling repository. Keep one canonical source for shared repo instructions, and
 use `.agents/skills` as the canonical place for repo-local skills. Add
 tool-specific files only when a tool needs a native discovery path or actual
-tool-specific behavior.
+tool-specific behavior. For dotfiles or agent-config repos that publish
+user-global skills, keep that user-global source separate from repo-local
+workspace skills; do not symlink it into `.agents/skills` unless duplicate
+workspace loading is intentional.
 
 ## Default Layout
 
@@ -32,6 +35,7 @@ Add these only when needed:
 | `.gemini/settings.json` | The repo needs Gemini-specific settings, sandbox profile, context filenames, or MCP config | Keep auth, secrets, and personal UI prefs out. |
 | `.gemini/sandbox.Dockerfile` or `.gemini/sandbox-*.sb` | The repo needs Gemini sandbox customization | Mention the command/env required to use it in `AGENTS.md`. |
 | `.agents/mcp_config.json` | Antigravity workspace MCP servers are needed | Keep secrets in environment variables, not committed JSON. |
+| `.agents/rules/*.md` | Antigravity workspace rules need activation metadata or behavior that should not always load | Keep durable cross-agent repo rules in `AGENTS.md`; use Antigravity rules for tool-specific activation. |
 | `.claude/settings.local.json` | A developer needs local Claude permissions or experiments | Usually do not commit; prefer user-local state. |
 
 ## Instruction Files
@@ -46,17 +50,54 @@ Add these only when needed:
   short pointers that say the canonical instructions are in `AGENTS.md`.
 
 Avoid `.agents/AGENTS.md` as an instruction adapter. Current mainstream
-repo-local uses of `.agents/` are skills and Antigravity workspace MCP config;
-root `AGENTS.md` is the clearer canonical instruction path.
+repo-local uses of `.agents/` include skills, Antigravity workspace rules, and
+Antigravity workspace MCP config; root `AGENTS.md` is the clearer canonical
+instruction path.
+
+## Migration Workflow
+
+When converting an existing repo, do not start by editing prose. First inventory
+the actual adapter/config state, then migrate to the target layout:
+
+1. Inventory repo-local agent files and directories: `AGENTS.md`, `CLAUDE.md`,
+   `GEMINI.md`, `.agents/`, `.claude/`, `.codex/`, and `.gemini/`. Use
+   `ls -la`, `ls -l`, and `readlink` so symlinks, real files, empty
+   directories, and local-only settings are visible.
+2. In agent-config or dotfiles repos, also inventory the managed source of truth
+   and install mappings, such as `config/agent/**`, `docs/agent-config.md`, and
+   `install-conf/dotbot.conf.yaml`. Root adapters may be absent because they are
+   installed into user-level paths.
+3. Choose the canonical instruction file. Default to root `AGENTS.md` unless the
+   repo has a documented reason to use another source of truth.
+4. Move durable shared instructions into the canonical file. Convert tool entry
+   files to symlinks when the repo supports symlinks; use tiny pointer files only
+   when symlinks are unsuitable.
+5. Decide each hidden tool directory by behavior: keep it only if it contains a
+   required runtime adapter, shared tool config, hook wiring, MCP config, or
+   repo-local workspace skill path. Do not convert a managed user-global skill
+   source into `.agents/skills` just because the repo contains skills. Remove
+   empty obsolete directories and ignore local-only state such as
+   `.claude/settings.local.json`.
+6. Verify the migration from filesystem evidence, not intent: `ls -l` /
+   `readlink` for adapters, `ls -la` for tool directories, and VCS status/diff
+   to confirm no generated, secret, or personal runtime state is tracked.
 
 ## Repo Skills
 
-Use `.agents/skills/<name>/SKILL.md` as the canonical repo-scoped skills path.
-For a normal repo, this is the right shared location for workflows that should
-travel with the codebase. Codex, Gemini CLI, and Antigravity support
-`.agents/skills` for workspace skills. Prefer this over tool-specific skill
-folders. Add `.gemini/skills` only for legacy Gemini-only compatibility, and
-avoid keeping both paths with copied content.
+Use `.agents/skills/<name>/SKILL.md` as the canonical repo-scoped skills path
+for normal app, library, and tooling repos. These skills travel with the
+codebase and intentionally load only when working in that repo.
+
+Keep user-global skills in user-level locations such as `~/.agents/skills`,
+`~/.gemini/config/skills`, or `~/.gemini/antigravity-cli/skills`, or in a
+dotfiles-managed source that links there. Do not symlink that user-global source
+back into a repo's `.agents/skills` unless duplicate workspace visibility is
+intentional.
+
+Codex, Gemini CLI, and Antigravity support `.agents/skills` for workspace
+skills. Prefer this over tool-specific workspace skill folders. Use
+`.gemini/skills` only for Gemini-only workspace skills or legacy Gemini-only
+layouts, and avoid keeping both paths with copied content.
 
 Keep skills focused on reusable workflows. Do not turn `AGENTS.md` into a large
 skill catalog; if a workflow has steps, references, scripts, or decision rules,
@@ -71,7 +112,8 @@ Use hidden tool directories for runtime behavior, not shared instruction prose:
   compatibility.
 - `.claude/`: usually local Claude state; commit only deliberate shared Claude
   settings after checking they contain no personal paths or permissions.
-- `.agents/`: cross-agent skills and Antigravity workspace MCP config.
+- `.agents/`: cross-agent workspace skills, Antigravity workspace rules, and
+  Antigravity workspace MCP config.
 
 When a setting affects all agents, put it in `AGENTS.md`. When it mechanically
 enforces behavior for one tool, put it under that tool's directory.
@@ -79,14 +121,21 @@ enforces behavior for one tool, put it under that tool's directory.
 ## Review Checklist
 
 1. Is there exactly one canonical repo instruction file?
-2. Are adapter files symlinks or tiny pointers instead of copied prose?
+2. Are adapter files symlinks or tiny pointers instead of copied prose? Verify
+   actual filesystem state with `ls -l` / `readlink`; prefer symlinks when the
+   repository supports them.
 3. Are repo skills under `.agents/skills` unless a tool-specific path is truly
-   required?
+   required, and are user-global skill sources kept out of repo-local
+   `.agents/skills`?
 4. Are secrets, auth, trust state, generated files, logs, and personal UI prefs
    excluded?
 5. Are tool-specific configs justified by actual behavior, not created for
    symmetry?
 6. Are verification commands and project-specific workflow rules in `AGENTS.md`?
+7. In dotfiles or agent-config repos, did the review include the managed source
+   files and install mappings, not just root adapters?
+8. After migration, are obsolete tool-specific directories removed or ignored
+   when they no longer contain required runtime adapters?
 
 Agent path support changes. Before changing claims about Claude, Codex, Gemini,
 or Antigravity discovery paths, verify current official docs first.
