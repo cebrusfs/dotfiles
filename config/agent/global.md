@@ -27,12 +27,17 @@
 
 ## Version Control
 
-By default, follow belows unless repo preference presents.
+Principle: use judgment to keep history easy to review, revert, and continue. Prefer semantic topic commits over file-count, component-name, or time-order boundaries.
+
+When the topic boundary is unclear, follow these fallback rules unless repo instructions override them.
 * In `jj + git` colocated repos, use `jj` exclusively. Never use `git`. Use `/jj` skill for detail guideline needed.
-* One topic = one commit; squash same-topic follow-ups into that local commit.
+* Topic judgment: one topic has one semantic reason to exist, one owner/reviewer context, one revert boundary, and one concise summary.
+* Same topic: squash follow-up edits that refine, fix, complete, or verify that concern, even across files or after user review.
+* Different topics: split changes that have independent reasons, owner/reviewer contexts, revert boundaries, or unrelated final-summary bullets.
+* Incidental edits: keep required incidental edits with their topic; split drive-by cleanup, tooling migration, generated/content fixes, docs/rules updates, and behavior changes only when independently meaningful.
 * In jj, `jj commit`/`jj split` leaves a fresh empty `@`; do not run `jj new` from an empty `@`.
 * For large work, commit temporarily for small checkpoints, then squash into a topic for a ready commit after relevant checks, unless I say not to. For small work, commit with a topic directly.
 * Leave unrelated dirty files untouched.
 * Do not run destructive ops (`git reset --hard`, `git push --force`, `git checkout --`) unless I explicitly instruct or a skill explicitly requires it. `jj abandon`, `jj undo`, `jj squash`, `jj rebase` should be use carefully and should read skill before uses.
 * Do not run `jj git *` or mutating `jj op` commands (`abandon`, `integrate`, `restore`, `revert`); syncing with remotes and operation-log recovery are my job. `jj op log` is allowed for read-only inspection. Never bypass VCS safety or immutability protections, such as `jj --ignore-immutable`.
-* Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`) for commit messages. Use `coponent: ...` instead.
+* Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`) for commit messages. Use `component: ...` instead.
