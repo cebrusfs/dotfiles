@@ -97,6 +97,7 @@
         force: true
         backup: true
     ~/.claude/settings.json: config/agent/claude/settings.json
+    ~/.claude/statusline-command.sh: config/agent/claude/statusline-command.sh
     ~/.claude/rules: config/agent/rules
     ~/.claude/skills: config/agent/skills
     ~/.codex/AGENTS.md: config/agent/global.md

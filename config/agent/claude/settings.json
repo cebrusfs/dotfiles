@@ -1,16 +1,20 @@
 {
   "includeCoAuthoredBy": false,
   "permissions": {
-    "defaultMode": "auto",
     "deny": [
       "Bash(jj git *)",
       "Bash(jj op abandon*)",
       "Bash(jj op integrate*)",
       "Bash(jj op restore*)",
       "Bash(jj op revert*)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "claude-fable-5[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline-command.sh\""
+  },
   "hooks": {
     "PreToolUse": [
       {
