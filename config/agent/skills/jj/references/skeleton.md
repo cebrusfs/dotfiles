@@ -2,7 +2,7 @@
 
 > **Purpose:** stack named empty commits up front when the steps are known, so each lands
 > isolated. **Use when** `@` is clean and the work is a known multi-step sequence.
-> **Don't** use with sticky junk in `@` (rules/jj.md → split-down).
+> **Don't** use with sticky junk in `@` — use the split-down flow instead.
 
 Stack empty commits first — creates named checkpoints you can edit independently.
 Deliberately creating empties here is the exception to the baseline "don't strand empties"

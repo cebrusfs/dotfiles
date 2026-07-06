@@ -52,12 +52,12 @@ Principle: use judgment to keep history easy to review, revert, and continue. Pr
 
 When the topic boundary is unclear, follow these fallback rules unless repo instructions override them.
 * In `jj + git` colocated repos, use `jj` exclusively; never use `git`. Use the `jj` skill (Claude slash form `/jj`) for detailed guidance.
-* Before editing in a jj repo, pick the flow: `@` clean → `jj new -m "<component>: <title>"` first, work lands above `@`; `@` holding sticky local junk → edit, then `jj split <files> -m "..."` per topic. Full working model: `~/.dotfiles/config/agent/rules/jj.md` (auto-loaded in Claude Code; other agents read it on demand).
+* Before editing in a jj repo, run `jj st` and pick the flow: `@` empty ("The working copy has no changes" — in jj, clean and empty are the same state) → that `@` *is* your new change, so `jj describe -m "<component>: <title>"` in place and never `jj new` onto it; `@` holding sticky local junk → edit, then `jj split <files> -m "..."` per topic to drop it below `@`; work continuing an unpushed topic → squash into its owner instead of starting a commit. A repo carrying its own agent guide (`AGENTS.md`) may restate or extend this; the `jj` skill holds the recipes.
 * Topic judgment: one topic has one semantic reason to exist, one owner/reviewer context, one revert boundary, and one concise summary.
 * Same topic: squash follow-up edits that refine, fix, complete, or verify that concern, even across files or after user review.
 * Different topics: split changes that have independent reasons, owner/reviewer contexts, revert boundaries, or unrelated final-summary bullets.
 * Incidental edits: keep required incidental edits with their topic; split drive-by cleanup, tooling migration, generated/content fixes, docs/rules updates, and behavior changes only when independently meaningful.
-* In jj, `jj commit`/`jj split` leaves a fresh empty `@`; do not run `jj new` from an empty `@`.
+* `jj commit`/`jj split` already leave you on a fresh empty `@`; use `jj new` only to leave a *populated* `@` behind or to start from another base (`jj new trunk()`).
 * For large work, commit small checkpoints, then squash into a topic commit after relevant checks pass, unless I say not to. For small work, commit the topic directly.
 * Leave unrelated dirty files untouched.
 * Do not run destructive ops (`git reset --hard`, `git push --force`, `git checkout --`) unless I explicitly instruct or a skill explicitly requires it. Use `jj abandon`, `jj squash`, `jj rebase` carefully and read the `jj` skill before using them.

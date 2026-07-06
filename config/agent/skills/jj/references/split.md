@@ -1,7 +1,7 @@
 # Splitting a jj Commit (Non-Interactive)
 
 > **Purpose:** carve an already-mixed `@` into separate commits. **Recovery path** — prefer
-> committing incrementally (rules/jj.md). Use only when concerns are *already* tangled in
+> committing incrementally. Use only when concerns are *already* tangled in
 > one commit.
 
 **Not this if** the parts already belong to existing ancestor commits — `jj absorb`
