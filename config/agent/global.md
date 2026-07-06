@@ -16,6 +16,9 @@
 
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data
   proves it necessary.
+* Prefer workflows that reduce token use and latency while completing the
+  task reliably. Use targeted reads and batch useful work; choose tools and
+  text or visual representations by practical efficiency, not a fixed rule.
 * Before building your own agent tooling (scripts, hooks, sync jobs, or
   skills), check what the agent client already provides: Claude Code, Codex,
   and Antigravity have built-in permission rules, hooks, plugins, skills, and
