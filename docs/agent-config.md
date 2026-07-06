@@ -159,6 +159,17 @@ asking the agent to run the `learn` skill after fixing the result. It is
 pattern-gated and never calls a model, so ordinary prompts cost nothing; the
 [shared guidance](../config/agent/global.md#judgment) still decides whether a
 lesson is reusable. Removing the entry from an adapter turns it off.
+Known agent-notification wrappers are skipped before matching correction
+markers. This is a text heuristic: user text quoting a wrapper also skips the
+reminder, and unwrapped generated prompts remain indistinguishable. Neither
+host documents a prompt-sender field for this event (verified 2026-11-16,
+[Claude hooks](https://code.claude.com/docs/en/hooks#userpromptsubmit-input)
+and [Codex hooks](https://learn.chatgpt.com/docs/hooks#userpromptsubmit)).
+The guard recognizes `<teammate-message>`, `<task-notification>`,
+`<subagent_notification>`, and `<agent-message>` tags, plus the banners
+`[SYSTEM NOTIFICATION - NOT USER INPUT]`,
+`[MESSAGE FROM NON-USER SOURCE - NOT USER INPUT]`, and `[Subagent hand-back]`;
+live delivery must be checked after host upgrades.
 Antigravity and Jetski have no prompt-submit event, so their plugin runs the
 same script before each model call (`PreInvocation`) on the newest user
 message, once per message, and injects the reminder as an ephemeral message.

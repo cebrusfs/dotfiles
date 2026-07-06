@@ -15,6 +15,15 @@ else
 fi
 [ -n "$prompt" ] || exit 0
 
+# UserPromptSubmit also receives agent hand-backs. Neither host documents a
+# sender field. Skip known notification wrappers before scanning their prose.
+# This is conservative: a user quoting one also skips the optional reminder.
+notification='<(teammate-message|task-notification|subagent_notification|agent-message)'
+notification+='([[:space:]>])|\[(SYSTEM NOTIFICATION|'
+notification+='MESSAGE FROM NON-USER SOURCE) - NOT USER INPUT\]'
+notification+='|\[Subagent hand-back\]'
+printf '%s' "$prompt" | grep -Eiq "$notification" && exit 0
+
 # Correction and preference markers in English and Traditional Chinese. False
 # positives only cost one reminder line; misses fall back to the always-loaded
 # trigger in the shared guidance.
