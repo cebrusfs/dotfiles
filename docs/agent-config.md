@@ -64,6 +64,13 @@ rationale that are not directly readable from that file.
 
 ## Agent Hooks
 
+Claude settings stay symlinked to the managed source. iTerm2 lifecycle hooks
+call `config/agent/claude/iterm2-status.sh`, which forwards the native event
+payload to iTerm2's `cc-status` utility and quietly skips installations without
+that executable. Keep the wrapper and event wiring in this repo; iTerm2 owns
+the utility binary. Dotbot backs up a detached local settings file before
+restoring the managed symlink.
+
 `config/agent/hooks/validate-commit-message.py` is the shared commit-message style
 validator. `config/agent/hooks/jj-guard.py` is the shared guard for jj
 safety-bypass flags (`--ignore-immutable`) that prefix-based deny patterns and
