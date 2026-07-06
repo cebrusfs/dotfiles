@@ -4,6 +4,12 @@
 # https://stackoverflow.com/a/34206244/358069
 Compression yes
 
+IgnoreUnknown UseKeychain
+Host *
+    AddKeysToAgent yes
+    UseKeychain yes
+
+
 # Added by OrbStack: 'orb' SSH host for Linux machines
 # This only works if it's at the top of ssh_config (before any Host blocks).
 Include ~/.orbstack/ssh/config
