@@ -1,6 +1,9 @@
 ---
 name: repo-agent-config
 description: Build or maintain shared agent configuration for a repository. Use when adding or reviewing AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .codex, .claude, MCP files, hooks, or other per-repository configuration for Claude Code, Codex, and Antigravity.
+allowed-tools:
+  - Read(~/.claude/skills/repo-agent-config/**)
+  - Read(~/**/config/agent/skills/repo-agent-config/**)
 ---
 
 # Build Repo Agent Config

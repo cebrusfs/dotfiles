@@ -2,7 +2,27 @@
 name: jj
 description: >-
   Use before editing a jj repository or rewriting its history. Covers working-copy flow, topic amendments, non-interactive commits and splits, conflict resolution, and recovery. Routine read-only probes do not require it.
-allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj op log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*), Bash(jj fix:*), Bash(jj squash:*), Bash(jj split:*), Bash(jj resolve:*), Bash(jj rebase:*)
+allowed-tools:
+  - Read(~/.claude/skills/jj/**)
+  - Read(~/**/config/agent/skills/jj/**)
+  - Bash(jj diff:*)
+  - Bash(jj st:*)
+  - Bash(jj log:*)
+  - Bash(jj op log:*)
+  - Bash(jj describe:*)
+  - Bash(jj commit:*)
+  - Bash(jj edit:*)
+  - Bash(jj new:*)
+  - Bash(jj absorb:*)
+  - Bash(jj undo:*)
+  - Bash(jj restore:*)
+  - Bash(jj bookmark:*)
+  - Bash(jj abandon:*)
+  - Bash(jj fix:*)
+  - Bash(jj squash:*)
+  - Bash(jj split:*)
+  - Bash(jj resolve:*)
+  - Bash(jj rebase:*)
 ---
 
 # jj

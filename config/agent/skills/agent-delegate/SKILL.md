@@ -1,6 +1,9 @@
 ---
 name: agent-delegate
 description: Use before dispatching a subagent or agent CLI, or when deciding whether to delegate bulk search, log triage, reverse tracing, or independent review. Covers lane contracts, worker routing, and authority boundaries.
+allowed-tools:
+  - Read(~/.claude/skills/agent-delegate/**)
+  - Read(~/**/config/agent/skills/agent-delegate/**)
 ---
 
 # agent-delegate

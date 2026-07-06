@@ -16,6 +16,22 @@ Tool-specific home directories are only adapters.
 skills under `~/.codex/skills`; Codex keeps its own state, cache, and bundled
 system skills there.
 
+## Skill Resource Reads
+
+Each managed custom skill declares its own Claude Code `Read(...)` rules in
+`allowed-tools`, covering its installed `~/.claude/skills/<skill>/` path and
+the matching `config/agent/skills/<skill>/` subtree in any checkout under the
+home directory. This covers symlink and resolved paths without assuming the
+checkout location. Other checkouts of the same skill also match; checkouts
+outside the home directory need a separate read rule.
+
+These rules pre-approve recursive reads during the turn that invokes the skill
+through Claude Code's Skill tool or `/skill-name`. Reading `SKILL.md` directly
+does not activate its frontmatter. The grant clears on the next user message;
+existing deny and ask rules still apply. See Claude Code's
+[skill permissions](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill)
+and [symlink checks](https://code.claude.com/docs/en/permissions#symlinks).
+
 ## Instruction Layers
 
 Keep durable instruction content in one of two places:

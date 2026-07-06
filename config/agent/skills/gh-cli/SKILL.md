@@ -2,7 +2,11 @@
 name: gh-cli
 description: >-
   Manage GitHub issues using `gh` CLI — CRUD, labels, native dependencies, sub-issues. Use this skill whenever you need to create, list, view, close, or manage GitHub issues, track task dependencies, manage epics, or link parent/child issues — even if the user just says "create a task", "what's blocking this", or "show me open issues".
-allowed-tools: Bash(gh:*) Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
+allowed-tools:
+  - Read(~/.claude/skills/gh-cli/**)
+  - Read(~/**/config/agent/skills/gh-cli/**)
+  - Bash(gh:*)
+  - Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 ---
 
 # gh-cli
