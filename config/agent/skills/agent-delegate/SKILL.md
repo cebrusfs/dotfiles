@@ -58,6 +58,20 @@ adding unrelated context. The prompt must state:
 4. **Report** — concise conclusion, evidence, confidence, open questions, and
    a path for any long artifact.
 
+For independent design or blind review, prepare a factual context packet before
+dispatch. Include the complete relevant verified facts, user requirements,
+constraints, source paths or citations, and open questions so the worker need
+not rediscover broad context. Exclude the caller's hypotheses, suspected bugs,
+preferred outcome or solution, rationale, and in-progress conclusions unless
+the lane explicitly tests them. Label facts, user requirements, open questions,
+and any included hypotheses separately; never present an interpretation as a
+fact. Persist the packet under the caller's artifact rules when reuse is
+planned.
+
+Reuse one live worker process for follow-ups inside the same lane. Start every
+new blind lane with a fresh transcript, reusing the factual packet rather than
+another worker's answer.
+
 Close every prompt with: "Scope, write set, and plan are approved. Do not ask
 for permission. On a genuine blocker, stop with one question and
 recommendation; the root will resume. Do not spawn or delegate to another agent
@@ -91,6 +105,5 @@ read exactly one matching profile:
   the root or a separate worker reviews the patch; workers do not grade their
   own work.
 - Root-authored work needs a fresh blind, non-author reviewer only when
-  runnable checks cannot prove acceptance. Give a blind reviewer requirements
-  and the diff, never the author's rationale, suspected bugs, or preferred
-  outcome. "No findings" is valid.
+  runnable checks cannot prove acceptance. Give that reviewer requirements and
+  the diff under the factual-context rule above. "No findings" is valid.
