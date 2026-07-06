@@ -72,7 +72,7 @@ another retry.
 1. **Hooks beat prose. Migrate enforcement into hooks over time.** A weak model
    follows a mechanical gate every single time and follows an instruction most
    of the time — and "most" is where incidents live.
-   `config/agent/hooks/commit-message-check.py` is the proof this works. When a
+   `config/agent/hooks/validate-commit-message.py` is the proof this works. When a
    lesson keeps reappearing in the lessons logs, the correct final form is
    usually a hook or an execpolicy rule, not a longer paragraph. The `jj git`
    / `jj op` bans are already mechanical on both Claude (settings deny) and

@@ -72,25 +72,27 @@ shims.
 
 ## Agent Hooks
 
-`config/agent/hooks/commit-message-check.py` is the shared commit-message style
+`config/agent/hooks/validate-commit-message.py` is the shared commit-message style
 validator. `config/agent/hooks/jj-guard.py` is the shared guard for jj
 safety-bypass flags (`--ignore-immutable`) that prefix-based deny patterns and
 execpolicy rules cannot match; both are wired as PreToolUse hooks for Claude
 (`config/agent/claude/settings.json`) and Codex (`config/agent/codex/hooks.json`). Both accept native hook JSON on stdin for global Claude/Codex
-PreToolUse hooks; only `commit-message-check.py` additionally supports
+PreToolUse hooks; only `validate-commit-message.py` additionally supports
 `AGENT_COMMIT_COMMAND` for project wrapper scripts that already extracted a
 shell command from hook JSON.
 
-When a project should use the same policy, keep a project-local copy of this
-script and call that copy from the project's hook wrapper. Do not make a shared
-project depend on `$HOME/.dotfiles` at runtime; sync the standalone script
-manually so collaborators get the same behavior.
+When a project should use the same policy, vendor a project-local copy and
+register that Python script directly in each runtime adapter. Use a wrapper only
+when the project has a real project-specific pre-check, and forward the native
+hook payload to this validator instead of reimplementing command detection. Do
+not make a shared project depend on `$HOME/.dotfiles` at runtime; sync the
+standalone script manually so collaborators get the same behavior.
 
 Keep this checker generic: it validates `<component>: <title>`, rejects common
 Conventional Commit type prefixes, AI attribution trailers, overlong first
 lines, and interactive commit-message editors. Project-specific gates such as
-`make fmt`, `make lint`, or product-specific examples belong in the project
-wrapper script or project docs, not in this shared checker.
+`make fmt`, `make lint`, or product-specific examples belong in a wrapper only
+when that extra pre-check exists; otherwise keep them in project docs.
 
 The checker intentionally stays short of being a shell parser. It validates
 simple inline `-m/--message` values and allows non-inline message sources such

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Standalone commit-message style validator for agent hooks."""
+"""Validate direct commit-message commands from agent PreToolUse hooks."""
 
 from __future__ import annotations
 
@@ -79,10 +79,9 @@ def project_owns_commit_style(root: Path | None) -> bool:
         return False
     script_path = Path(__file__).resolve()
     markers = [
-        root / "config/agent/hooks/commit_message_check.py",
-        root / "config/agent/hooks/commit-message-check.py",
-        root / ".agents/commit-message-check-ignore",
-        root / ".claude/commit-message-check-ignore",
+        root / "config/agent/hooks/validate-commit-message.py",
+        root / ".agents/validate-commit-message-ignore",
+        root / ".claude/validate-commit-message-ignore",
     ]
     for marker in markers:
         if not marker.exists():
@@ -145,6 +144,10 @@ def command_kind(segment: list[str]) -> str:
     return ""
 
 
+def has_message_command(command: str) -> bool:
+    return any(command_kind(segment) for segment in split_segments(command))
+
+
 def extract_messages(segment: list[str], errors: list[str]) -> list[str]:
     messages: list[str] = []
     idx = 0
@@ -170,7 +173,9 @@ def extract_messages(segment: list[str], errors: list[str]) -> list[str]:
     return messages
 
 
-def validate_message(message: str, kind: str, errors: list[str], root: Path | None) -> None:
+def validate_message(
+    message: str, kind: str, errors: list[str], root: Path | None
+) -> None:
     normalized = message.replace("\r\n", "\n").replace("\r", "\n").strip()
     if not normalized:
         errors.append(f"{kind}: commit message is empty")
@@ -187,7 +192,9 @@ def validate_message(message: str, kind: str, errors: list[str], root: Path | No
         return
 
     if not is_google3(root):
-        match = re.match(r"^([a-z0-9][a-z0-9_-]*(?:\([a-z0-9_-]+\))?): (.+)$", title_line)
+        match = re.match(
+            r"^([a-z0-9][a-z0-9_-]*(?:\([a-z0-9_-]+\))?): (.+)$", title_line
+        )
         if not match:
             errors.append(f"{kind}: first line must be '<component>: <title>'")
             return
@@ -255,7 +262,9 @@ def validate_command(command: str, root: Path | None = None) -> int:
                     "discarding the source description is intended"
                 )
             else:
-                errors.append(f"{kind}: use -m '<component>: <title>' instead of an editor")
+                errors.append(
+                    f"{kind}: use -m '<component>: <title>' instead of an editor"
+                )
             continue
 
         validate_message("\n\n".join(messages), kind, errors, root)
@@ -271,7 +280,12 @@ def validate_command(command: str, root: Path | None = None) -> int:
 def main() -> int:
     command = os.environ.get("AGENT_COMMIT_COMMAND", "")
     if command:
-        return validate_command(command, current_repo_root())
+        if not has_message_command(command):
+            return 0
+        root = current_repo_root()
+        if project_owns_commit_style(root):
+            return 0
+        return validate_command(command, root)
 
     try:
         data = json.load(sys.stdin)
@@ -290,10 +304,6 @@ def main() -> int:
     if tool not in ("Bash", "run_command"):
         return 0
 
-    root = current_repo_root()
-    if project_owns_commit_style(root):
-        return 0
-
     command = hook_string(
         data,
         ("tool_input", "command"),
@@ -303,7 +313,11 @@ def main() -> int:
         ("toolCall", "arguments", "CommandLine"),
         ("arguments", "CommandLine"),
     )
-    if not command:
+    if not command or not has_message_command(command):
+        return 0
+
+    root = current_repo_root()
+    if project_owns_commit_style(root):
         return 0
 
     return validate_command(command, root)
