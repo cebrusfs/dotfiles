@@ -20,15 +20,17 @@ route. It never selects, evaluates, or changes the root agent.
 
 ## Claude workers
 
-These aliases and the selector behavior were verified 2026-07-11. A Claude
-worker without an explicit `model` inherits its caller, so specify the model
-whenever the mapping below is required; omission cannot prove a cheaper route.
+These aliases and the selector behavior were verified 2026-07-11; the live
+selector set was re-checked 2026-07-26. A Claude worker without an explicit
+`model` inherits its caller, so specify the model whenever the mapping below is
+required; omission cannot prove a cheaper route.
 
 | Alias | Worker use |
 |---|---|
 | `haiku` | known-pattern search, inventory, documentation, tests, or mechanical batches |
 | `sonnet` | bounded implementation and factual verification |
 | `opus` | non-mechanical review or difficult debugging with demonstrated need |
+| `fable` | present in the live selector set (verified 2026-07-26); worker mapping unverified — do not claim a cost tier or capability from it until a dispatch confirms one |
 
 Aliases are not pinned model identifiers; do not claim exact-model
 reproducibility from them. Subscription mix determines effective CLI cost; do
