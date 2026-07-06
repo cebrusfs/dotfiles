@@ -1,9 +1,8 @@
 # Writable Worker Isolation — jj Recipes
 
-The VCS-agnostic rule lives in
-[agent-delegate](../../agent-delegate/SKILL.md#authority-and-isolation):
-concurrent writable workers never share a working copy. This file is only the
-jj recipe for obeying it. In another VCS, use that VCS's own worktree mechanism,
+Concurrent writable workers never share a working copy. That rule is
+VCS-agnostic and belongs to the active delegation guidance; this file is only
+the jj recipe for obeying it. In another VCS, use that VCS's own worktree mechanism,
 and if there is none, run the lanes one at a time rather than sharing. See the
 [jj skill](../SKILL.md) for the worker-race warning.
 
@@ -22,8 +21,8 @@ jj workspace. A Codex worker inside it needs `--skip-git-repo-check`.
 ## Codex CLI worker
 
 Create a jj workspace explicitly; do not assume a generic worktree is one.
-See the [Codex CLI reference](../../agent-delegate/references/codex-cli.md)
-for flags.
+Flags come from the active delegation guidance's Codex recipe, or
+`codex exec --help`.
 
 ```bash
 name=<name>                       # no slashes, no dots, no spaces

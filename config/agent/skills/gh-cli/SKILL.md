@@ -61,15 +61,15 @@ gh issue reopen  123
 
 ## Extended Operations (`scripts/gh_issue.sh`)
 
-Invoke the script from this skill's `scripts/` directory. Common installed paths:
-- Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh`
-- Codex user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
-- Repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
+The script lives in `scripts/` beside this SKILL.md. Resolve it against the
+directory this skill was loaded from (the host reports that directory when it
+loads the skill), so a user-level install and a repository-vendored copy each
+run their own script.
 
 This skill pre-approves no Bash command: raw `gh` reads use the host's inspection rules, and the helper script and every write go through its normal review.
 
 ```bash
-S=~/.agents/skills/gh-cli/scripts/gh_issue.sh
+S=<skill-dir>/scripts/gh_issue.sh   # <skill-dir>: the directory holding this SKILL.md
 
 # Full thread dump — body + all comments, multiple issues in one GraphQL call
 $S --dump  <issue_num...>
