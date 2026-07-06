@@ -79,12 +79,13 @@ function _rgg () {
 
 # Better 'find', as known as 'fd'
 if _check_command fd ; then
-  export FZF_DEFAULT_COMMAND="$(which fd) --type file"
+  export FZF_DEFAULT_COMMAND="fd --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   alias rgg='_rgg'
 # Debian/Ubuntu ship the binary as 'fdfind'; alias it back to 'fd' as a fallback
 elif _check_command fdfind ; then
-  export FZF_DEFAULT_COMMAND="$(which fdfind) --type file"
+  # fzf runs this via `sh -c`, so use the real binary name, not the fd alias
+  export FZF_DEFAULT_COMMAND="fdfind --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   alias fd='fdfind'
   alias rgg='_rgg'
@@ -98,7 +99,7 @@ _check_command rg || _warn "'rg' is not installed"
 # Use 'neovim' to replace 'vim'
 _check_command nvim && alias vim='nvim' && alias vimdiff='nvim -d' || _warn "'neovim' is not installed"
 
-# Warning if fzf is installed
+# Warning if fzf is not installed
 _check_command fzf || _warn "'fzf' is not installed"
 
 # Warning for old zprezto configuration path
