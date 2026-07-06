@@ -1,8 +1,10 @@
 # Agent CLI Invocation
 
-Read for CLI mechanics beyond the default dispatch form in
-[../SKILL.md](../SKILL.md): resume, output capture, or a non-Codex runtime.
-Model choice comes from [models.md](models.md).
+Read when a CLI worker is the chosen route: invocation, resume, output capture,
+or a non-Codex runtime. [../SKILL.md](../SKILL.md) owns whether to delegate at
+all; model choice comes from [models.md](models.md). A CLI dispatch crosses a
+session boundary, so get the user's opt-in before passing private repository or
+conversation context through one.
 
 A fresh agent CLI dispatch starts a separate session. Before passing private
 repository or conversation context, disclose that boundary and obtain explicit
@@ -23,9 +25,11 @@ Headless hardening (flags verified against `--help`, codex-cli 0.144.5):
   Re-run read-only tasks freely; never blindly re-run writable ones.
 - `-o <file>` captures only the last message; a Stop hook may replace it. When
   a report feeds later work, tell the worker to write the artifact itself.
-- `codex exec resume --last` resumes with edits intact. Run it from the original
-  directory; `resume` does not accept `-C`, and still needs
-  `--skip-git-repo-check` if the original dispatch did.
+- `codex exec resume <session-id>` resumes with edits intact. Run it from the
+  original directory; `resume` does not accept `-C`, and still needs
+  `--skip-git-repo-check` if the original dispatch did. `--last` picks the most
+  recent session in that directory, so it resumes the wrong worker as soon as
+  two lanes share a cwd — record each dispatch's session id and pass it.
 - `resume` also rejects `-s`/`--sandbox`; override the sandbox with
   `-c 'sandbox_mode="workspace-write"'` (verified 0.144.5). This enables the
   review-then-fix pattern: dispatch the review with `-s read-only` and no
@@ -103,11 +107,20 @@ Flags and two-turn streaming behavior verified with Claude Code 2.1.220.
 Runtime subagents remain preferable when their harness is the reason for
 staying in Claude.
 
-## Gemini
+## Antigravity (`agy`)
 
-```bash
-gemini -p "<prompt>" [-m <verified-model>]
-```
+**Unverified — no invocation form recorded yet.** Do not invent flags for it;
+check whether `agy` is installed before assuming the route exists, and if it is
+needed, verify the form first and follow
+[../../../../../docs/antigravity-cli-verification.md](../../../../../docs/antigravity-cli-verification.md).
+
+Gemini CLI is retired: Google stopped serving it for free, AI Pro, and Ultra
+tiers on 2026-06-18, replacing it with Antigravity CLI (`agy`), a compiled Go
+binary. Only paid Gemini / Gemini Enterprise Agent Platform API-key customers
+keep the legacy CLI. Source: [the official transition
+announcement](https://github.com/google-gemini/gemini-cli/discussions/27274),
+read 2026-07-27. There is no reason to record a `gemini` form here again — this
+file documents `agy` only.
 
 When adding another CLI, record only its non-interactive form, sandbox/read-only
 mode, model selector, output capture, and verified failure recovery.
