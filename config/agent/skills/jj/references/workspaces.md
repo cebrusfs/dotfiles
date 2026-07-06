@@ -1,10 +1,11 @@
 # Writable Worker Isolation — jj Recipes
 
-The rule is VCS-agnostic and lives in [../SKILL.md](../SKILL.md): concurrent
-writable workers never share a working copy. This file is only the jj recipe
-for obeying it. In another VCS, use that VCS's own worktree mechanism, and if
-there is none, run the lanes one at a time rather than sharing. See the `jj`
-skill's worker-race warning.
+The VCS-agnostic rule lives in
+[agent-delegate](../../agent-delegate/SKILL.md#authority-and-isolation):
+concurrent writable workers never share a working copy. This file is only the
+jj recipe for obeying it. In another VCS, use that VCS's own worktree mechanism,
+and if there is none, run the lanes one at a time rather than sharing. See the
+[jj skill](../SKILL.md) for the worker-race warning.
 
 ## Claude lead
 
@@ -18,22 +19,11 @@ cleanup requires `jj workspace forget <name>` plus directory removal. Claude's
 ExitWorktree needs `discard_changes: true` because its git check cannot verify a
 jj workspace. A Codex worker inside it needs `--skip-git-repo-check`.
 
-## Codex lead or manual CLI
+## Codex CLI worker
 
-Use the wrapper, which calls the same hooks and cleans up on exit:
-
-```bash
-"$HOME/.agents/skills/agent-delegate/scripts/codex-ws.sh" <name> "<prompt>"
-"$HOME/.agents/skills/agent-delegate/scripts/codex-ws.sh" --keep <name> "<prompt>"
-```
-
-`--keep` preserves the workspace for resume and prints its path plus cleanup
-command.
-
-## Raw fallback
-
-Use only when the hooks/wrapper are unavailable; do not assume a generic
-worktree is a jj workspace:
+Create a jj workspace explicitly; do not assume a generic worktree is one.
+See the [Codex CLI reference](../../agent-delegate/references/codex-cli.md)
+for flags.
 
 ```bash
 name=<name>                       # no slashes, no dots, no spaces
@@ -59,3 +49,6 @@ jj workspace forget "$name" && rm -rf "$ws"
 The `jj st` is not decoration. A worker's last commit may be sitting in that
 workspace's `@`; deleting it discards work that was never rebased into the
 stack. Integrate first, then tear down.
+
+Claude's WorktreeRemove hook forgets the workspace and deletes its directory,
+and keeps the directory when `jj workspace forget` fails.

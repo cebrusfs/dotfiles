@@ -87,11 +87,13 @@ tree or commit.
 
 ## Delegation
 
-A worker starts cold, so delegation costs a briefing and a review of what comes
-back. Delegate when parallel progress, context isolation, or independent
-judgment outweighs that cost; otherwise keep the work inline. Read
-`agent-delegate` before dispatch; it owns lane contracts, worker routing,
-review criteria, and authority boundaries.
+Spawn a worker that bills this session's own quota only when I ask for one.
+My Codex quota is larger than my Claude quota: from a Claude session in my
+personal repositories you may hand a read-only or bounded lane to a Codex CLI
+worker without asking; anywhere else, or when unsure, ask first. You decide; a
+worker gives a second opinion or carries out your decision. Read
+`agent-delegate` before dispatch; it owns worker scope, routes, the Codex
+recipe, and authority boundaries.
 
 ## Judgment
 
@@ -105,7 +107,7 @@ review criteria, and authority boundaries.
   explicit "for your input"); being cc'd or added "for awareness" is not a
   question to answer.
 * Diagnose failures before retrying; change approach when the evidence calls
-  for it. Worker failure handling lives in `agent-delegate`.
+  for it.
 * When a correction, an override, or a non-obvious fix is reusable, run the
   `learn` skill in the same session: fix the current result, then update the
   owning guidance and report what changed. A narrow preference correction

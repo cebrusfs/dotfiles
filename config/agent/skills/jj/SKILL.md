@@ -48,6 +48,7 @@ Use `jj new` to leave a populated change behind or start from a different base.
 | Write / apply a commit message | `references/commit.md` |
 | Split a commit non-interactively | `references/split.md` |
 | Recover from a mistake / resolve conflicts | `references/recovery.md` |
+| Prepare / integrate / remove worker workspaces | `references/workspaces.md` |
 
 ## Non-interactive forms (never open a TUI)
 
