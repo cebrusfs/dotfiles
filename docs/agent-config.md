@@ -67,9 +67,13 @@ shims.
 ## Agent Hooks
 
 `config/agent/hooks/commit-message-check.py` is the shared commit-message style
-validator. It accepts native hook JSON on stdin for global Claude/Codex
-PreToolUse hooks, and also supports `AGENT_COMMIT_COMMAND` for project wrapper
-scripts that already extracted a shell command from hook JSON.
+validator. `config/agent/hooks/jj-guard.py` is the shared guard for jj
+safety-bypass flags (`--ignore-immutable`) that prefix-based deny patterns and
+execpolicy rules cannot match; both are wired as PreToolUse hooks for Claude
+(`config/agent/claude/settings.json`) and Codex (`config/agent/codex/hooks.json`). Both accept native hook JSON on stdin for global Claude/Codex
+PreToolUse hooks; only `commit-message-check.py` additionally supports
+`AGENT_COMMIT_COMMAND` for project wrapper scripts that already extracted a
+shell command from hook JSON.
 
 When a project should use the same policy, keep a project-local copy of this
 script and call that copy from the project's hook wrapper. Do not make a shared

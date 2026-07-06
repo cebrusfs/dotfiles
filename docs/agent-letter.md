@@ -76,8 +76,9 @@ another retry.
    lesson keeps reappearing in the lessons logs, the correct final form is
    usually a hook or an execpolicy rule, not a longer paragraph. The `jj git`
    / `jj op` bans are already mechanical on both Claude (settings deny) and
-   Codex (execpolicy `agent.rules`). The visible gaps: `--ignore-immutable`
-   has no mechanical coverage anywhere, and Gemini has no mechanical layer
+   Codex (execpolicy `agent.rules`), and `--ignore-immutable` is guarded by
+   the shared `config/agent/hooks/jj-guard.py` PreToolUse hook on both
+   (landed 2026-07-08). The remaining gap: Gemini has no mechanical layer
    wired at all.
 
 2. **Acceptance criteria die at the context boundary.** Compaction and long
@@ -129,5 +130,5 @@ error in this list.
 
 - `AGENTS.md` restates the adapter map from `docs/agent-config.md`; converge
   toward a pointer when next touched.
-- Mechanical-enforcement gaps from §B.1: a `--ignore-immutable` guard
-  (Claude + Codex), and the fact that Gemini has no mechanical layer wired.
+- Mechanical-enforcement gap from §B.1: Gemini has no mechanical layer wired
+  (no commit-message check, no jj guard, no nudge).

@@ -19,6 +19,11 @@
             "type": "command",
             "command": "bash -c 'command -v python3 >/dev/null 2>&1 || exit 0; exec python3 \"$HOME/.dotfiles/config/agent/hooks/commit-message-check.py\"'",
             "statusMessage": "Checking commit message"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'command -v python3 >/dev/null 2>&1 || exit 0; exec python3 \"$HOME/.dotfiles/config/agent/hooks/jj-guard.py\"'",
+            "statusMessage": "Checking jj safety flags"
           }
         ]
       }
