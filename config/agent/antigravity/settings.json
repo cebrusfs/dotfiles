@@ -1,0 +1,14 @@
+{
+  "colorScheme": "dark",
+  "enableTelemetry": false,
+  "model": "Gemini 3.1 Pro (High)",
+  "permissions": {
+    "deny": [
+      "command(jj git *)",
+      "command(jj op abandon *)",
+      "command(jj op integrate *)",
+      "command(jj op restore *)",
+      "command(jj op revert *)"
+    ]
+  }
+}

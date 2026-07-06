@@ -29,9 +29,9 @@ git-lfs = "latest"
 # Agent CLI
 claude-code = "latest"
 codex = "latest"
-"npm:@google/gemini-cli" = "latest"
 bat = "latest"
 gh = "latest"
+antigravity-cli = "latest"
 
 # Fish porting
 #starship = "latest"

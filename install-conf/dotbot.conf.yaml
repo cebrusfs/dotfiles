@@ -114,7 +114,6 @@
     ~/.gemini/config/skills: config/agent/skills
     ~/.gemini/antigravity/skills: config/agent/skills
     ~/.gemini/antigravity-cli/skills: config/agent/skills
-    ~/.gemini/config/hooks: config/agent/hooks
 
 
 # vim

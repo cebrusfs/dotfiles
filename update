@@ -51,12 +51,24 @@ function update_dev_tools() {
     fi
 }
 
+function apply_antigravity_config() {
+    log "Sync Antigravity CLI config"
+    if check_command uv; then
+        uv run --quiet --no-project --managed-python --python cpython python config/agent/antigravity/sync-config.py --apply
+    elif check_command python3 && python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 11))'; then
+        python3 config/agent/antigravity/sync-config.py --apply
+    else
+        error "uv or Python 3.11+ is required to sync Antigravity CLI config"
+    fi
+}
+
 function main() {
     pushd "${BASEDIR}"
 
     update_self
     update_submodule
     apply_codex_config
+    apply_antigravity_config
 
     # Remove fzf configs
     rm -f ~/.fzf.bash ~/.fzf.zsh
@@ -67,6 +79,7 @@ function main() {
 
     update_dev_tools
     apply_codex_config
+    apply_antigravity_config
 
     # shellcheck disable=SC2119
     popd >/dev/null

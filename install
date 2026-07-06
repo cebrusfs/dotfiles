@@ -93,6 +93,17 @@ function dev_tools_main() {
     fi
 }
 
+function apply_antigravity_config() {
+    log "Sync Antigravity CLI config"
+    if check_command uv; then
+        uv run --quiet --no-project --managed-python --python cpython python config/agent/antigravity/sync-config.py --apply
+    elif check_command python3 && python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 11))'; then
+        python3 config/agent/antigravity/sync-config.py --apply
+    else
+        error "uv or Python 3.11+ is required to sync Antigravity CLI config"
+    fi
+}
+
 # Phase 4: Install and update Vim/Neovim plugins
 function vim_plugins_main() {
     log "Install VIM plugins"
@@ -123,6 +134,7 @@ function main() {
     print_stage "Phase 3: Install development tools (Dev Tools)"
     dev_tools_main
     apply_codex_config
+    apply_antigravity_config
 
     print_stage "Phase 4: Install Vim/Neovim plugins"
     vim_plugins_main

@@ -92,6 +92,17 @@ description = "Run unit tests for agent hooks"
 env = { PYTHONDONTWRITEBYTECODE = "1" }
 run = "python3 -m unittest discover -s config/agent/hooks -p 'test_*.py'"
 
+# Manual entry points for the agent config syncs (install/update run the same
+# scripts). Each script prints the diff it applies; run the script without
+# --apply for a dry run.
+[tasks."sync:codex"]
+description = "Sync stable Codex defaults into ~/.codex/config.toml"
+run = "uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply"
+
+[tasks."sync:antigravity"]
+description = "Sync stable Antigravity CLI settings into ~/.gemini/antigravity-cli/settings.json"
+run = "uv run --no-project --managed-python --python cpython python config/agent/antigravity/sync-config.py --apply"
+
 [tasks."lint"]
 description = "Run all linters"
 depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "test:hooks"]

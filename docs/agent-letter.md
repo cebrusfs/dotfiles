@@ -78,8 +78,9 @@ another retry.
    / `jj op` bans are already mechanical on both Claude (settings deny) and
    Codex (execpolicy `agent.rules`), and `--ignore-immutable` is guarded by
    the shared `config/agent/hooks/jj-guard.py` PreToolUse hook on both
-   (landed 2026-07-08). The remaining gap: Gemini has no mechanical layer
-   wired at all.
+   (landed 2026-07-08). The remaining gap is Antigravity CLI/Jetski:
+   Antigravity CLI 1.1.0 documents CLI plugins with `hooks.json` and `/hooks`,
+   but not the full CLI hook payload shape or exit-code/blocking contract.
 
 2. **Acceptance criteria die at the context boundary.** Compaction and long
    sessions silently drop the one thing that defines success. Two habits are
@@ -128,7 +129,10 @@ error in this list.
 
 ## E. Unfinished business (handoff)
 
-- `AGENTS.md` restates the adapter map from `docs/agent-config.md`; converge
-  toward a pointer when next touched.
-- Mechanical-enforcement gap from §B.1: Gemini has no mechanical layer wired
-  (no commit-message check, no jj guard, no nudge).
+- Landed 2026-07-11: Antigravity CLI hard command-blocking, via
+  `permissions.deny` grant strings in `~/.gemini/antigravity-cli/settings.json`
+  (schema captured through the interactive `/permissions` panel; evidence and
+  the sync-clobber caveat:
+  [agent-config.md](agent-config.md#antigravity-cli-permissions)). Earlier
+  probes failed on grant structure, not location. Gemini CLI and Antigravity
+  IDE hooks are still not proxies for CLI behavior.

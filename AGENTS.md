@@ -82,8 +82,8 @@ tool-specific home dirs are only adapters. Keep custom skills in
 `config/agent/skills/`; do not put them under `~/.codex/skills`,
 `~/.gemini/skills`, or tool-owned cache directories.
 `config/agent/codex/config.toml` is a template, not a symlink target; sync it
-using the `uv run … sync-config.py --apply` command documented in
-[docs/agent-config.md](docs/agent-config.md). See
+with `mise run sync:codex` (details in
+[docs/agent-config.md](docs/agent-config.md)). See
 [docs/agent-config.md](docs/agent-config.md) for adapter layout and rationale.
 Use the `agent-config` skill when changing cross-agent layout, instruction
 files, or agent symlink mappings.

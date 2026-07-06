@@ -9,6 +9,7 @@ Tool-specific home directories are only adapters.
 | `config/agent/claude/` | Claude-only settings and hook wiring |
 | `config/agent/codex/` | Codex-only hooks, rules, and stable config template |
 | `config/agent/gemini/` | Gemini CLI settings needed to read shared project instructions |
+| `config/agent/antigravity/` | Antigravity CLI stable config template and sync script |
 | `config/agent/hooks/` | Shared hook implementations used by Claude and Codex adapters |
 | `config/agent/skills/` | Shared Agent Skills source |
 
@@ -57,7 +58,7 @@ rationale that are not directly readable from that file.
 | Claude Code | Reads `CLAUDE.md` for global and repo-local instructions. | Root `CLAUDE.md` stays a symlink to `AGENTS.md` so Claude reads the canonical repo instructions without copied prose. |
 | Codex | Reads `AGENTS.md` for global and repo-local instructions, and discovers shared skills through the cross-agent skills path. | Use Codex's native instruction filename while keeping shared skills out of Codex-owned state, cache, and bundled system skill directories. |
 | Gemini CLI | Reads global `GEMINI.md`; the managed `context.fileName` setting makes it read repo-local `AGENTS.md`. | Avoid per-repo `GEMINI.md` shims while keeping Antigravity from loading duplicate repo rules. |
-| Antigravity CLI | Reads the Gemini global guidance, repo-local `AGENTS.md`, and its CLI-specific user skills location. | Keep it on the same global Gemini guidance while preserving Antigravity CLI's own skill discovery path. |
+| Antigravity CLI | Reads the Gemini global guidance, repo-local `AGENTS.md`, and its CLI-specific user skills and settings locations. | Keep it on the same global Gemini guidance while preserving native skill discovery and merging stable settings into CLI-owned runtime config. |
 | Antigravity IDE / 2.0 | Reads the Gemini global guidance, repo-local `AGENTS.md`, and IDE/2.0 skill locations. | Keep IDE/2.0 skill adapters separate because those clients check their own skill discovery locations. |
 
 Gemini CLI also supports `~/.gemini/skills`; avoid wiring it here because
@@ -102,6 +103,51 @@ Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
 when invoking `python3 -m unittest` directly. Bare Python test runs write
 `__pycache__` into `config/agent/hooks/`.
 
+Gemini CLI hooks are not wired here: its official
+[hook reference](https://geminicli.com/docs/hooks/reference/) requires hook
+declarations in `settings.json`, and `~/.gemini/config/hooks` is not a
+documented discovery path (verified 2026-07-10).
+
+## Antigravity CLI Permissions
+
+Antigravity CLI stores user settings at
+`~/.gemini/antigravity-cli/settings.json`.
+`config/agent/antigravity/settings.json` is a stable template, **not** a symlink
+target. It owns the stable `enableTelemetry`, `colorScheme`, and `model`
+preferences. Runtime state such as `trustedWorkspaces`, plus unknown top-level
+or nested keys added by the CLI, stays local.
+
+Like the [Codex Config Template](#codex-config-template), the sync script is not
+directly executable and defaults to a dry-run diff. Apply it with
+`mise run sync:antigravity` (which runs
+`config/agent/antigravity/sync-config.py` through `uv`); template keys overlay
+recursively while every unmanaged local key is preserved.
+
+`./install` and `./update` run this next to the Codex config sync. JSON output is
+deterministic, so a second apply makes no change. On first apply, the script
+replaces any legacy dotbot symlink with a regular CLI-owned settings file.
+
+The template+sync design exists only because the CLI writes runtime trust
+state (`trustedWorkspaces`) into the same `settings.json`. If a future CLI
+version moves trust state out of that file, delete `sync-config.py` and switch
+the adapter back to a plain dotbot symlink like the Gemini settings.
+
+Hard command-blocking **landed 2026-07-11**: the template's `permissions.deny`
+mirrors Claude's jj deny list as `command(<target> *)` grant strings, in
+`antigravity-cli/settings.json` itself. The schema was captured by adding one
+rule through the interactive `/permissions` panel and diffing the file; a
+fresh session then logs
+`CLI settings initialized: permissions=&{Allow:[] Deny:[command(jj git *) ...] Ask:[]}`,
+and enforcement was verified headless — with a probe rule `command(touch *)`,
+`agy -p` refused to run `touch` and created nothing. Earlier probes failed on
+grant syntax/structure, not location (invalid entries are dropped with an
+`ignoring invalid ... grant string` log warning) — after changing rules, check
+the startup log line instead of assuming they loaded.
+
+Caveat: the sync replaces the whole `deny` array with the template's. A rule
+added via `/permissions` survives only until the next sync — promote it into
+the template if it should persist.
+
 ## Codex Config Template
 
 `config/agent/codex/config.toml` is a safe template, **not** a symlink target for
@@ -110,12 +156,9 @@ local Codex config. If copying the template's permission profile into the local
 config, do not mix it with legacy `sandbox_mode` / `[sandbox_workspace_write]`
 settings; use one sandbox configuration model per session.
 
-The sync script is not directly executable; run it through `uv` to sync stable
-Codex defaults into the local runtime config:
-
-```sh
-uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply
-```
+The sync script is not directly executable; apply it with `mise run sync:codex`
+(which runs `config/agent/codex/sync-config.py` through `uv`) to sync stable
+Codex defaults into the local runtime config.
 
 `./install` runs this sync after installing dev tools, and `./update` runs it
 after updating dev tools.
