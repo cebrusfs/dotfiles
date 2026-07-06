@@ -6,25 +6,31 @@ model = "gpt-5.6-sol"
 model_reasoning_effort = "max"
 approval_policy = "on-request"
 approvals_reviewer = "auto_review"
-default_permissions = "workspace-mise"
+default_permissions = "workspace-tool-caches"
 
 # Permission profiles do not compose with legacy sandbox_mode settings. This
-# profile extends the built-in workspace filesystem policy with a local tool
-# cache root and scoped GitHub network access for CLI inspection commands.
-[permissions.workspace-mise]
-description = "Workspace access plus writable mise cache."
+# profile extends the built-in workspace filesystem policy with local tool
+# cache roots and scoped GitHub network access for CLI inspection commands.
+[permissions.workspace-tool-caches]
+description = "Workspace access plus writable mise, uv, and Bun caches."
 extends = ":workspace"
 
-[permissions.workspace-mise.workspace_roots]
+[permissions.workspace-tool-caches.workspace_roots]
 "~/Library/Caches/mise" = true
+"~/.cache/uv" = true
+"~/.bun/install/cache" = true
+"~/Library/Caches/bun" = true
 
-[permissions.workspace-mise.network]
+[permissions.workspace-tool-caches.network]
 enabled = true
 
-[permissions.workspace-mise.network.domains]
+[permissions.workspace-tool-caches.network.domains]
 "api.github.com" = "allow"
 "github.com" = "allow"
 
+# Profile domain rules require the sandboxed-command network proxy.
+[features.network_proxy]
+enabled = true
 
 [tui]
 status_line = [

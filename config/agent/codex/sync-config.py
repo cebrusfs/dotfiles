@@ -23,7 +23,8 @@ TOP_LEVEL_KEYS = (
     "default_permissions",
 )
 LEGACY_TOP_LEVEL_KEYS = ("sandbox_mode",)
-EXACT_SECTIONS = ("tui",)
+EXACT_SECTIONS = ("features.network_proxy", "tui")
+MANAGED_SECTION_KEYS = {"features": frozenset({"network_proxy"})}
 SECTION_PREFIXES = ("permissions.",)
 LEGACY_SECTIONS = ("sandbox_workspace_write",)
 
@@ -108,6 +109,20 @@ def source_sections(lines: list[str]) -> dict[str, list[str]]:
     return sections
 
 
+def strip_managed_section_keys(name: str, lines: list[str]) -> list[str]:
+    managed_keys = MANAGED_SECTION_KEYS.get(name)
+    if not managed_keys:
+        return lines
+    output: list[str] = []
+    for line in lines:
+        match = KEY_RE.match(line)
+        if match and match.group(1) in managed_keys:
+            remove_managed_preamble(output)
+            continue
+        output.append(line)
+    return output
+
+
 def strip_synced_content(lines: list[str]) -> list[str]:
     output: list[str] = []
     in_top_level = True
@@ -123,7 +138,7 @@ def strip_synced_content(lines: list[str]) -> list[str]:
                 remove_managed_preamble(output)
                 index = end
                 continue
-            output.extend(lines[index:end])
+            output.extend(strip_managed_section_keys(name, lines[index:end]))
             index = end
             continue
 

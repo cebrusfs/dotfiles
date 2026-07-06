@@ -165,9 +165,11 @@ Codex defaults into the local runtime config.
 `./install` runs this sync after installing dev tools, and `./update` runs it
 after updating dev tools.
 
-The script preserves local runtime sections such as `[projects]`, `[hooks.state]`,
-`[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`, and strips the
-legacy sandbox keys managed by the template.
+The script syncs the permission profile and `[features.network_proxy]`, including
+migrating a legacy `[features] network_proxy` value to the managed table. It
+preserves other feature toggles and local runtime sections such as `[projects]`,
+`[hooks.state]`, `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`,
+and strips the legacy sandbox keys managed by the template.
 
 ## Codex Permission Posture
 
@@ -183,9 +185,12 @@ shared destructive/outward-action rules.
 
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =
-"workspace-mise"`. The `workspace-mise` profile is the built-in workspace
-filesystem sandbox plus a writable `mise` cache. It also grants scoped shell
-network access to `api.github.com` and `github.com`, so sandboxed read-only
-GitHub CLI inspection works without broad network access. `web_search = "live"`
-controls the agent's web-search tool, not network access for spawned CLI commands
-such as `gh`.
+"workspace-tool-caches"`. The `workspace-tool-caches` profile is the built-in
+workspace filesystem sandbox plus writable mise, uv, and Bun cache roots. It
+does not grant package-registry network access. The synced
+`features.network_proxy.enabled = true` activates enforcement of the profile's
+`api.github.com` and `github.com` allowlist for sandboxed shell commands; without
+the proxy, enabling command networking does not enforce those domain rules.
+See the [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+`web_search = "live"` controls the agent's
+web-search tool, not network access for spawned CLI commands such as `gh`.
