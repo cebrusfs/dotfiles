@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -115,7 +115,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -125,7 +125,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -135,7 +135,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -145,7 +145,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -155,7 +155,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -165,7 +165,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -175,7 +175,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }
@@ -185,7 +185,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/iterm2-status.sh\""
+            "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
           }
         ]
       }

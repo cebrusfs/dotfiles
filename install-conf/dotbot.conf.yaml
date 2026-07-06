@@ -101,7 +101,6 @@
         force: true
         backup: true
     ~/.claude/statusline-command.sh: config/agent/claude/statusline-command.sh
-    ~/.claude/iterm2-status.sh: config/agent/claude/iterm2-status.sh
     ~/.claude/rules: config/agent/rules
     ~/.claude/skills: config/agent/skills
     ~/.codex/AGENTS.md: config/agent/global.md
