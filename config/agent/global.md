@@ -95,6 +95,9 @@ boundaries.
 
 ## Version Control
 
+* Do not add agent metadata to commit messages: AI attribution/signatures,
+  session/thread IDs or URLs, or the authoring agent's model, provider, worker,
+  or routing details. Tool/model names are fine when they describe the change.
 * Prefer semantic topic commits: one reason to exist, reviewer context, and
   revert boundary. Squash refinements into the existing unpushed owner; split
   independent concerns. Keep required incidental edits with their topic.

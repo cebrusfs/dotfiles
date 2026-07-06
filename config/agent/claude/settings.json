@@ -1,9 +1,5 @@
 {
-  "attribution": {
-    "commit": "",
-    "pr": "",
-    "sessionUrl": false
-  },
+  "attribution": false,
   "permissions": {
     "deny": [
       "Bash(jj git *)",

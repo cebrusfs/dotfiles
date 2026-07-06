@@ -88,8 +88,10 @@ not make a shared project depend on `$HOME/.dotfiles` at runtime; sync the
 standalone script manually so collaborators get the same behavior.
 
 Keep this checker generic: it validates `<component>: <title>`, rejects common
-Conventional Commit type prefixes, AI attribution trailers, overlong first
-lines, and interactive commit-message editors. Project-specific gates such as
+Conventional Commit type prefixes, AI attribution and agent metadata trailers,
+overlong first lines, and interactive commit-message editors. The
+[shared VCS policy](../config/agent/global.md#version-control) owns which
+authorship metadata belongs in commit messages. Project-specific gates such as
 `make fmt`, `make lint`, or product-specific examples belong in a wrapper only
 when that extra pre-check exists; otherwise keep them in project docs.
 

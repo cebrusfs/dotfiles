@@ -186,6 +186,14 @@ def validate_message(
     if re.search(r"(?i)Generated with (Claude|Codex|Jetski)", normalized):
         errors.append(f"{kind}: remove AI attribution trailers")
 
+    body = normalized.partition("\n")[2]
+    if re.search(
+        r"(?im)^[ \t]*(?:claude|codex|gemini|antigravity|jetski|cursor|copilot|ai|agent)"
+        r"[-_][a-z0-9][a-z0-9_-]*[ \t]*:",
+        body,
+    ) or re.search(r"(?i)https?://claude\.ai/code/session[_/][a-z0-9_-]+", body):
+        errors.append(f"{kind}: remove agent metadata from the commit message")
+
     title_line = normalized.split("\n", 1)[0]
 
     if title_line == "fixup":
@@ -213,7 +221,7 @@ def validate_message(
 
 
 def print_failure(errors: list[str]) -> None:
-    print("BLOCKED: commit message must use component format.", file=sys.stderr)
+    print("BLOCKED: invalid commit message.", file=sys.stderr)
     print("", file=sys.stderr)
     for error in errors:
         print(f"- {error}", file=sys.stderr)

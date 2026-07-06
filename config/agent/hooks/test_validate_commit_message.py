@@ -8,6 +8,7 @@ import importlib.util
 import io
 import json
 import os
+import shlex
 import sys
 import tempfile
 import unittest
@@ -202,6 +203,30 @@ class MessageValidationTests(unittest.TestCase):
         )
 
         self.assertEqual(check(command), 0)
+
+    def test_agent_metadata_is_rejected_across_message_commands(self) -> None:
+        for metadata in (
+            "Claude-Session: https://claude.ai/code/session_example",
+            "cOdEx-ThReAd-Id: example",
+            "Agent-Model: example-model",
+            "AI-Worker: example-worker",
+            "https://claude.ai/code/session_example",
+        ):
+            for command in ("jj commit", "jj describe", "jj split .", "git commit"):
+                with self.subTest(metadata=metadata, command=command):
+                    message = f"agent: keep commit history focused\n\n{metadata}"
+                    invocation = f"{command} -m {shlex.quote(message)}"
+                    self.assertEqual(check(invocation), 2)
+                    self.assertIn("remove agent metadata", check_error(invocation))
+
+    def test_agent_configuration_changes_can_name_tools_and_models(self) -> None:
+        message = (
+            "claude-statusline: manage the status line script\n\n"
+            "Reject Claude-Session: trailers in commit messages.\n"
+            "Keep the Codex model setting in the managed template."
+        )
+
+        self.assertEqual(check(f"jj commit -m {shlex.quote(message)}"), 0)
 
     def test_bare_squash_explains_the_safe_exception(self) -> None:
         error = check_error("jj squash")
