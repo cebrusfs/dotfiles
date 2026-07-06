@@ -75,19 +75,35 @@ codex exec [-m <model>] [-s <sandbox>] [-C <dir>] [-o <file>] "<prompt>"
 - Preferred (Claude as lead): spawn workers with `isolation: "worktree"` —
   the WorktreeCreate/WorktreeRemove hooks in
   `config/agent/claude/settings.json` auto-provision a jj workspace under
-  `.claude/worktrees/` (provisioning verified end-to-end 2026-07-08; removal
-  can lag — after workers finish, check `jj workspace list` and clean
-  leftovers with `jj workspace forget <name>` plus removing the directory).
+  `~/.claude/worktrees/<repo>-<cwd-hash>-<name>` — outside the repo, so tree-walking
+  tools never scan checkout copies (provisioning verified end-to-end
+  2026-07-08; `claude -p --worktree` verified 2026-07-09 creates this
+  home-based jj workspace with `.jj` and no colocated `.git`, but can leave it
+  after exit — after workers finish, check `jj workspace list` and clean
+  leftovers with `jj workspace forget <name>` plus removing the directory;
+  Claude's ExitWorktree tool needs `discard_changes: true` on these, since its
+  git-based state check cannot verify a jj workspace).
   A Codex worker can run inside one via
   `codex exec -C <path> --skip-git-repo-check` (the workspace has no
   colocated `.git`).
-- Manual fallback (Codex as lead, or outside Claude): do not assume a
-  worker's worktree is a jj workspace; manage it yourself:
+- Preferred manual path (Codex as lead, or outside Claude): use the wrapper,
+  which calls the same jj workspace hooks as Claude and cleans up on exit:
 
   ```bash
-  jj workspace add --name <name> .claude/worktrees/<name>
-  codex exec -C .claude/worktrees/<name> --skip-git-repo-check "<prompt>"
-  jj workspace forget <name> && rm -rf .claude/worktrees/<name>
+  config/agent/skills/agent-delegate/scripts/codex-ws.sh <name> "<prompt>"
+  config/agent/skills/agent-delegate/scripts/codex-ws.sh --keep <name> "<prompt>"
+  ```
+
+  `--keep` preserves the workspace for `codex exec resume --last` and prints
+  the kept path plus cleanup command.
+- Raw fallback: do not assume a worker's worktree is a jj workspace; manage it
+  yourself and remove it after the worker exits:
+
+  ```bash
+  ws="$HOME/.claude/worktrees/<repo>-<name>"
+  jj workspace add --name <name> "$ws"
+  codex exec -C "$ws" --skip-git-repo-check "<prompt>"
+  jj workspace forget <name> && rm -rf "$ws"
   ```
 - Never let two workers (or a worker and the lead) rewrite the same working
   copy concurrently — see the `jj` skill's worker-race warning.

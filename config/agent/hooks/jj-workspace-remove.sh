@@ -11,26 +11,25 @@ if [ -z "$worktree_path" ] || [ "$worktree_path" = "null" ]; then
     exit 1
 fi
 
+# Accept the current home layout and the legacy repo-local layout.
 case "$worktree_path" in
-*/.claude/worktrees/*)
-    ;;
+"${HOME}/.claude/worktrees/"?* | */.claude/worktrees/?*) ;;
 *)
     echo "refusing to remove non-Claude jj workspace path: $worktree_path" >&2
     exit 1
     ;;
 esac
 
-repo_root=${worktree_path%/.claude/worktrees/*}
-workspace_name=${worktree_path#"$repo_root"/.claude/worktrees/}
-
-case "$workspace_name" in
-"" | */* | "." | "..")
-    echo "invalid workspace name in path: $worktree_path" >&2
+base=${worktree_path##*/}
+case "$base" in
+"" | "." | "..")
+    echo "invalid workspace directory in path: $worktree_path" >&2
     exit 1
     ;;
 esac
 
 if [ -d "$worktree_path" ]; then
-    jj -R "$repo_root" workspace forget "$workspace_name" >&2 2>&1 || true
+    # A workspace directory knows its main repo; forget it from inside.
+    jj -R "$worktree_path" workspace forget >&2 2>&1 || true
     rm -rf "$worktree_path"
 fi

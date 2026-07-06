@@ -20,17 +20,19 @@ yq = "latest"
 # would otherwise descend into: git submodules (modules/), vendored vim plugins, and
 # zsh dotfiles (config/zsh/, incl. the generated p10k.zsh) — shfmt parses sh/bash, not zsh —
 # and bin/ (vendored third-party tools like checksec, not style-managed here).
+# .claude/ holds agent worktree checkouts (full repo copies) that would otherwise
+# be scanned as duplicates while a worker is alive.
 [tasks."lint:bash"]
 description = "Lint all Bash scripts using shellcheck"
-run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shellcheck"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin|\\.claude)/' | xargs shellcheck"
 
 [tasks."fmt:bash"]
 description = "Format all Bash scripts using shfmt"
-run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shfmt -w -i 4"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin|\\.claude)/' | xargs shfmt -w -i 4"
 
 [tasks."check-fmt:bash"]
 description = "Check if Bash scripts are formatted correctly"
-run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | xargs shfmt -d -i 4"
+run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin|\\.claude)/' | xargs shfmt -d -i 4"
 
 # No shellcheck equivalent exists for zsh; `zsh -n` does a parse-only syntax check.
 [tasks."lint:zsh"]

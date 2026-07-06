@@ -1,3 +1,7 @@
 *.lvimrc
 
 **/.claude/settings.local.json
+
+# Claude Code worktree checkouts (official docs recommend ignoring them);
+# also keeps jj colocated snapshots from tracking worker workspace copies.
+**/.claude/worktrees/
