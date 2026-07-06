@@ -1,85 +1,65 @@
-# Model and Runtime Mapping
+# Worker Model and Runtime Mapping
 
-Read only when a dispatch needs an explicit runtime or model choice.
-[../SKILL.md](../SKILL.md) and its required host profile own role and
-native-versus-CLI routing. This file owns price/strength selection after that
-path is fixed.
+Read this only after delegation is approved and the host profile has fixed the
+worker route. [../SKILL.md](../SKILL.md) owns role selection, dispatch, and
+native-versus-CLI routing; this file maps verified worker selectors on that
+route. It never selects, evaluates, or changes the root agent.
 
 ## Selection
 
-- Follow the host profile; select a model only when that path exposes a
-  selector. Never claim an unreported tier.
-- Prefer a verified native Codex downshift over a separate CLI session. A
-  subagent label alone says nothing about its effective model or price.
-- For a permitted downshift from a Fable lead, use Sol for solution exploration
-  and strong review, Terra for plan-backed implementation and bounded scans,
-  and Luna only for simple known-pattern batches.
-- Claude runtime workers must always receive an explicit `model`; omission
-  inherits the lead.
-- Which CLI family is effectively cheapest is set by the owner's subscription
-  mix, not per-token prices alone. As of 2026-07-11 that mix makes the Codex CLI
-  the default *CLI fallback*, not the default worker. Re-verify when plans or
-  prices change; concrete plan details stay out of this public repo.
+- Optimize cost per accepted result: include prompt, reports, verification,
+  retries, and retained context. Do not optimize for unit token price or agent
+  count alone.
+- Select only verified worker models and efforts accepted by the live route.
+  A subagent label does not prove its effective model or cost.
+- After the worker route is fixed, choose the cheapest capable worker. Increase
+  capability or effort only for a demonstrated capability or judgment need;
+  step count alone never justifies an upgrade.
+- Keep nested delegation off unless the root explicitly pre-authorizes its
+  child scope, write set, model/effort, reason, and depth or concurrency bound.
 
-## Claude (aliases verified 2026-07-07; selector verified 2026-07-11)
+## Claude workers
 
-| Alias | Tier | Roles |
-|---|---|---|
-| `haiku` | cheap | bounded scans, known-pattern batches |
-| `sonnet` | mid | implement, factual verification |
-| `opus` | strong | blind review, hard debugging |
-| `fable` | judge-tier | taste-shaped judgment only |
+These aliases and the selector behavior were verified 2026-07-11. A Claude
+worker without an explicit `model` inherits its caller, so specify the model
+whenever the mapping below is required; omission cannot prove a cheaper route.
 
-A model-less Claude worker inherits its lead. A Fable worker costs 2× Opus at
-public API prices (Fable $10/$50, Opus $5/$25 per MTok in/out, verified
-2026-07-11), so never inherit it for routine work. These selectors are aliases,
-not pinned model ids; never claim exact-model reproducibility from them.
+| Alias | Worker use |
+|---|---|
+| `haiku` | known-pattern search, inventory, documentation, tests, or mechanical batches |
+| `sonnet` | bounded implementation and factual verification |
+| `opus` | non-mechanical review or difficult debugging with demonstrated need |
 
-## Codex (native selector and CLI cache verified 2026-07-24)
+Aliases are not pinned model identifiers; do not claim exact-model
+reproducibility from them. Subscription mix determines effective CLI cost; do
+not infer it from public per-token prices alone.
 
-| Model | Tier | Roles |
-|---|---|---|
-| `gpt-5.6-luna` | cheap | known-pattern batches, factual read-back |
-| `gpt-5.6-terra` | mid; lower-cost than Sol | bounded scans, plan-backed implementation |
-| `gpt-5.6-sol` | strong | solution exploration, blind review, hard debugging |
-| `gpt-5.6-sol` + `xhigh`/`max` | judge-tier | plan check, taste-shaped judgment |
+## Codex workers
 
-The current native collaboration schema exposes Sol and Terra model overrides
-plus explicit reasoning effort. Use Luna only when the live route exposes it;
-otherwise use Terra for lower-cost native work rather than opening a CLI solely
-to reach Luna. For CLI dispatch, pass the exact model with `-m` and effort with
-`-c model_reasoning_effort="low|medium|high|xhigh|max|ultra"`.
+The native collaboration schema currently exposes explicit
+`gpt-5.6-sol` and `gpt-5.6-terra` worker overrides plus reasoning effort
+(verified 2026-07-24). Use `gpt-5.6-luna` only when the live worker route
+explicitly exposes it. Re-check the live schema rather than guessing an alias,
+model identifier, or effort value.
 
-Routing default (user preference, 2026-07-24): dispatch Terra at `high`
-reasoning effort and eligible Luna work at `low`; Sol remains role-dependent.
+| Selector | Worker mapping |
+|---|---|
+| `gpt-5.6-luna` + `low` | eligible known-pattern search, inventory, documentation, tests, and mechanical work, when available |
+| `gpt-5.6-terra` + `high` | plan-backed bounded implementation, debugging, and verification |
+| `gpt-5.6-sol` | use only when evidence shows a need beyond the applicable Terra route, especially for non-mechanical judgment or difficult investigation |
 
-Effort ladder ([Codex subagent docs](https://developers.openai.com/codex/subagents/),
-verified 2026-07-24): use `low` when the task is straightforward and speed
-matters, `medium` for routine agents, `high` for complex tracing or review,
-`xhigh`/`max` for exceptional demands, and `ultra` only with explicit
-nested-delegation authorization. Higher effort increases latency and token
-usage. Pin full slugs; the bare `gpt-5.6` alias can be repointed. For any
-unlisted id, inspect `~/.codex/models_cache.json` instead of guessing.
+When Luna is unavailable, use the verified Terra route for eligible native
+work rather than opening a CLI solely to reach Luna. For a Codex CLI worker,
+pass the exact verified model and effort selectors; consult [cli.md](cli.md)
+for invocation and boundary requirements.
 
-### Nested Codex downshift
+Do not use Luna for ambiguous decisions, blind review, difficult debugging, or
+judging another worker's work. A worker that discovers separable low-risk work
+returns the decomposition for the root to route unless that nested delegation
+was pre-authorized.
 
-Prefer lead-to-Luna dispatch when the work is identifiable up front. Permit
-Terra-to-Luna only when Terra is already following an approved plan and then
-discovers a material batch of independent, known-pattern, low-risk units whose
-savings exceed the extra prompt, report, and verification context. Luna must be
-available through Terra's live native route, and the lead must have
-pre-authorized the nested scope and bounds; never let the worker substitute a
-CLI session. Otherwise Terra returns the decomposition for the lead to route.
+## Other runtimes
 
-Do not use Luna for solution exploration, ambiguous decisions, blind review,
-hard debugging, or judging Terra's work.
-
-Sol at max effort is peer-strength with Fable (user assessment, 2026-07-11).
-When the lead judges a plan too complex or taste-shaped, dispatch a parallel
-Sol plan review — `xhigh` for the daily case, `max` for the most aggressive
-calls — instead of trusting one family's read.
-
-## Gemini CLI
-
-Use only for a requested cross-family second opinion. No model id is verified
-in this environment; omit `-m` or check `gemini --help` first.
+Use an unlisted runtime only when its live CLI or native schema verifies the
+selector and the approved boundary permits it. Do not invent model IDs,
+aliases, pricing, or inheritance behavior.

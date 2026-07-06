@@ -12,21 +12,18 @@ Everything else in the institution refers back to these.
 
 ### Leak 1 — The lead agent does the groundwork itself
 
-The most expensive context in every session belongs to the lead model, and the
-old instructions said "prefer delegating" without hard triggers, a model table,
-or ready-made prompts. Deliberating about delegation costs more than just
-reading the files, so sessions defaulted to reading everything themselves.
-Every broad scan loads hundreds of lines into the priciest context and stays
-there for the rest of the session, crowding out the reasoning it was meant to
-serve.
+Root context is long-lived; old instructions said "prefer delegating" without
+triggers, a model table, or prompts. Sessions then read everything themselves;
+broad scans retained hundreds of lines and crowded out reasoning.
 
-Fix (implemented): volume proxies in `../config/agent/global.md` plus a
-cost/author gate in `../config/agent/skills/agent-delegate/SKILL.md`. Bounded
-work stays inline when a worker would duplicate weighted context cost; an
-expensive lead downshifts to the cheapest capable role, while
-author-independent judgment remains explicit. Per-task files in the
-[template directory](../config/agent/skills/agent-delegate/templates/) make
-composing a worker prompt cheaper than doing the work inline.
+Fix (implemented): the user or host fixes the root authority and model. The
+[delegation policy](../config/agent/global.md) and
+[delegate skill](../config/agent/skills/agent-delegate/SKILL.md) route explicit,
+independently acceptable lanes to capable workers with compact task-local context;
+they do not select or upgrade the root. Parallelism needs independent
+lanes and disjoint writes. Optimize wall-clock time and accepted-result cost,
+not agent count or token price. Fixed overhead remains, but delegation is default.
+The skill owns its bounded-lane/fast-path gate; uncertain break-even favors delegation.
 
 ### Leak 2 — Always-loaded rules duplicate each other and drift
 
@@ -59,13 +56,12 @@ original acceptance criteria have usually scrolled out of effective attention,
 so later retries optimize for the wrong target.
 
 Fix (implemented): the hard-count escalation ladder in
-[failures.md](../config/agent/skills/agent-delegate/references/failures.md);
-author-independent evidence — runnable checks need no extra reviewer, while
-judgment/read-back never comes from the author
-([SKILL.md](../config/agent/skills/agent-delegate/SKILL.md), rubric 5 in
-`../config/agent/rules/judgment.md`); and
-wrong-direction signals (rubric 4) that force a stop-and-rethink instead of
-another retry.
+[failures.md](../config/agent/skills/agent-delegate/references/failures.md).
+Runnable checks are author-independent. Read-back and judgment cannot come from
+their author: the root reviews worker work, and root-authored work gets fresh
+blind review only when checks cannot prove acceptance. The
+[delegate skill](../config/agent/skills/agent-delegate/SKILL.md) owns the details,
+alongside wrong-direction signals (rubric 4).
 
 ## B. Three things nobody asked me, but you should know
 
@@ -83,13 +79,10 @@ another retry.
    but not the full CLI hook payload shape or exit-code/blocking contract.
 
 2. **Acceptance criteria die at the context boundary.** Compaction and long
-   sessions silently drop the one thing that defines success. Two habits are
-   the insurance: the dispatch triple (every worker prompt restates goal,
-   acceptance criteria, report format — so criteria survive in every subtask
-   even if the main thread degrades), and re-reading the original request
-   before declaring anything done (rubric 2). If you notice you cannot state
-   the acceptance criteria verbatim, that is a stop-and-recover signal, not a
-   detail.
+   sessions silently drop the one thing that defines success. The delegate skill
+   owns compact task-local context and report contract; re-read the original
+   request before declaring anything done (rubric 2). If you cannot state the
+   acceptance criteria verbatim, that is a stop-and-recover signal, not a detail.
 
 3. **The institution's enemy is its own growth.** Every rule added here taxes
    every future session forever, and each individually-reasonable addition
@@ -105,7 +98,7 @@ another retry.
 |---|---|---|
 | Rule accretion | Every incident adds a rule; nothing deletes one | Size budgets + distillation protocol in agent-maintenance.md; add-one-delete-one habit |
 | Fact rot | Model ids, CLI flags, paths go stale silently | Facts carry a verified date; re-verify with `--help` before relying; factual-rot fixes are self-serve (agent-maintenance.md §What you may change without asking) |
-| Delegation theater | "Delegate" becomes ritual; workers spawned for trivia, reports pasted wholesale | Compare total context cost; volume proxies and author independence trigger workers, while bounded non-author work stays inline |
+| Delegation theater | "Delegate" becomes ritual; workers spawned for trivia, reports pasted wholesale | The [delegate skill](../config/agent/skills/agent-delegate/SKILL.md) owns the bounded-lane and fast-path gate |
 | Template cargo-culting | Blanks filled with vague words ("make sure it works") | Templates require acceptance criteria to be *runnable commands or checkable facts*; a template with an unverifiable criterion is incomplete |
 | Copy drift | Content duplicated across files, then edited in one place | Ownership map in agent-maintenance.md; edits move content to its owner |
 | Silent scope growth of always-loaded files | rules/ and global.md accumulate content that belongs in skills/docs | Placement rule: always-loaded = only what changes behavior in most sessions; everything else is on-demand |
@@ -118,11 +111,10 @@ requirements, sensing that a technically-correct design is the wrong one,
 knowing which of two defensible readings the user actually meant. When a task
 is taste-shaped, do not simulate confidence. The three honest moves, in order:
 
-1. Escalate to the strongest available model with the decision framed
-   explicitly (options, evidence, what hinges on the choice).
-2. Get an outside opinion: a cross-family model, or the user.
-3. Say plainly that this call exceeds what the current setup can make well,
-   and present the options instead of picking one.
+1. Frame the choice; keep it with the fixed root if it has authority, otherwise ask the user.
+2. Get an independent worker review only when it adds useful evidence, or ask the user.
+3. Say plainly that this call exceeds what the current setup can make well, and
+   present the options instead of picking one.
 
 Silently picking an interpretation to keep momentum is the only unrecoverable
 error in this list.

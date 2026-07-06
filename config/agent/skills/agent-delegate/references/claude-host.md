@@ -5,8 +5,9 @@
 | Claude | Use the native subagent tool with an explicit model. |
 | Other family | Use that family's non-interactive CLI. |
 
-Claude-to-Claude is always native; never omit the model and silently inherit an
-expensive lead. A same-family CLI requires an unavailable native tool and user
+Claude-to-Claude is always native. A worker without an explicit model inherits
+its caller's model, so an explicit worker model is required when claiming a
+downshift. A same-family CLI requires an unavailable native tool and user
 opt-in to the separate fallback.
 
 Read [models.md](models.md) for the model/price choice. For any CLI path, also

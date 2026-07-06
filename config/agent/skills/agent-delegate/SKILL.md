@@ -1,111 +1,83 @@
 ---
 name: agent-delegate
-description: Use before dispatching a subagent or agent CLI. Covers role-first cost routing, bounded prompts, isolation, failure recovery, and verification.
+description: Use before dispatching a subagent or agent CLI. Covers bounded lanes, isolation, failure recovery, and verification.
 ---
 
 # agent-delegate
 
-Cost-aware routing and dispatch contract for delegated workers. Apply the lead
-responsibilities in [../../global.md](../../global.md): worker output is
-advisory until the lead accepts or rejects the evidence.
+Host- and model-agnostic dispatch contract. The root is a fixed external input:
+do not select, rank, or judge its host, model, or effort. Apply the root
+responsibilities in [../../global.md](../../global.md); worker output is
+advisory until the root accepts or rejects its evidence.
 
 ## Route
 
-Choose by role before volume. Decide these axes independently:
+Inline only when all of these hold:
 
-1. **Execution reason** — latency/parallelism, context isolation, or independent
-   judgment.
-2. **Cost tier** — inline lead, same-tier worker, or a verified lower-cost
-   model/effort through a native or CLI selector.
+1. The root already knows the exact target and change.
+2. No substantive new context must be loaded.
+3. The work is at most one direct action plus one focused check.
+4. It has no parallelism, context-isolation, or non-author-evidence value.
 
-A native subagent is not inherently cheaper or same-tier. Resolve its effective
-model and effort from the live dispatch schema, selected custom agent, configured
-subagent defaults, or documented inheritance. If that path is not verifiable,
-do not claim a model-cost saving. Context inheritance controls token volume, not
-model strength or per-token price.
+This narrow fast path accounts for fixed prompt, scheduling, report-review, and
+targeted-verification overhead; do not broaden it with file, line, or
+step-count proxies.
 
-Compare weighted cost: tokens each context ingests × model cost, including the
-worker prompt/report, lead verification, and context the lead retains. A
-verified materially cheaper capable worker changes the default: a judge-tier
-lead dispatches every lower-tier execution role to it, even for a tiny patch or
-one command. Current Sol-lead/Terra-worker is one example, not shared policy.
+Otherwise, delegate if the work forms an independently acceptable lane: an
+explicit goal, scope/write set, and acceptance criteria. If break-even is
+uncertain and the lane can run concurrently with useful root work, bias to
+delegate. Keep coupled or unbounded decisions with the root.
 
-| Situation | Route |
-|---|---|
-| Judge-tier lead; scan, explore, implement, or verify | Dispatch the cheapest verified capable worker. |
-| No verified cheaper capable worker | Use the global volume gate as the fallback. |
-| User requests a cheaper/smaller/dumber worker | Use the cheapest capable verified native tier; if unavailable, use a verified CLI tier only after its boundary is approved, otherwise disclose the limit and work inline. |
-| Volume gate exceeded | Use the cheapest capable verified worker; return conclusions and evidence only. |
-| Lead-authored work fully proved by runnable checks | No independent reviewer; route routine check execution under this tier policy. |
-| Lead-authored work needing judgment or read-back | Fresh, blind, non-author reviewer. |
-| Ambiguous or taste-shaped decision | Judge-tier model or the user. |
+The root owns decomposition, cross-lane judgment, integration, acceptance,
+user-facing claims, VCS writes, and outward or destructive decisions. A worker
+owns its lane end-to-end: inspect, implement when needed, test or verify, and
+report. Escalate to the root on ambiguity, coupling with another lane, missing
+capability, or failed evidence; do not re-route work merely for its next step.
 
-| Role | Work | Minimum capability; never force an upgrade |
-|---|---|---|
-| scan | bounded evidence gathering against a known question | cheap; increase only for demonstrated task complexity |
-| explore | open-ended solution, architecture, or hypothesis search | cheapest verified capable tier; do not assume strong |
-| implement | bounded patch from an approved high-level plan | mid |
-| verify | runnable checks or factual read-back | cheap to mid |
-| review | non-mechanical correctness, security, conventions | strong |
-| judge | ambiguous or taste-shaped choice | judge-tier or user |
+Parallelize independent lanes. Writable lanes require disjoint write sets; if
+they overlap or share an unresolved interface, keep them together or resolve
+the boundary before dispatch. Use a separate non-author reviewer when
+independent judgment is required.
 
-Apply the global responsibility through final acceptance, not routine tool
-execution or authorship. Workers inspect, edit their bounded write set,
-diagnose, test, and verify; the lead accepts or rejects their evidence. A
-read-only explore/plan dispatch never satisfies implementation or verification:
-at every phase transition, reroute the next role independently. Bounded file
-edits remain permitted under the global VCS safety policy.
-
-For a large diff, use a strong reviewer so the lead receives findings instead
-of retaining the diff. For a plan the lead judges too complex, dispatch a
-parallel cross-family plan check (judge-tier peer). Read
-[references/models.md](references/models.md) only when the runtime, exact
-model id, or judge-tier peer is not already fixed.
+Use a surfaced native worker route when it fits; otherwise use an approved CLI
+route. The route-specific references own invocation and inheritance details.
+If a cost or capability property matters to the decision, verify the effective
+route from live dispatch information or its reference before claiming it.
+Never bypass callee sandboxing or approval protections.
 
 ## Dispatch
 
-Detect the host from its surfaced native tools, then read exactly one profile:
+Give workers only the plan slice, relevant paths or symbols, constraints,
+acceptance criteria, and report contract; default to no full conversation.
+Use a matching [template](templates/) when it helps express the lane without
+adding unrelated context. The prompt must state:
 
-| Current host | Required profile |
-|---|---|
-| Codex with `collaboration.spawn_agent` | [references/codex-host.md](references/codex-host.md) |
-| Claude Code with a native subagent tool | [references/claude-host.md](references/claude-host.md) |
-| Any host without a native worker API | [references/cli.md](references/cli.md) |
-
-The profile owns native-versus-CLI routing and native context inheritance. Load
-[references/models.md](references/models.md) only when a model or price choice
-remains. Before claiming a downshift, verify both that the route accepts the
-selector and that the selected model/effort is lower cost. Never bypass any
-callee sandbox or approval protection.
-
-At every phase transition, repeat Route and dispatch the role again; do not
-reuse explore or plan allocation for implementation or verification. Give each
-worker a bounded prompt and a disjoint write set. Start from the matching
-[templates/](templates/) file — search, implementation, refactor, research,
-review, or verification — and carry the dispatch triple:
-
-1. **Goal and motivation** — output and the decision it feeds.
-2. **Acceptance criteria** — runnable commands or checkable facts; clarify an
-   uncheckable criterion before dispatch.
-3. **Report format** — concise return shape plus a path for long artifacts.
+1. **Goal** — the bounded output and decision it supports.
+2. **Scope and write set** — including explicit exclusions.
+3. **Acceptance** — runnable commands or checkable facts.
+4. **Report** — concise conclusion, evidence, confidence, open questions, and
+   a path for any long artifact.
 
 Close every prompt with: "Scope, write set, and plan are approved. Do not ask
 for permission. On a genuine blocker, stop with one question and
-recommendation; the lead will resume. Do not spawn or delegate to another agent
-unless the lead explicitly authorizes nested delegation." Only the lead decides
-whether another delegation layer is worth its cost.
+recommendation; the root will resume. Do not spawn or delegate to another agent
+unless the root explicitly authorizes nested delegation."
 
-Keep nested delegation off by default. If the lead authorizes it, name the
-allowed model/effort, execution reason, child scope and write set, concurrency
-or depth bound, and stop/report condition. When fan-out is known before the
-first dispatch, the lead dispatches those workers directly; reserve a nested
-layer for material independent work discovered only inside worker context.
+Keep nested delegation off by default. If authorized, state the execution
+reason, child goal, scope/write set, worker model/effort when the route exposes
+selectors, concurrency or depth bound, and stop/report condition. When fan-out
+is already known, the root dispatches the workers directly. Reserve nesting for
+material independent work discovered inside a worker's bounded context.
 
-Load the remaining references only when their condition applies:
+Load references only when their condition applies. For a native worker route,
+read exactly one matching profile:
 
 | Condition | Reference |
 |---|---|
+| Native Codex route details are needed | [references/codex-host.md](references/codex-host.md) |
+| Native Claude route details are needed | [references/claude-host.md](references/claude-host.md) |
 | An agent CLI is selected | [references/cli.md](references/cli.md) |
+| A route or cost choice needs runtime facts | [references/models.md](references/models.md) |
 | Isolating writable work in a jj repo | [references/workspaces.md](references/workspaces.md) |
 | A dispatch failed or needs escalation | [references/failures.md](references/failures.md) |
 
@@ -113,10 +85,12 @@ Load the remaining references only when their condition applies:
 
 - Reports return conclusions, file:line or command evidence, confidence, and
   open questions — never transcripts or file dumps. Long artifacts go to an
-  agreed path (prefer `$TMPDIR`); the reply carries the path and a summary.
-- Tests and real runs are author-independent evidence even when the patch
-  author launches them; route routine execution under Route. Read-back and
-  judgment never come from the author: the lead or a separate worker reviews a
-  worker's patch; a worker never grades its own work.
-- A blind reviewer gets requirements and the diff — never the author's
-  rationale, suspected bugs, or preferred outcome. "No findings" is valid.
+  agreed path (prefer `$TMPDIR`); the reply carries the path and summary.
+- Runnable checks and real runs are author-independent evidence even when the
+  author launches them. Read-back and judgment cannot come from the author:
+  the root or a separate worker reviews the patch; workers do not grade their
+  own work.
+- Root-authored work needs a fresh blind, non-author reviewer only when
+  runnable checks cannot prove acceptance. Give a blind reviewer requirements
+  and the diff, never the author's rationale, suspected bugs, or preferred
+  outcome. "No findings" is valid.

@@ -17,7 +17,7 @@ owner; never copy content between these files — link instead.
 | `config/agent/skills/jj/**` | jj recipes: skeleton, messages, split, recovery, non-interactive forms | on jj tasks |
 | `config/agent/hooks/*`, Claude `permissions.deny`, `config/agent/codex/rules/agent.rules` | mechanical enforcement: commit-message format, commit nudge, worktree↔workspace wiring, `jj git`/`jj op` bans | at the moment of action |
 | `config/agent/rules/judgment.md` | judgment rubrics with examples | every Claude session; on-demand elsewhere |
-| `config/agent/skills/agent-delegate/SKILL.md` | dispatch entrypoint; cost/author gates, roles, dispatch triple, report and verification contracts; conditional reference routing | on delegation |
+| `config/agent/skills/agent-delegate/SKILL.md` | dispatch entrypoint; bounded-lane routing; dispatch, context, report, and verification contract; conditional reference routing | on delegation |
 | `config/agent/skills/agent-delegate/templates/*.md` | per-task worker prompts | one file per dispatch |
 | `config/agent/skills/agent-delegate/references/models.md` | volatile runtime/model mappings | when choosing runtime/model |
 | `config/agent/skills/agent-delegate/references/cli.md` | agent CLI invocation and resume mechanics | when using a CLI |

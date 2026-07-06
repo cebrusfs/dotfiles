@@ -15,11 +15,14 @@
 
 ## Delegation
 
-Delegate when it lowers weighted context cost (token volume × model cost) or supplies non-author judgment. A judge-tier lead must route lower-tier execution to a verified materially cheaper capable worker, including tiny single-file tasks. Execution includes scan/research, inspection, implementation, routine diagnostics, checks, and factual verification. Volume proxies remain the fallback when no such worker is available: >~2 substantive files, >~100 lines of diff/log/CI/build output, broad web research, or one known pattern across >~1 file.
+Delegate work that forms an independently acceptable bounded lane: an explicit
+goal, scope/write set, and acceptance criteria. Use the inline fast path in
+`agent-delegate`; parallelize independent lanes, and give writers disjoint
+write sets.
 
-* Before dispatch, read `agent-delegate`. The lead retains instruction/skill reading, orchestration, material judgment, acceptance/rejection of evidence, user-facing claims, VCS writes, and outward or destructive approval decisions.
-* Workers return concise evidence; long artifacts go to files. The lead validates current state and owns final claims.
-* Lead-authored work needs a fresh blind reviewer only when runnable checks cannot prove acceptance; a non-author lead may review worker output directly.
+* Before dispatch, read `agent-delegate`. The root retains instruction/skill reading, decomposition, cross-lane judgment, integration, acceptance/rejection of evidence, user-facing claims, VCS writes, and outward or destructive approval decisions.
+* Workers return concise evidence; long artifacts go to files. The root validates current state and owns final claims.
+* Root-authored work needs a fresh blind reviewer only when runnable checks cannot prove acceptance; a non-author root may review worker output directly.
 
 ## Judgment
 
