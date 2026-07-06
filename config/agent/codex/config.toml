@@ -35,11 +35,22 @@ extends = ":workspace"
 "~/.netrc" = "deny"
 "~/.npmrc" = "deny"
 
+# Colocated jj snapshots and commits write workspace Git metadata, so jj can
+# stay sandboxed. Hooks and config stay read-only because a later unsandboxed
+# Git run would execute them (Claude's sandbox protects the same paths).
+[permissions.workspace-tool-caches.filesystem.":workspace_roots"]
+".git" = "write"
+".git/hooks" = "read"
+".git/config" = "read"
+
 [permissions.workspace-tool-caches.network]
 enabled = true
-allow_local_binding = false
+allow_local_binding = true
 
 [permissions.workspace-tool-caches.network.domains]
+"localhost" = "allow"
+"127.0.0.1" = "allow"
+"::1" = "allow"
 "github.com" = "allow"
 "*.github.com" = "allow"
 "*.githubusercontent.com" = "allow"

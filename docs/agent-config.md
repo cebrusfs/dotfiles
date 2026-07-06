@@ -310,28 +310,43 @@ repository-defined code runs inside the permission profile, without an extra
 review. Missing access goes through native approval instead of making the
 whole task runner an unrestricted host process.
 
-The remaining allow rules are deliberate exceptions for recoverable local jj
-operations, read-only GitHub CLI inspection, and the commit-nudge hook. Codex
-protects `.git` even in writable workspaces, so routine jj snapshots and
-commits may need this exception. These matching commands can run outside the
-sandbox without review. Prefix rules also match trailing arguments; they are
-not an isolation boundary. The jj rules follow the
-[shared VCS policy](../config/agent/global.md#version-control): steps the
-operation log reverses, including discards and `jj git fetch`, are allowed and
-the guidance decides when a request authorizes them; repo-wide `jj op`
-rollbacks and remote configuration prompt; `jj op abandon`, `jj util gc`, and
-`jj git push` are forbidden.
+An execpolicy `allow` match runs the command outside the sandbox without
+review, so jj has no allow rules: every jj subcommand accepts `--config` (for
+example a signing or Git executable program) and several accept `--tool`,
+which turns any jj prefix into arbitrary host execution. jj runs inside the
+profile instead. Codex protects top-level `.git` under writable roots; the
+profile grants workspace `.git` writes for colocated snapshots, commits, and
+`jj git fetch` over HTTPS, and keeps `.git/hooks` and `.git/config` read-only
+because a later unsandboxed Git run would execute them (Claude's sandbox
+protects the same paths). `.jj` is not a protected name and needs no grant.
+The remaining jj rules follow the
+[shared VCS policy](../config/agent/global.md#version-control): the guidance
+decides when a request authorizes a recoverable step; repo-wide `jj op`
+rollbacks, workspace mutations, and remote configuration prompt;
+`jj op abandon`, `jj util gc`, and `jj git push` are forbidden. The other
+allow rules cover read-only GitHub CLI inspection and the commit-nudge hook.
+Prefix rules also match trailing arguments; they are not an isolation
+boundary. These semantics were checked against the Codex 0.166.0 source and
+`codex sandbox -P workspace-tool-caches` on 2026-11-04.
+
+A secondary jj workspace or Git worktree keeps shared metadata in its primary
+checkout, outside the workspace roots, so jj writes there go through native
+approval. Keep checkout paths out of this template; for a long-lived linked
+workspace, grant only its verified metadata directories per session with
+`--add-dir`, never a whole parent checkout.
 
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =
 "workspace-tool-caches"`. The `workspace-tool-caches` profile is the built-in
-workspace filesystem sandbox plus the listed tool cache/install directories.
-The listed GitHub and package/tool distribution hosts are allowed for ordinary
-dependency downloads; the enabled proxy retains its local/private-network
-guard. With only this user configuration, other destinations are blocked
-without an inline network approval. Local services,
-SSH-agent/Docker sockets, and additional write locations are not globally
-opened. Explicit credential read denies and child-environment filters reduce
+workspace filesystem sandbox plus the listed tool cache/install directories
+and the workspace Git metadata grant above. The listed GitHub and package/tool
+distribution hosts are allowed for ordinary dependency downloads. Loopback
+listeners and the listed loopback destinations are permitted for local tests
+and development servers. Enabling `allow_local_binding` also removes the
+proxy's local/private-address guard for otherwise allowlisted hosts; the
+outbound domain allowlist remains active. Other destinations, SSH-agent/Docker
+sockets, and additional write locations still require native approval.
+Explicit credential read denies and child-environment filters reduce
 the login material available to sandboxed commands. The agent client retains
 its own login, and the existing GitHub CLI inspection exception retains its
 normal authenticated workflow.

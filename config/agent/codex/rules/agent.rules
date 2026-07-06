@@ -1,77 +1,4 @@
 prefix_rule(
-    pattern = ["jj", ["diff", "help", "log", "show", "st", "status"]],
-    decision = "allow",
-    justification = "Common local jj inspection commands are read-only.",
-    match = [
-        "jj diff",
-        "jj diff --stat",
-        "jj help split",
-        "jj log -r trunk()..@",
-        "jj show @-",
-        "jj st",
-        "jj status",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "file", ["annotate", "list", "search", "show"]],
-    decision = "allow",
-    justification = "These jj file commands inspect tracked content without changing it.",
-    match = [
-        "jj file annotate config.toml",
-        "jj file list",
-        "jj file search approval",
-        "jj file show config.toml",
-    ],
-    not_match = [
-        "jj file chmod +x script",
-        "jj file track generated.txt",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "workspace", ["list", "root"]],
-    decision = "allow",
-    justification = "Listing jj workspaces and resolving the current root are read-only.",
-    match = [
-        "jj workspace list",
-        "jj workspace root",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", ["absorb", "commit", "describe", "edit", "new", "rebase", "split", "squash"]],
-    decision = "allow",
-    justification = "These common local jj operations are recoverable through the operation log; the jj guard still blocks immutability bypasses.",
-    match = [
-        "jj absorb",
-        "jj commit -m 'agent: title'",
-        "jj describe -m 'agent: title'",
-        "jj edit @-",
-        "jj new trunk()",
-        "jj rebase -r @ -d trunk()",
-        "jj split config/agent/global.md -m 'agent: title'",
-        "jj squash -u",
-    ],
-    not_match = [
-        "jj op abandon old-op",
-        "jj util gc",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", ["abandon", "redo", "restore", "undo"]],
-    decision = "allow",
-    justification = "Discards are reversible through the operation log; the shared guidance decides when a request authorizes them and requires the operation id in the report.",
-    match = [
-        "jj abandon @",
-        "jj redo",
-        "jj restore config.toml",
-        "jj undo",
-    ],
-)
-
-prefix_rule(
     pattern = ["jj", "workspace", ["add", "forget", "rename", "update-stale"]],
     decision = "prompt",
     justification = "Workspace mutations can write outside the current root or detach working-copy state.",
@@ -80,35 +7,6 @@ prefix_rule(
         "jj workspace forget old-copy",
         "jj workspace rename primary",
         "jj workspace update-stale",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "bookmark", ["delete", "forget"]],
-    decision = "allow",
-    justification = "Local bookmark removal is reversible through the operation log, and publishing stays with the user because jj git push is forbidden.",
-    match = [
-        "jj bookmark delete topic",
-        "jj bookmark forget topic@origin",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "git", "fetch"],
-    decision = "allow",
-    justification = "Fetching only updates remote-tracking bookmarks; the operation log records it.",
-    match = [
-        "jj git fetch",
-        "jj git fetch --all-remotes",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "pull"],
-    decision = "allow",
-    justification = "The user's pull alias fetches all remotes and rebases local stacks onto trunk; both steps are recoverable through the operation log.",
-    match = [
-        "jj pull",
     ],
 )
 
@@ -129,16 +27,6 @@ prefix_rule(
     match = [
         "jj git push",
         "jj git push --all",
-    ],
-)
-
-prefix_rule(
-    pattern = ["jj", "op", "log"],
-    decision = "allow",
-    justification = "Inspecting the jj operation log is read-only and useful before recovery.",
-    match = [
-        "jj op log",
-        "jj op log -n 5",
     ],
 )
 
