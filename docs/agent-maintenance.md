@@ -60,13 +60,16 @@ content must not depend on home-directory paths.
 - Add one example to an existing rubric when a real case showed the rubric
   was ambiguous.
 - Wording fixes that cannot change meaning (typos, grammar).
+- Narrow preference corrections authorized by
+  [global.md](../config/agent/global.md#judgment), including edits to
+  version-controlled custom skills. That rule owns the trigger and limits.
 
 ## What requires asking the user first
 
-- Changing any threshold or count: delegate triggers, escalation strikes,
+- Changing operational thresholds or counts: delegate triggers, escalation strikes,
   retry caps, size budgets.
-- Adding, removing, or weakening a rule — especially VCS safety rules and the
-  do-not-delegate list.
+- Adding, removing, or weakening a rule outside the preference corrections
+  authorized above.
 - Restructuring `global.md` or adding any new always-loaded file (both tax
   every future session).
 - Changing model routing defaults or the model table beyond verified fact
@@ -75,6 +78,8 @@ content must not depend on home-directory paths.
 
 ## Lessons: where and how
 
+- Authorized preference corrections follow `global.md` directly; this lesson
+  log and its proposal requirements do not apply to them.
 - After a real failure or correction, append to a `## Lessons` section at the
   bottom of the *owning* file (create the section on first use):
   `- YYYY-MM-DD: <one-line lesson> (evidence: <command/path/incident>)`

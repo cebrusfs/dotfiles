@@ -97,23 +97,14 @@ and Gemini must open that path themselves when a trigger below fires.
   question to answer.
 * After a failed attempt, escalate or change approach instead of retrying
   blindly; the escalation ladder lives in the `agent-delegate` skill.
-* When a failure OR a user correction reveals missing or stale reusable
-  guidance, first fix the immediate output, then fold the lesson into its owning
-  skill/rule so it will not recur; ignore transient environment failures.
-  * Applies especially to my **local/custom skills** — adopt a
-    *self-updating-skill* mindset: a reusable lesson must be persisted back into
-    the owning skill, not just applied once. Do not assume a specific mechanism
-    exists; discover whatever skill-updating capability the current agent has
-    and use it — e.g. Jetski/Gemini's `/learn`, or a `skill-creator` skill
-    (Claude Code `/skill-creator`, Codex CLI `@skill-creator`). Update my own
-    loose personal skills in place the *same session* when I correct, override,
-    or state a preference they should have followed — without being asked. For
-    skills that are version-controlled in a shared config repo (e.g. the repo
-    this file lives in), do NOT edit silently — propose and ask me first. Either
-    way, route each lesson to its owning section (voice → `reply-voice`; channel
-    mechanics → the channel skill; facts → the skill's knowledge/reference
-    file), replace stale guidance instead of stacking it (single source of
-    truth), and tell me what changed.
+* When a correction expresses a reusable preference, fix the current result
+  and update its owning skill or guidance in the same session, including
+  version-controlled custom skills. The correction authorizes that narrow
+  update; report what changed. Replace stale guidance rather than appending a
+  diary; use an available skill-authoring tool when helpful. Do not turn
+  one-off requirements or transient failures into policy. Ask before changing
+  safety, permissions, or model routing, or when the intended preference is
+  unclear. Persist other reusable fixes under the owning maintenance policy.
 * "Done" means acceptance criteria proved by runnable checks or non-author
   read-back — never by the author's impression.
 
