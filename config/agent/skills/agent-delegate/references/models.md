@@ -66,28 +66,31 @@ not infer it from public per-token prices alone.
 
 ## Codex workers
 
-The native collaboration schema currently exposes explicit
-`gpt-5.6-sol` and `gpt-5.6-terra` worker overrides plus reasoning effort
-(verified 2026-07-24). Use `gpt-5.6-luna` only when the live worker route
-explicitly exposes it. Re-check the live schema rather than guessing an alias,
-model identifier, or effort value.
+The native collaboration schema exposes `gpt-6.1-sol`, `gpt-6-astra`,
+`gpt-6-sol`, `gpt-6-luna`, and `gpt-5.6-sol` worker overrides plus reasoning
+effort (verified 2026-10-08). The former `gpt-5.6-luna` and `gpt-5.6-terra`
+selectors are absent from this route. Re-check the live schema rather than
+guessing an alias, model identifier, or effort value.
 
-### Reasoning effort — verified per route, 2026-07-27
+### Reasoning effort — verified per route
 
 The two routes do not declare the same set, so do not carry a value from one to
 the other.
 
 | Route | Declared values | How established |
 |---|---|---|
-| Native `spawn_agent` | `low` `medium` `high` `xhigh` `max` `ultra` | The live schema's own `reasoning_effort` description, read in-session. `none` and `minimal` are **not** listed. |
-| Codex CLI | `none` `minimal` `low` `medium` `high` `xhigh` `max` `ultra` | The `ReasoningEffort` variant list in the codex-cli 0.145.0 binary, plus `max` confirmed live — echoed back as `reasoning effort: max` in the session header of a `codex exec --strict-config` run. |
+| Native `spawn_agent`, `gpt-6-luna` | `low` `medium` `high` `xhigh` `max` | Live schema, verified 2026-10-08. `none`, `minimal`, and `ultra` are not listed for Luna. |
+| Native `spawn_agent`, other exposed overrides | `low` `medium` `high` `xhigh` `max` `ultra` | Live schema, verified 2026-10-08. `none` and `minimal` are not listed. |
+| Codex CLI | `none` `minimal` `low` `medium` `high` `xhigh` `max` `ultra` | Historical verification, 2026-07-27: the `ReasoningEffort` variants in codex-cli 0.145.0, plus `max` echoed in a live `codex exec --strict-config` session. Re-check the installed CLI before relying on this set. |
 
 The native field is typed `string` with no machine-checkable enum, so an
 unlisted value cannot be *proven* rejected — but an unlisted value is also not
-verified, so do not send one. Omitting `reasoning_effort` inherits the parent's;
-the field does exist, so a worker downshift is available on this route. The
-schema likewise declares only `gpt-5.6-sol` and `gpt-5.6-terra` as `model`
-overrides. `ultra` is untested on either route.
+verified, so do not send one. Do not rely on omitted effort when it matters: in
+a 2026-07-27 native dispatch, a `gpt-5.6-sol`/`max` parent passed only an
+explicit Sol model and the worker resolved to `low`. Pass model and effort
+together for a pinned route, then verify the resolved worker settings. Native
+selector support is listed above; CLI support must be verified independently.
+`ultra` is declared for the native non-Luna selectors but remains untested here.
 
 Pass a CLI value with `-c model_reasoning_effort="<value>"`.
 
@@ -98,11 +101,17 @@ what happens to be configured.
 
 | Selector | Worker mapping |
 |---|---|
-| `gpt-5.6-luna` + `low` | eligible known-pattern search, inventory, documentation, tests, and mechanical work, when available |
-| `gpt-5.6-terra` | plan-backed bounded implementation, debugging, and verification. Leave effort at the route's default and raise it only on demonstrated need, per the selection rule above — `high` is not automatic for this row |
-| `gpt-5.6-sol` | use only when evidence shows a need beyond the applicable Terra route, especially for non-mechanical judgment or difficult investigation |
+| `gpt-6-luna` + `low` | eligible known-pattern search, inventory, documentation, tests, and mechanical work, when available |
+| `gpt-6.1-sol` | plan-backed bounded implementation, debugging, and verification. Leave effort at the route's default and raise it only on demonstrated need — `high` is not automatic for this row |
+| `gpt-6.1-sol` + `xhigh` | blind or non-mechanical review, including judging another worker's work; pass both selectors explicitly |
+| `gpt-6-astra` | demanding investigation or ambiguity with demonstrated need beyond Sol; select an explicitly verified effort |
 
-When Luna is unavailable, use the verified Terra route for eligible native
+This native routing was approved 2026-10-08. It uses the live schema's model
+descriptions; no pricing or accepted-result comparison has been verified.
+`gpt-6-sol` and `gpt-5.6-sol` remain exposed compatibility selectors, without
+an inferred cost advantage over the defaults above.
+
+When Luna is unavailable, use the verified Sol route for eligible native
 work rather than opening a CLI solely to reach Luna. For a Codex CLI worker,
 pass the exact verified model and effort selectors; consult [cli.md](cli.md)
 for invocation and boundary requirements.
