@@ -48,6 +48,9 @@ workspace skills.
 
 ## Adapter Map
 
+Google-agent maintenance targets Antigravity CLI and IDE/2.0. Gemini CLI
+settings remain legacy compatibility artifacts, not an active maintenance target.
+
 `install-conf/dotbot.conf.yaml` is authoritative for installed home-directory
 symlink mappings, including global instruction files, skills, hooks, rules, and
 Gemini/Antigravity skill directories. This section records behavior and

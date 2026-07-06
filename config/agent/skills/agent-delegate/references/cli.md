@@ -104,18 +104,30 @@ staying in Claude.
 
 ## Antigravity (`agy`)
 
-**Unverified — no invocation form recorded yet.** Do not invent flags for it;
-check whether `agy` is installed before assuming the route exists, and if it is
-needed, verify the form first and follow
-[../../../../../docs/antigravity-cli-verification.md](../../../../../docs/antigravity-cli-verification.md).
+CLI surface checked with installed `agy` 1.2.3 on 2026-10-08 (`agy --help`,
+`agy help models`, and `agy models`):
 
-Gemini CLI is retired: Google stopped serving it for free, AI Pro, and Ultra
-tiers on 2026-06-18, replacing it with Antigravity CLI (`agy`), a compiled Go
-binary. Only paid Gemini / Gemini Enterprise Agent Platform API-key customers
-keep the legacy CLI. Source: [the official transition
-announcement](https://github.com/google-gemini/gemini-cli/discussions/27274),
-read 2026-07-27. There is no reason to record a `gemini` form here again — this
-file documents `agy` only.
+- `agy --print "<prompt>"` runs one non-interactive prompt; `-p` is its alias.
+- `--model <model>` selects the model. Use `agy models` to inspect the current
+  account's IDs and display labels; the configured `Gemini 3.1 Pro (High)`
+  appeared in that list. Do not assume another runtime's catalog applies.
+- `--effort` accepts `low`, `medium`, or `high`.
+- `--output-format` accepts `text`, `json`, or `stream-json`.
+  `--json-schema` accepts a schema string or file path.
+- `--input-format stream-json` reads NDJSON turns from stdin and requires
+  `--output-format stream-json`.
+- `--print-timeout` defaults to `5m0s`.
+- `--conversation <id>` resumes by ID; `--continue` / `-c` chooses the most
+  recent conversation. Record the ID for parallel lanes.
+- `--sandbox` enables terminal restrictions. `--mode=plan` is planning mode;
+  neither has been verified as a read-only worker boundary.
+
+These are help/catalog checks, not a completed worker invocation or resume
+test. Read-only enforcement, unattended approvals, structured output, and
+recovery remain unverified; follow the remaining task in
+[antigravity-cli-verification.md](../../../../../docs/antigravity-cli-verification.md).
+The CLI session boundary is still governed by [../SKILL.md](../SKILL.md).
+Google-agent CLI maintenance targets Antigravity; do not add Gemini CLI recipes.
 
 When adding another CLI, record only its non-interactive form, sandbox/read-only
 mode, model selector, output capture, and verified failure recovery.
