@@ -49,12 +49,12 @@ Host free-us
 
 # Non-Corp
 Host amd-micro vpn arm-perf amd-oracle free-us ws*
-    Tag tmux-intergration
+    Tag tmux-integration
 
     # Enable tty
     RequestTTY yes
 
-Match tagged tmux-intergration
+Match tagged tmux-integration
     RemoteCommand tmux -CC new -A -s tmux-main
 
 # SSH has no "inherit"/"use" directive; `Tag NAME` on a host + a `Match tagged NAME`
