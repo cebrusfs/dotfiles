@@ -1,21 +1,16 @@
 ---
 name: agent-delegate
-description: Use before dispatching a subagent or agent CLI. Covers when delegation pays, lane contracts, worker choice, and the rails.
+description: Use before dispatching a subagent or agent CLI, and before starting broad search/log triage, bulk disassembly/decompiler/xref tracing, or non-author review that could be delegated. Covers the trade, lane contracts, worker choice, and rails.
 ---
 
 # agent-delegate
 
-Host- and model-agnostic. The root is a fixed external input: never select,
-rank, or judge its own host, model, or effort. This skill gives you the trade
-and the rails; the space between them is yours to judge, and the **Rails**
-section never is.
+Host- and model-agnostic. The root is fixed: never select, rank, or judge its own host, model, or effort; judge only the space between the trade and rails, never the **Rails**.
 
-**Check this first.** If your own model is below the judgment tier in
-[references/models.md](references/models.md), or you cannot tell what it is,
-read the **Rails** below — they bind you either way — then follow
-[references/checklist.md](references/checklist.md) step by step in place of the
-judgment calls between. It is a self-sufficient fallback that replaces each of
-them with a countable one, and working from it is a normal outcome.
+**Check this first.** If your model is below the judgment tier in
+[references/models.md](references/models.md), or unknown, read the **Rails**,
+then follow [references/checklist.md](references/checklist.md) instead of the
+judgment calls between. It is the self-sufficient, countable fallback.
 
 ## The trade
 
@@ -25,13 +20,12 @@ Delegation buys exactly three things:
 - **Context isolation** — the root never loads what the worker had to read.
 - **Non-author evidence** — judgment an author cannot supply about their own work.
 
-It costs one cold start *per lane*: writing the brief, the worker re-deriving
-context the root already holds, and reviewing what comes back. Cold start is
-paid N times while wall-clock divides by N — that is the whole calculation.
-A single lane rarely repays it; several independent lanes almost always do.
+It costs one cold start *per lane*: briefing, re-deriving context, and review.
+Cold start is paid N times while wall-clock divides by N. A single lane rarely
+repays it unless its intermediate material would flood the root; context
+isolation alone can then cover the cost. Several lanes almost always repay it.
 
-So the question is not "is this big enough to delegate?" but "does this hold
-more than one lane, and would I otherwise walk them one at a time?"
+Ask not "is this big?" but "are there multiple lanes, or context to isolate?"
 
 ## When to reach for it
 
@@ -40,13 +34,15 @@ Any one of these is enough:
 - **Lanes already exist.** The plan, the ticket graph, or the file layout
   already shows two or more pieces that could run at once. Grinding through
   them serially is the failure this skill exists to prevent.
-- **The root's context would flood.** Broad search, log triage, inventory over
-  an unfamiliar tree — work whose intermediate material the root must not keep.
+- **The root's context would flood.** Broad search, log triage, unfamiliar-tree
+  inventory, or disassembly/decompiler/xref tracing — work whose intermediate
+  material the root must not keep. Delegate bounded reverse traces before loading
+  bulk output; require addresses, decisive evidence, conclusions, and open gaps.
 - **The author cannot be the judge.** Blind review, or a design that must not
   inherit the root's hypothesis.
 
-None of them present: do it inline. Genuinely unsure, and the lane can run
-alongside useful root work: dispatch it — an idle root is the costlier mistake.
+None present: work inline. If unsure and it can run beside useful root work,
+dispatch it — an idle root is costlier.
 
 ## What a lane is
 
@@ -92,8 +88,7 @@ blind lane cold, reusing the facts rather than another worker's answer.
 
 ## Choosing a worker
 
-The cheapest tier that can do the *thinking* the lane demands — judged by
-thinking demand, never by volume. See [references/models.md](references/models.md).
+Choose by thinking demand, never volume. Known-pattern selector/xref/call-path tracing is mechanical; reserve stronger workers for ambiguous crypto/protocol semantics or judgment. See [references/models.md](references/models.md).
 
 ## Rails
 

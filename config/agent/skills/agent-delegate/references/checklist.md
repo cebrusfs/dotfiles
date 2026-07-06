@@ -23,13 +23,15 @@ Count, do not weigh. Delegate only if **at least one** is literally true:
 
 - [ ] There are two or more pieces of work whose files do not overlap and that
       do not depend on each other's output.
-- [ ] Answering will require reading material — search hits, logs, an unfamiliar
-      tree — that you would not otherwise need to keep.
+- [ ] Answering will require enough search hits, logs, unfamiliar-tree content,
+      disassembly/decompiler output, or xref inventory to crowd out the root's
+      task context, and those intermediate details need not be kept.
 - [ ] Someone other than the author must judge the result (blind review, or a
       design that must not inherit your hypothesis).
 
-None ticked → do the work inline. Do not delegate a single dependent step; you
-would pay a cold start to save nothing.
+None ticked → do the work inline. Do not delegate a single dependent step
+unless the context-isolation box is ticked; its saved root context is then the
+value that repays the cold start.
 
 More than one ticked, or several independent pieces → dispatch them together,
 not one after another.
@@ -81,7 +83,7 @@ thinking rather than by how many files or steps it spans:
 
 | The lane is… | Take |
 |---|---|
-| search, inventory, batch edit, docs, tests written from a spec | the cheapest tier |
+| search, inventory, mechanical reverse trace, batch edit, docs, tests written from a spec | the cheapest tier |
 | bounded implementation or factual verification against a stated plan | the mid tier |
 | ambiguity, design choice, non-mechanical review, hard debugging | the strong tier |
 
