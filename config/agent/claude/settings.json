@@ -41,6 +41,11 @@
     ]
   },
   "model": "opus[1m]",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -201,7 +206,6 @@
   "extraKnownMarketplaces": {},
   "language": "台灣繁體中文",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
   "tui": "fullscreen",
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": false,
