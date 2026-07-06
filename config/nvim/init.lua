@@ -1,9 +1,13 @@
 -- vim: ts=4 sts=4 sw=4 et
 
--- Resolve shared Vim defaults relative to the literal path used to load this
--- file. Keep this at top level: expand("<sfile>") is script-local and becomes
--- ambiguous in later callbacks.
-local nvim_dir = vim.fn.expand("<sfile>:p:h")
+-- Resolve shared Vim defaults relative to this file. `dofile()` does not set
+-- <sfile> to the Lua chunk path, so use debug source and normalize symlinks.
+local source = debug.getinfo(1, "S").source
+local nvim_dir = source:sub(1, 1) == "@" and vim.fn.fnamemodify(source:sub(2), ":p:h") or vim.fn.expand("<sfile>:p:h")
+local real_nvim_dir = (vim.uv or vim.loop).fs_realpath(nvim_dir)
+if real_nvim_dir then
+    nvim_dir = real_nvim_dir
+end
 local common_vim = vim.fn.fnamemodify(nvim_dir .. "/../vim/common.vim", ":p")
 if vim.fn.filereadable(common_vim) == 1 then
     vim.cmd.source(vim.fn.fnameescape(common_vim))

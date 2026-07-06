@@ -1,3 +1,10 @@
+[env]
+NPM_CONFIG_CACHE = "${TMPDIR:-/tmp}/dotfiles-npm-cache"
+NPM_CONFIG_UPDATE_NOTIFIER = "false"
+
+[settings]
+env_shell_expand = true
+
 [tools]
 actionlint = "latest"
 jq = "latest"
@@ -28,7 +35,7 @@ run = "shfmt -f . | grep -vE '^(modules|config/vim/plugged|config/zsh|bin)/' | x
 # No shellcheck equivalent exists for zsh; `zsh -n` does a parse-only syntax check.
 [tasks."lint:zsh"]
 description = "Syntax-check all zsh files using zsh -n"
-run = "for f in config/zsh/*; do zsh -n \"$f\"; done"
+run = "for f in config/zsh/*; do zsh +o bg_nice -n \"$f\"; done"
 
 [tasks."lint:github-actions"]
 description = "Lint GitHub Actions workflows"
