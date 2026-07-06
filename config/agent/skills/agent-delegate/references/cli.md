@@ -2,14 +2,9 @@
 
 Read when a CLI worker is the chosen route: invocation, resume, output capture,
 or a non-Codex runtime. [../SKILL.md](../SKILL.md) owns whether to delegate at
-all; model choice comes from [models.md](models.md). A CLI dispatch crosses a
-session boundary, so get the user's opt-in before passing private repository or
-conversation context through one.
-
-A fresh agent CLI dispatch starts a separate session. Before passing private
-repository or conversation context, disclose that boundary and obtain explicit
-user opt-in; never silently substitute a CLI for a native worker. Later
-`resume` calls for the same approved lane keep that conversation boundary.
+all and owns the CLI session-boundary authorization; model choice comes from
+[models.md](models.md). Later `resume` calls within the same approved lane keep
+that conversation boundary.
 
 ## Codex
 
@@ -124,7 +119,3 @@ file documents `agy` only.
 
 When adding another CLI, record only its non-interactive form, sandbox/read-only
 mode, model selector, output capture, and verified failure recovery.
-
-## Lessons
-
-- 2026-07-26: Re-launching `--resume` preserved dialogue but rebuilt most prompt-cache input; keep one streaming process alive for ordinary follow-ups and reserve resume for recovery. (evidence: Opus usage counters and Claude Code 2.1.220 streaming smoke test)

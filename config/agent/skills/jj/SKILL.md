@@ -1,22 +1,33 @@
 ---
 name: jj
 description: >-
-  jj (Jujutsu) workflow details — skeleton planning, commit messages, diff-based split, conflict resolution, recovery. Invoke when: (a) planning a multi-step jj stack, (b) writing a commit message, (c) splitting a commit diff-selectively (no explicit file paths), (d) resolving merge conflicts without TUI, or (e) recovering from a jj mistake. Skip for routine probes or file-path-only splits.
+  Use before editing a jj repository or rewriting its history. Covers working-copy flow, topic amendments, non-interactive commits and splits, conflict resolution, and recovery. Routine read-only probes do not require it.
 allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj op log:*), Bash(jj describe:*), Bash(jj commit:*), Bash(jj edit:*), Bash(jj new:*), Bash(jj absorb:*), Bash(jj undo:*), Bash(jj restore:*), Bash(jj bookmark:*), Bash(jj abandon:*), Bash(jj fix:*), Bash(jj squash:*), Bash(jj split:*), Bash(jj resolve:*), Bash(jj rebase:*)
 ---
 
 # jj
 
-Baseline (invariant, mental model, pre-edit flow choice) lives in the shared jj
-rules loaded by the current environment; read those rules on demand when they
-are not auto-loaded. Cross-agent safety rules live in the applicable agent
-instructions. This skill covers operations needing extra recipe.
+Cross-agent topic and safety policy lives in the applicable agent instructions.
+This skill owns jj-specific mechanics.
+
+## Before editing
+
+Run `jj st` and choose the flow:
+
+- Empty `@`: it is already your new change. Describe it in place; do not run
+  `jj new` just to start work.
+- Unrelated local edits in `@`: preserve them at the leaf, then use
+  `jj split <files> -m "<component>: <title>"` to put your topic below them.
+- Continuing an unpushed topic: use the amendment guidance below and keep its
+  existing owner.
+
+`jj commit` leaves a fresh empty `@`; `jj split` leaves the unselected remainder.
+Use `jj new` to leave a populated change behind or start from a different base.
 
 ## Routing
 
 | Task | Reference |
 |---|---|
-| Plan a multi-step stack (skeleton commits) | `references/skeleton.md` |
 | Write / apply a commit message | `references/commit.md` |
 | Split a commit non-interactively | `references/split.md` |
 | Recover from a mistake / resolve conflicts | `references/recovery.md` |
@@ -60,31 +71,8 @@ contain hunks owned by several commits, so path-based squashes can move later
 work into an earlier concern and cascade conflicts through every descendant.
 Never guess ownership from filenames.
 
-### Recovering a bad review-fix distribution
-
-Inspect recent operations without snapshotting or reconciling the current
-working copy:
-
-```bash
-jj --at-op=@ --ignore-working-copy op log -n 5
-```
-
-Identify the operation immediately before the bad rewrite, inspect it with
-`jj --at-op=<operation-id> log`, and record the old stack-tip **commit ID**:
-
-- If current stack-tip content is missing or wrong, work from a clean repair
-  change at the current stack tip and restore only the affected paths:
-
-  ```bash
-  jj restore --from <old-tip-commit-id> <paths>
-  ```
-
-  This restores file content, not the old commit graph; it does not use
-  `jj op restore`. Inspect the repair diff, then follow the decision gate above.
-- If final content is already correct and only commit ownership is wrong,
-  restore is a no-op. Stop and ask whether to perform an authorized operation
-  rollback or deliberately reconstruct the affected local stack. Never run
-  `jj undo` without explicit user authorization.
+For a bad distribution, use
+[recovery.md](references/recovery.md#bad-review-fix-distribution).
 
 Use `jj squash -u` / `--use-destination-message` only when the destination
 description is already the right final message; it keeps the destination

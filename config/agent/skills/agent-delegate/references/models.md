@@ -1,128 +1,52 @@
 # Worker Model and Runtime Mapping
 
-Read this to check your own judgment tier, and again once the worker route is
-fixed to pick a selector on it. [../SKILL.md](../SKILL.md) owns the
-delegation decision, dispatch, and native-versus-CLI routing; this file maps
-verified worker selectors on that route, and defines the judgment tier that
-decides whether the root improvises or follows the fallback procedure. It never
-selects, evaluates, or changes the root agent.
+This file owns worker selectors and routing defaults. The host fixes the root
+model and effort; this file does not classify or change them.
 
-## Judgment tier
-
-[../SKILL.md](../SKILL.md) leaves routing to the root's judgment and keeps only
-its Rails hard. That works for a root that can actually price cost against
-value. A root at or above this tier improvises; a root below it works from
-[checklist.md](checklist.md), which converts the same policy into countable
-steps.
-
-At or above the tier: `claude-opus-5`, `claude-fable-5`, `gpt-5.6-sol`.
-Everything else is below it.
-
-Read that as **model ids, not aliases**. An alias like `opus` floats — it can
-resolve to an older model depending on provider and configuration, so knowing
-only your alias does not establish which model answered. If all you have is an
-alias, or the runtime surfaces no model at all, you are below the tier. Decide
-this from the reported id, never from your impression of your own capability:
-self-assessment is the judgment this switch exists to avoid relying on.
-
-The tier rates a root's *routing* judgment only. It is unrelated to the
-worker-cost mappings below, and the root's model is a given input — never a
-selection (see [../SKILL.md](../SKILL.md)). `claude-fable-5` sits here on its
-stated root capability; its worker cost tier remains unverified.
-
-## Selection
-
-- Optimize cost per accepted result: include prompt, reports, verification,
-  retries, and retained context. Do not optimize for unit token price or agent
-  count alone.
-- Select only verified worker models and efforts accepted by the live route.
-  A subagent label does not prove its effective model or cost.
-- After the worker route is fixed, choose the cheapest capable worker. Increase
-  capability or effort only for a demonstrated capability or judgment need;
-  step count alone never justifies an upgrade.
-- Judge that need by thinking demand, not volume. Mechanical or known-pattern
-  work — search, inventory, batch edits, documentation, tests written from a
-  spec — takes the cheapest tier however many files or steps it spans. Reserve a
-  strong worker for ambiguity, design choice, non-mechanical review, and
-  difficult debugging.
-
-## Claude workers
-
-These aliases and the selector behavior were verified 2026-07-11; the live
-selector set was re-checked 2026-07-26. A Claude worker without an explicit
-`model` inherits its caller, so specify the model whenever the mapping below is
-required; omission cannot prove a cheaper route.
-
-| Alias | Worker use |
-|---|---|
-| `haiku` | known-pattern search, inventory, documentation, tests, or mechanical batches |
-| `sonnet` | bounded implementation and factual verification |
-| `opus` | non-mechanical review or difficult debugging with demonstrated need |
-| `fable` | present in the live selector set (verified 2026-07-26); worker mapping unverified — do not claim a cost tier or capability from it until a dispatch confirms one |
-
-Aliases are not pinned model identifiers; do not claim exact-model
-reproducibility from them. Subscription mix determines effective CLI cost; do
-not infer it from public per-token prices alone.
+Choose by thinking demand and cost per accepted result, including retries and
+verification. Material volume alone does not justify a stronger worker.
+Verify selectors against the session's live route; re-check when the route
+changes or rejects a selection. Do not infer price or resolved settings from a
+worker label.
 
 ## Codex workers
 
-The native collaboration schema exposes `gpt-6.1-sol`, `gpt-6-astra`,
-`gpt-6-sol`, `gpt-6-luna`, and `gpt-5.6-sol` worker overrides plus reasoning
-effort (verified 2026-10-08). The former `gpt-5.6-luna` and `gpt-5.6-terra`
-selectors are absent from this route. Re-check the live schema rather than
-guessing an alias, model identifier, or effort value.
+Native schema and routing verified/approved 2026-10-08:
 
-### Reasoning effort — verified per route
-
-The two routes do not declare the same set, so do not carry a value from one to
-the other.
-
-| Route | Declared values | How established |
+| Work | Model | Effort |
 |---|---|---|
-| Native `spawn_agent`, `gpt-6-luna` | `low` `medium` `high` `xhigh` `max` | Live schema, verified 2026-10-08. `none`, `minimal`, and `ultra` are not listed for Luna. |
-| Native `spawn_agent`, other exposed overrides | `low` `medium` `high` `xhigh` `max` `ultra` | Live schema, verified 2026-10-08. `none` and `minimal` are not listed. |
-| Codex CLI | `none` `minimal` `low` `medium` `high` `xhigh` `max` `ultra` | Historical verification, 2026-07-27: the `ReasoningEffort` variants in codex-cli 0.145.0, plus `max` echoed in a live `codex exec --strict-config` session. Re-check the installed CLI before relying on this set. |
+| Mechanical search, inventory, batch edits, or tests from a spec | `gpt-6-luna` | `low` |
+| Bounded implementation, debugging, or factual verification | `gpt-6.1-sol` | Route default; raise on demonstrated need |
+| Blind or non-mechanical review, including judging worker output | `gpt-6.1-sol` | Explicit `xhigh` |
+| Investigation requiring capability beyond Sol | `gpt-6-astra` | Explicit, verified for the route |
 
-The native field is typed `string` with no machine-checkable enum, so an
-unlisted value cannot be *proven* rejected — but an unlisted value is also not
-verified, so do not send one. Do not rely on omitted effort when it matters: in
-a 2026-07-27 native dispatch, a `gpt-5.6-sol`/`max` parent passed only an
-explicit Sol model and the worker resolved to `low`. Pass model and effort
-together for a pinned route, then verify the resolved worker settings. Native
-selector support is listed above; CLI support must be verified independently.
-`ultra` is declared for the native non-Luna selectors but remains untested here.
+The native schema also exposes `gpt-6-sol` and `gpt-5.6-sol`; their cost
+advantage over these defaults is unverified. The former `gpt-5.6-luna` and
+`gpt-5.6-terra` selectors are absent. No pricing or accepted-result benchmark
+has been verified for this mapping.
 
-Pass a CLI value with `-c model_reasoning_effort="<value>"`.
+Native efforts are `low`, `medium`, `high`, `xhigh`, and `max`; the
+non-Luna selectors also declare `ultra`. Omitted effort need not inherit the
+parent's setting when a model override is supplied, so pass both selectors
+when pinning a review route. Do not use Luna for ambiguous decisions or review.
 
-**`xhigh` is not the ceiling.** This ladder has grown before, and a config file
-left at `xhigh` is evidence of that setting's age, not of the maximum available.
-Re-read the live schema or the variant list rather than inferring the top from
-what happens to be configured.
+Use Sol if Luna is unavailable. For CLI workers, verify the installed CLI's
+selectors independently; see [cli.md](cli.md). Native fork and override
+constraints live in [codex-host.md](codex-host.md).
 
-| Selector | Worker mapping |
+## Claude workers
+
+Aliases were verified 2026-07-26; confirm availability on the current route.
+An omitted model inherits the caller. Aliases float, so they do not establish
+an exact model version or price.
+
+| Alias | Work |
 |---|---|
-| `gpt-6-luna` + `low` | eligible known-pattern search, inventory, documentation, tests, and mechanical work, when available |
-| `gpt-6.1-sol` | plan-backed bounded implementation, debugging, and verification. Leave effort at the route's default and raise it only on demonstrated need — `high` is not automatic for this row |
-| `gpt-6.1-sol` + `xhigh` | blind or non-mechanical review, including judging another worker's work; pass both selectors explicitly |
-| `gpt-6-astra` | demanding investigation or ambiguity with demonstrated need beyond Sol; select an explicitly verified effort |
+| `haiku` | Known-pattern search, inventory, documentation, tests, mechanical batches |
+| `sonnet` | Bounded implementation and factual verification |
+| `opus` | Non-mechanical review or difficult debugging with demonstrated need |
+| `fable` | Previously exposed; worker capability and cost mapping unverified |
 
-This native routing was approved 2026-10-08. It uses the live schema's model
-descriptions; no pricing or accepted-result comparison has been verified.
-`gpt-6-sol` and `gpt-5.6-sol` remain exposed compatibility selectors, without
-an inferred cost advantage over the defaults above.
-
-When Luna is unavailable, use the verified Sol route for eligible native
-work rather than opening a CLI solely to reach Luna. For a Codex CLI worker,
-pass the exact verified model and effort selectors; consult [cli.md](cli.md)
-for invocation and boundary requirements.
-
-Do not use Luna for ambiguous decisions, blind review, difficult debugging, or
-judging another worker's work. A worker that discovers separable low-risk work
-returns the decomposition for the root to route unless that nested delegation
-was pre-authorized.
-
-## Other runtimes
-
-Use an unlisted runtime only when its live CLI or native schema verifies the
-selector and the approved boundary permits it. Do not invent model IDs,
-aliases, pricing, or inheritance behavior.
+Subscription and runtime determine effective cost; do not infer it from
+public per-token prices alone. For other runtimes, verify selectors before
+dispatch and follow the approved session boundary.

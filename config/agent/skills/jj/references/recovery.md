@@ -9,11 +9,24 @@
   `jj --at-op=@ --ignore-working-copy op log -n 5` and present findings. The
   skill's allowed-tools listing `jj undo` is capability, not permission.
 
-## Amending an ancestor
-- `jj absorb` distributes `@` changes to the nearest ancestor that touched the same lines.
-- If absorb mis-routes, that is an undo-shaped situation: show
-  `jj --at-op=@ --ignore-working-copy op log -n 5` and ask before `jj undo`;
-  then `jj new` to isolate, redo edits, absorb again.
+## Bad review-fix distribution
+
+Inspect recent operations without snapshotting or reconciling the working copy:
+
+```bash
+jj --at-op=@ --ignore-working-copy op log -n 5
+```
+
+Inspect the pre-rewrite state with `jj --at-op=<operation-id> log` and record
+its stack-tip **commit ID**.
+
+- If content is wrong, create a clean repair at the current tip and use
+  `jj restore --from <old-tip-commit-id> <paths>`. This restores file content,
+  not the old graph. Inspect the diff and follow
+  [amendment routing](../SKILL.md#amending-commits-in-a-stack).
+- If only commit ownership is wrong, restoring content cannot fix it. Ask
+  whether to perform an authorized operation rollback or deliberately
+  reconstruct the affected local stack; the rollback restriction above applies.
 
 ## Conflict resolution (non-interactive)
 - Use `jj resolve --list` to enumerate conflicts. In jj 0.45.1 (verified

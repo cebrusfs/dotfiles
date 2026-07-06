@@ -1,120 +1,70 @@
-# Agent Institution Maintenance
+# Agent Instruction Maintenance
 
-How to update the agent instruction files safely. Applies to any model, any
-session. Layout and adapter wiring are owned by
-[agent-config.md](agent-config.md); this file owns content changes.
-Background and design rationale: [agent-letter.md](agent-letter.md).
+This file owns maintenance of shared agent guidance. Adapter layout and wiring
+live in [agent-config.md](agent-config.md).
 
-## Ownership map
+## Ownership and placement
 
-Every rule and fact has exactly one owning file. Edits move content toward its
-owner; never copy content between these files — link instead.
+| File | Owns |
+|---|---|
+| `config/agent/global.md` | Cross-agent preferences, authorization, completion, and VCS policy |
+| `config/agent/skills/jj/**` | jj pre-edit flow, command recipes, and recovery |
+| `config/agent/skills/agent-delegate/SKILL.md` | Delegation contracts, authority, isolation, and review criteria |
+| `agent-delegate/references/models.md` | Worker selectors and routing defaults |
+| `agent-delegate/references/{claude,codex}-host.md` | Native dispatch mechanics |
+| `agent-delegate/references/cli.md` | CLI invocation and resume |
+| `agent-delegate/references/workspaces.md` | Writable jj worker isolation |
+| `agent-delegate/references/failures.md` | Worker failure handling |
+| `config/agent/hooks/*` and runtime permission rules | Mechanical enforcement |
+| `docs/agent-maintenance.md` | Content ownership and maintenance boundaries |
 
-| File | Owns | Loaded |
-|---|---|---|
-| `config/agent/global.md` | interaction rules; delegate/judgment *triggers*; cross-agent VCS safety core | every session, all agents |
-| `config/agent/skills/jj/**` | jj recipes: skeleton, messages, split, recovery, non-interactive forms | on jj tasks |
-| `config/agent/hooks/*`, Claude `permissions.deny`, `config/agent/codex/rules/agent.rules` | mechanical enforcement: commit-message format, commit nudge, worktree↔workspace wiring, `jj git`/`jj op` bans | at the moment of action |
-| `config/agent/rules/judgment.md` | judgment rubrics with examples | every Claude session; on-demand elsewhere |
-| `config/agent/skills/agent-delegate/SKILL.md` | the delegation trade; lane contract; briefing; the rails; conditional reference routing | on delegation |
-| `config/agent/skills/agent-delegate/references/checklist.md` | the countable fallback procedure for a root below the judgment tier | when improvising is not warranted |
-| `config/agent/skills/agent-delegate/templates/*.md` | per-task worker prompts | one file per dispatch |
-| `config/agent/skills/agent-delegate/references/models.md` | volatile runtime/model mappings; the judgment tier | when choosing runtime/model, or checking own tier |
-| `config/agent/skills/agent-delegate/references/{claude,codex}-host.md` | per-runtime native worker routing | on that runtime |
-| `config/agent/skills/agent-delegate/references/cli.md` | agent CLI invocation and resume mechanics | when using a CLI |
-| `config/agent/skills/agent-delegate/references/workspaces.md` | writable jj worker isolation | for writable jj workers |
-| `config/agent/skills/agent-delegate/references/failures.md` | escalation ladder | after a failure |
-| `docs/agent-maintenance.md` | this protocol; lessons format; size budgets | on demand |
-| `docs/agent-letter.md` | diagnosis, degradation modes, handoff notes | on demand |
+Keep one owner per fact or rule; callers link to it. Always-loaded guidance
+should contain preferences and constraints needed across tasks. Put specialized
+recipes in skills or references, with a trigger that loads them before use.
+Safety-critical guidance must be shared across runtimes or mechanically
+enforced; the optional Claude rules directory cannot be its sole owner.
 
-Placement rules:
+Write for a capable agent: keep non-obvious context, user preferences, and
+operational invariants. Remove generic reasoning tutorials, duplicate
+instructions, and incident narratives already represented by the current rule.
 
-- Always-loaded files carry only what changes behavior in most sessions;
-  everything else goes in skills or docs, reachable by a pointer.
-- Layer by trigger reliability × frequency: content goes to the latest layer
-  whose load timing still precedes its moment of need. No reliable trigger
-  (safety bans, pre-edit flow choice) → always-on; reliable trigger (commit,
-  split, conflict, dispatch) → skill; mechanically checkable → hook / deny /
-  execpolicy, with a self-teaching message so the prose can stay one line.
-- `config/agent/rules/` is a Claude-only amplifier: nothing safety-critical may
-  live only there; the safety core stays in `global.md` or a mechanical layer.
-- Tool-agnostic policy (e.g. commit topic rules) never moves into a
-  tool-specific skill.
+## Authorized updates
 
-## Repo-vendored skill copies
+- Fix verified factual rot, such as paths, flags, or selectors; date volatile
+  facts and retain their evidence source.
+- Fix wording without changing meaning.
+- Apply preference corrections under
+  [global.md](../config/agent/global.md#judgment), including version-controlled
+  custom skills. That file owns the trigger and authorization limits.
 
-A repository-vendored skill copy is the runtime source for everyone working in
-that repository, whether or not they also have global agent configuration. A
-global copy, when one exists, is only an explicit maintenance upstream for
-maintainers of both copies; global-to-repo maintenance never overwrites a
-repository at runtime. Repo-specific behavior stays repo-local, and repo
-content must not depend on home-directory paths.
+Other policy changes, model routing defaults, operational thresholds, size
+budgets, or restructuring always-loaded guidance require user approval.
+An explicit approval in the current task already covers its stated scope;
+do not ask again for routine implementation within it.
 
-## What you may change without asking
+For reusable failures, fix the immediate result and update the owning guidance
+within that authority. Propose any required policy change. Replace stale
+content in place; do not accumulate a separate Lessons diary. Use the available
+skill-authoring tool when helpful, and validate meaningful behavior changes
+with a realistic case proportional to their risk.
 
-- Fix factual rot — a dead path, renamed flag, or stale model id — when you
-  have direct evidence (`--help` output, filesystem state). Update the
-  verified date next to the fact.
-- Append a lesson entry (format below) to the owning file's `## Lessons`
-  section after an actual incident in the session.
-- Add one example to an existing rubric when a real case showed the rubric
-  was ambiguous.
-- Wording fixes that cannot change meaning (typos, grammar).
-- Narrow preference corrections authorized by
-  [global.md](../config/agent/global.md#judgment), including edits to
-  version-controlled custom skills. That rule owns the trigger and limits.
+## Vendored skills
 
-## What requires asking the user first
+A repo-vendored skill is that repository's runtime source. A global copy may
+serve as an explicit maintenance upstream, but never overwrites a repository
+at runtime. Keep repo-specific behavior local and independent of home paths.
 
-- Changing operational thresholds or counts: delegate triggers, escalation strikes,
-  retry caps, size budgets.
-- Adding, removing, or weakening a rule outside the preference corrections
-  authorized above.
-- Restructuring `global.md` or adding any new always-loaded file (both tax
-  every future session).
-- Changing model routing defaults or the model table beyond verified fact
-  updates.
-- Distilling a Lessons section into the rules body (it rewrites rules).
+## Size and verification
 
-## Lessons: where and how
-
-- Authorized preference corrections follow `global.md` directly; this lesson
-  log and its proposal requirements do not apply to them.
-- After a real failure or correction, append to a `## Lessons` section at the
-  bottom of the *owning* file (create the section on first use):
-  `- YYYY-MM-DD: <one-line lesson> (evidence: <command/path/incident>)`
-- One line per lesson. No essays — if it needs a paragraph, it is probably a
-  rule-change proposal; ask the user instead.
-- When a Lessons section exceeds 10 entries or ~30 lines, propose a
-  distillation to the user: which entries become rule wording, which get
-  deleted. Do not distill unilaterally.
-- Recurring lessons (same theme 3+ times) are hook candidates — propose
-  mechanical enforcement, not more prose (see agent-letter.md §B.1).
-
-## Size budgets (a file over budget is a bug)
-
-Measured in words (`wc -w`), which track token and attention cost without
-rewarding unwrapped run-on lines:
+Word limits (`wc -w`) are ceilings, not targets:
 
 | File | Budget |
 |---|---|
 | `global.md` | 1,600 words |
-| `rules/judgment.md` | 1,000 words |
-| each `agent-delegate` file | 1,500 words |
-| `agent-delegate/references/checklist.md` | 1,600 words |
+| Each `agent-delegate` file | 1,500 words |
 
-`checklist.md` gets its own budget because it is a different kind of file: a
-self-sufficient procedure for a root that must not improvise. Squeezing it to
-the principles-file budget would strip the steps that make it self-sufficient,
-which is the whole reason it exists.
-
-When adding pushes a file over budget, remove or merge something, or ask.
-
-## Every change, before commit
-
-1. `mise run check` passes.
-2. Read-back: a fresh look at the final file confirms it is complete and
-   its cross-references resolve (files exist, paths correct).
-3. If the change touches adapter wiring or symlinks, follow
-   [agent-config.md](agent-config.md) and the `repo-agent-config` skill.
-4. Topic commit as `agent: <title>`.
+When an edit exceeds a budget, remove or merge content, or ask to change it.
+Before committing, run `mise run check`, read back the result, and verify
+references resolve. For adapter or symlink changes, follow
+[agent-config.md](agent-config.md) and `repo-agent-config`. Use topic commits
+under the shared VCS policy.

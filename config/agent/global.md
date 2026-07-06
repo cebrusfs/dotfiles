@@ -61,30 +61,12 @@ commit.
 
 ## Delegation
 
-Delegate work that forms an independently acceptable bounded lane: an explicit
-goal, scope/write set, and acceptance criteria. It pays when the work holds two
-or more lanes that would otherwise run serially, when a worker keeps bulk
-material out of my context, or when the judgment must not come from the author;
-its cost is one cold start per lane. Parallelize independent lanes, and give
-writers disjoint write sets.
-
-* Before dispatch, read `agent-delegate`; it owns the trade, the lane contract,
-  and the rails. If your own model is below the judgment tier that skill's
-  `references/models.md` defines, follow its `references/checklist.md` step by
-  step instead of improvising. The root retains instruction/skill reading,
-  decomposition, cross-lane judgment, integration, acceptance/rejection of
-  evidence, user-facing claims, VCS writes, and outward or destructive approval
-  decisions.
-* Workers return concise evidence; long artifacts go to files. The root
-  validates current state and owns final claims.
-* Root-authored work needs a fresh blind reviewer only when runnable checks
-  cannot prove acceptance; a non-author root may review worker output directly.
+Consider delegation when parallel progress, context isolation, or independent
+judgment can justify its briefing and review cost. Read `agent-delegate` before
+dispatch; it owns lane contracts, worker routing, review criteria, and authority
+boundaries.
 
 ## Judgment
-
-Canonical rubrics with worked examples:
-`~/.dotfiles/config/agent/rules/judgment.md`. Claude Code auto-loads it; Codex
-and Gemini must open that path themselves when a trigger below fires.
 
 * Stop and ask the user when an instruction has two readings whose outcomes
   differ materially, when an action is irreversible or outward-facing and was
@@ -95,8 +77,8 @@ and Gemini must open that path themselves when a trigger below fires.
   actually directed at me (direct address, @mention asking me, assignee, or an
   explicit "for your input"); being cc'd or added "for awareness" is not a
   question to answer.
-* After a failed attempt, escalate or change approach instead of retrying
-  blindly; the escalation ladder lives in the `agent-delegate` skill.
+* Diagnose failures before retrying; change approach when the evidence calls
+  for it. Worker failure handling lives in `agent-delegate`.
 * When a correction expresses a reusable preference, fix the current result
   and update its owning skill or guidance in the same session, including
   version-controlled custom skills. The correction authorizes that narrow
@@ -105,47 +87,20 @@ and Gemini must open that path themselves when a trigger below fires.
   one-off requirements or transient failures into policy. Ask before changing
   safety, permissions, or model routing, or when the intended preference is
   unclear. Persist other reusable fixes under the owning maintenance policy.
-* "Done" means acceptance criteria proved by runnable checks or non-author
-  read-back — never by the author's impression.
+* Before claiming completion, verify the requested outcome with relevant
+  checks, observed behavior, or direct read-back. State any unverified part.
 
 ## Version Control
 
-Principle: use judgment to keep history easy to review, revert, and continue.
-Prefer semantic topic commits over file-count, component-name, or time-order
-boundaries.
-
-When the topic boundary is unclear, follow these fallback rules unless repo
-instructions override them.
-* In `jj + git` colocated repos, use `jj` exclusively; never use `git`. Use the
-  `jj` skill (Claude slash form `/jj`) for detailed guidance.
-* Before editing in a jj repo, run `jj st` and pick the flow: `@` empty ("The
-  working copy has no changes" — in jj, clean and empty are the same state) →
-  that `@` *is* your new change, so `jj describe -m "<component>: <title>"` in
-  place and never `jj new` onto it; `@` holding sticky local junk → edit, then
-  `jj split <files> -m "..."` per topic to drop it below `@`; work continuing an
-  unpushed topic → squash into its owner instead of starting a commit. A repo
-  carrying its own agent guide (`AGENTS.md`) may restate or extend this; the
-  `jj` skill holds the recipes.
-* Topic judgment: one topic has one semantic reason to exist, one owner/reviewer
-  context, one revert boundary, and one concise summary.
-* Same topic: squash follow-up edits that refine, fix, complete, or verify that
-  concern, even across files or after user review.
-* Different topics: split changes that have independent reasons, owner/reviewer
-  contexts, revert boundaries, or unrelated final-summary bullets.
-* Incidental edits: keep required incidental edits with their topic; split
-  drive-by cleanup, tooling migration, generated/content fixes, docs/rules
-  updates, and behavior changes only when independently meaningful.
-* `jj commit`/`jj split` already leave you on a fresh empty `@`; use `jj new`
-  only to leave a *populated* `@` behind or to start from another base
-  (`jj new trunk()`).
-* For large work, commit small checkpoints, then squash into a topic commit
-  after relevant checks pass, unless I say not to. For small work, commit the
-  topic directly.
-* Leave unrelated dirty files untouched.
-* Do not run destructive ops (`git reset --hard`, `git push --force`,
-  `git checkout --`) unless I explicitly instruct or a skill explicitly requires
-  it. Use `jj abandon`, `jj squash`, `jj rebase` carefully and read the `jj`
-  skill before using them.
+* Prefer semantic topic commits: one reason to exist, reviewer context, and
+  revert boundary. Squash refinements into the existing unpushed owner; split
+  independent concerns. Keep required incidental edits with their topic.
+* For large work, make small checkpoints and consolidate after checks pass.
+  Preserve unrelated dirty files.
+* In `jj + git` colocated repos, use `jj` exclusively. Read the `jj` skill
+  before editing or rewriting history; it owns the pre-edit flow and recipes.
+* Do not run destructive operations unless I explicitly authorize them or an
+  applicable skill explicitly requires them.
 * Do not run `jj git *`, `jj undo`, or mutating `jj op` subcommands
   (`jj op abandon`, `jj op integrate`, `jj op restore`, `jj op revert`) unless I
   explicitly ask; syncing with remotes and operation-log recovery are my job.

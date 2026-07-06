@@ -13,12 +13,8 @@ Whether to delegate is the root's own call from the trade in
 dispatch, do not turn that into a question for the user — run the lane inline
 and record in the report that delegation was declined.
 
-One lane cannot fall back to inline: a review the root is required to obtain
-because runnable checks cannot prove its own work. Running that inline makes
-the author the judge, which no host refusal authorizes. Reach for another
-non-author route — a different agent type, or an approved CLI worker — and if
-none is available, say so and leave the work unaccepted rather than
-self-accepting it.
+For required independent review, use another non-author route or report the
+gap under [the verification criteria](../SKILL.md#verification-and-failures).
 
 ## Routing by agent type
 

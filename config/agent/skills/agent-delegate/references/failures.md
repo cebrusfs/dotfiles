@@ -1,21 +1,17 @@
-# Failure and Escalation
+# Failure Handling
 
-Read after a dispatch fails, or when the same understanding error appears again.
+Diagnose what failed before choosing another attempt.
 
-One distinction decides everything else: a **missing or moved input** is not a
-capability failure — fix the input and retry the same tier. A worker that had
-the relevant facts in view and still reasoned wrong will reason wrong again at
-that tier, so re-prompting it is the expensive mistake.
+- Missing or moved input: repair the input and retry when that addresses the
+  observed cause.
+- Misunderstanding despite sufficient evidence: improve the decomposition or
+  use a more capable worker, carrying the failed attempts and ruled-out causes.
+- Repeating the same failure without new evidence: change approach rather than
+  spending a fixed retry allowance.
+- An unresolved requirement or authority boundary: return the concrete decision
+  to the root or user.
+- Once the hard part is solved, route remaining known-pattern work using
+  [models.md](models.md).
 
-- Cheap worker, one understanding failure → move up a tier now.
-- Mid worker, twice on the same subtask → strong worker, handed the trail:
-  attempts, exact errors, and ruled-out hypotheses.
-- Strongest available worker, twice → the approach is wrong, not the model.
-  Change the decomposition or ask the user; a third identical attempt is thrash.
-- The same reasoning binds the lead. Stuck twice means recruit a stronger worker
-  or ask — not try variation three.
-- Once a strong worker has solved the hard instance, the rest of the batch is
-  known-pattern work: hand it to the cheapest tier with the solved example.
-
-The counts are where the evidence points, not a quota to spend. Escalate
-earlier when the failure already shows the tier cannot hold the problem.
+Retries should be proportionate to the likely gain and the consequences of
+repeating the action. Check partial effects before retrying writable work.
