@@ -20,6 +20,7 @@ Baseline rules (mental model, non-interactive requirements, state-exploration) l
 
 ## Quick reminders
 - Baseline (mental model, hard rules, flow choice) is always-on in `rules/jj.md`; this skill holds the heavier recipes.
+- Never rewrite commits (`squash` / `rebase` / `absorb`) while another process or delegated agent worker is editing the same working copy — the automatic snapshot races the rewrite and produces divergent change IDs, which can drop edits from disk. Wait for the worker to finish; if it already happened, see "Divergent change" in `references/recovery.md`.
 
 ## Amending a commit in a stack
 Mutable commits can be rewritten. Two ways:

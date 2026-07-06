@@ -55,10 +55,16 @@ codex exec [-m <model>] [-s <sandbox>] [-C <dir>] [-o <file>] "<prompt>"
 - Sandbox: `-s read-only` for review/exploration, `-s workspace-write` for
   bounded edits. Never `danger-full-access` or
   `--dangerously-bypass-approvals-and-sandbox`.
-- `-o <file>` writes the worker's final message to a file; `--json` streams
+- `-o <file>` captures only the worker's *last* message; repo Stop hooks can
+  replace that message (e.g. with a one-line disclaimer), losing the report.
+  When the report feeds later steps, instruct the worker to write it to an
+  agreed file path itself before ending.
+- `codex exec resume --last` continues the previous session with context; a
+  killed worker resumes with its file edits intact. `resume` does not accept
+  `-C` (run from the working directory) but still needs
+  `--skip-git-repo-check` wherever the original run did.
+- `codex exec review` runs Codex's built-in repo review; `--json` streams
   JSONL events.
-- `codex exec resume --last` continues the previous session with context;
-  `codex exec review` runs Codex's built-in repo review.
 - If it refuses to start outside a git repo (e.g. a jj workspace without a
   colocated `.git`), add `--skip-git-repo-check`.
 
