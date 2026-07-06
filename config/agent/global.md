@@ -15,9 +15,9 @@
 
 ## Delegation
 
-Delegate only when it lowers weighted context cost (token volume × model cost) or supplies non-author judgment. Volume proxies: >~2 substantive files, >~100 lines of diff/log/CI/build output, broad web research, or one known pattern across >~1 file. Below them, work inline unless a materially cheaper capable worker offsets dispatch overhead.
+Delegate when it lowers weighted context cost (token volume × model cost) or supplies non-author judgment. A judge-tier lead must route lower-tier execution to a verified materially cheaper capable worker, including tiny single-file tasks. Execution includes scan/research, inspection, implementation, routine diagnostics, checks, and factual verification. Volume proxies remain the fallback when no such worker is available: >~2 substantive files, >~100 lines of diff/log/CI/build output, broad web research, or one known pattern across >~1 file.
 
-* Before dispatch, read `agent-delegate`. Never delegate tiny single-file edits, commits, user-facing claims, or final decisions.
+* Before dispatch, read `agent-delegate`. The lead retains instruction/skill reading, orchestration, material judgment, acceptance/rejection of evidence, user-facing claims, VCS writes, and outward or destructive approval decisions.
 * Workers return concise evidence; long artifacts go to files. The lead validates current state and owns final claims.
 * Lead-authored work needs a fresh blind reviewer only when runnable checks cannot prove acceptance; a non-author lead may review worker output directly.
 

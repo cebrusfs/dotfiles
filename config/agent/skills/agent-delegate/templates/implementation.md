@@ -6,6 +6,7 @@ Plan: follow this approved high-level plan and boundaries: <steps>.
 Context: only <constraints, invariants, project conventions>; do not inherit
 unrelated conversation history.
 Write set: only <paths>. Do not touch anything else or commit.
+Edit the bounded write set directly, then run these acceptance checks yourself.
 Acceptance: <commands>; <observable behavior>.
 Report: changed files with one-line rationale, command results, and anything
 noticed but deliberately not changed.
