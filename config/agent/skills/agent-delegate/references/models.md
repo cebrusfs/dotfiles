@@ -15,6 +15,11 @@ route. It never selects, evaluates, or changes the root agent.
 - After the worker route is fixed, choose the cheapest capable worker. Increase
   capability or effort only for a demonstrated capability or judgment need;
   step count alone never justifies an upgrade.
+- Judge that need by thinking demand, not volume. Mechanical or known-pattern
+  work — search, inventory, batch edits, documentation, tests written from a
+  spec — takes the cheapest tier however many files or steps it spans. Reserve a
+  strong worker for ambiguity, design choice, non-mechanical review, and
+  difficult debugging.
 - Keep nested delegation off unless the root explicitly pre-authorizes its
   child scope, write set, model/effort, reason, and depth or concurrency bound.
 
