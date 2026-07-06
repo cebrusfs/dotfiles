@@ -251,19 +251,47 @@ local Codex config. If copying the template's permission profile into the local
 config, do not mix it with legacy `sandbox_mode` / `[sandbox_workspace_write]`
 settings; use one sandbox configuration model per session.
 
-The sync script is not directly executable; apply it with `mise run sync:codex`
-(which runs `config/agent/codex/sync-config.py` through `uv`) to sync stable
-Codex defaults into the local runtime config.
+Use the task runner to inspect or apply the template:
+
+```bash
+mise run sync:codex:preview  # Diff only; no writes or backups.
+mise run sync:codex:check    # No writes; exit 1 means managed defaults differ.
+mise run sync:codex         # Apply with a timestamped local backup.
+```
+
+These tasks run `config/agent/codex/sync-config.py` through `uv`; the script is
+not directly executable. Source and local TOML must parse before migration,
+and the generated TOML is validated before writing. A second apply makes no
+change or additional backup. `mise run test:codex-config` checks migration,
+local-state preservation, read-only preview/check, backups, and idempotency;
+it is included in `mise run check`.
 
 `./install` runs this sync after installing dev tools, and `./update` runs it
 after updating dev tools.
 
-The script syncs the permission profile, `[features.network_proxy]`, and shell
-environment inheritance/filter settings, including migrating a legacy
-`[features] network_proxy` value to the managed table. It
-preserves other feature toggles and local runtime sections such as `[projects]`,
-`[hooks.state]`, `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`,
-and strips the legacy sandbox keys managed by the template.
+| Settings | Owning source | Sync behavior |
+| --- | --- | --- |
+| Model/reasoning defaults, approval policy/reviewer, default permission selection | `config/agent/codex/config.toml` | Replace the managed top-level keys. |
+| All `permissions.*`, `[features.network_proxy]`, shell inheritance/filters, TUI | Same template | Replace managed sections; remove retired definitions absent from the template. |
+| Projects/trust, hooks state, MCP, marketplaces/plugins, apps, desktop state, other feature toggles | Local `~/.codex/config.toml` | Preserve unmanaged settings, including `[shell_environment_policy.set]`. |
+| A running task's permission selection | That task's native permission controls | Observe separately; a file sync does not prove an existing task changed modes. |
+
+Keep required profiles in the template. The sync owns every `permissions.*`
+table, so local-only profile definitions do not survive it. Before retiring a
+profile, search its default selection and explicit worker/CLI references;
+the intended `workspace-tool-caches` profile is still referenced and retained.
+
+The sync removes legacy `sandbox_mode` / `[sandbox_workspace_write]` and
+migrates the old `[features] network_proxy` scalar to the template's managed
+table. Do not keep both proxy representations in one TOML file. The table
+form is the representation this sync publishes.
+
+In the desktop app, select **Custom (config.toml)** to use these defaults.
+Built-in permission presets and per-task overrides may select the older
+sandbox model. If the UI writes managed keys into the local file, the next
+sync restores the template; a drift check reports that difference without
+claiming the UI change was a bug. Avoid `--sandbox` and `--approve-for-me` when
+an invocation needs the named profile's cache and network rules.
 
 ## Codex Permission Posture
 
@@ -294,7 +322,8 @@ The default Codex posture is `approval_policy = "on-request"`,
 workspace filesystem sandbox plus the listed tool cache/install directories.
 The listed GitHub and package/tool distribution hosts are allowed for ordinary
 dependency downloads; the enabled proxy retains its local/private-network
-guard. Other destinations use the native approval flow. Local services,
+guard. With only this user configuration, other destinations are blocked
+without an inline network approval. Local services,
 SSH-agent/Docker sockets, and additional write locations are not globally
 opened. Explicit credential read denies and child-environment filters reduce
 the login material available to sandboxed commands. The agent client retains
@@ -307,11 +336,50 @@ it is broader than a narrow permission grant. Do not add a broad runner allow
 rule to suppress that review. Read-only/headless workers keep their explicitly
 selected profile and approval policy.
 
-Verified with Codex CLI 0.161.0 on 2026-10-09: the network proxy is experimental;
-fine-grained permission-request features remain disabled. This setup does not
-depend on those features or promise per-command domain grants. An allowed
-destination can still receive readable project data; this is not a
-download-only policy. The proxy does not cover MCP, apps, browsers, or the
-client's service traffic. See [Codex permissions](https://learn.chatgpt.com/docs/permissions)
-and [Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review).
+The approval reviewer runs when an action reaches an approval boundary;
+ordinary commands already contained by the profile do not receive an extra
+review. A host allowance grants connectivity, not permission to publish,
+delete, send messages, or transmit project data. Those actions still require
+the authorization described in the shared guidance. An allowed destination
+can receive readable project data; this is not a download-only policy.
+
+If networking fails, first check the active task's mode and run the read-only
+drift check. An HTTP CONNECT 403 with `blocked-by-allowlist` is a proxy-policy
+rejection, not evidence of an expired service token or an origin IP ban.
+Keep a network-specific destination approval separate from a full command
+escalation. The latter can remove filesystem and network restrictions.
+
+The network proxy remains experimental. Both inspected clients (PATH CLI
+0.161.0 and desktop-embedded 0.162.0-alpha.17.2, 2026-10-19) expose native
+host-specific network approval in their app-server schemas, but their
+[session setup](https://github.com/openai/codex/blob/rust-v0.162.0-alpha.17.2/codex-rs/core/src/session/session.rs#L1500-L1546)
+enables the inline approval callback only when managed network requirements
+are configured. The user `features.network_proxy` toggle alone does not enable
+it. The local app-server reported no managed requirements. Adding a system
+network policy is a separate setup decision; see
+[managed configuration](https://learn.chatgpt.com/docs/enterprise/managed-configuration#configure-network-access-requirements).
+
+Fresh ephemeral threads in both clients loaded the named profile and automatic
+reviewer from the synced defaults without per-thread policy overrides. Allowed
+public control requests succeeded; a proxy-ignoring connection to the same
+pinned public address was blocked. An allowlisted test hostname resolving to
+a controlled loopback listener was denied with `not_allowed_local`, and the
+listener received no request. On the embedded client, an unknown public host
+was blocked in separate auto-review and human-review turns, with no approval
+event; a synthetic filesystem read deny remained enforced. Those turns did
+not grant connectivity. Do not promise reviewed temporary host access or a
+grant lifetime until the intended managed setup passes a fresh agent turn.
+
+If automatic review is unavailable or times out, the action may remain
+unexecuted. Use the native human-review route rather than granting full
+access. For a fresh CLI invocation with the managed defaults installed,
+`codex -c 'approvals_reviewer="user"'` changes only the reviewer for that run.
+Desktop permission controls can also change the sandbox selection, so inspect
+the resulting effective mode before relying on the named profile.
+
+These rules cover sandboxed local commands. MCP, apps, browsers, the client's
+service traffic, and approved full escalations have separate controls. Keep
+MCP latency diagnosis separate from shell proxy checks. See
+[Codex permissions](https://learn.chatgpt.com/docs/permissions) and
+[Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review).
 `web_search = "live"` separately controls the hosted web-search tool.

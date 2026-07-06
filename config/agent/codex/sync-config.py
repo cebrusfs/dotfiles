@@ -33,7 +33,8 @@ MANAGED_SECTION_KEYS = {"features": frozenset({"network_proxy"})}
 SECTION_PREFIXES = ("permissions.",)
 LEGACY_SECTIONS = ("sandbox_workspace_write",)
 
-HEADER_RE = re.compile(r"^\s*\[([^\]]+)\]\s*(?:#.*)?$")
+# Both table forms delimit blocks so managed tables cannot swallow local arrays.
+HEADER_RE = re.compile(r"^\s*(?:\[([^\]]+)\]|\[\[([^\]]+)\]\])\s*(?:#.*)?$")
 KEY_RE = re.compile(r"^\s*([A-Za-z0-9_-]+)\s*=")
 
 
@@ -54,7 +55,7 @@ def load_lines(path: Path) -> list[str]:
 
 def header_name(line: str) -> str | None:
     match = HEADER_RE.match(line)
-    return match.group(1).strip() if match else None
+    return (match.group(1) or match.group(2)).strip() if match else None
 
 
 def section_is_synced(name: str) -> bool:
@@ -179,6 +180,8 @@ def build_synced_config(source: Path, target: Path) -> str:
     top_lines = source_top_level_lines(source_lines)
     sections = source_sections(source_lines)
     target_lines = load_lines(target)
+    # Do not silently repair malformed local settings by stripping managed keys.
+    tomllib.loads("".join(target_lines))
     kept_lines = trim_blank_edges(strip_synced_content(target_lines))
 
     result: list[str] = []

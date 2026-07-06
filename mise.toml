@@ -12,6 +12,7 @@ neovim = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 stylua = "latest"
+uv = "latest"
 yq = "latest"
 
 # Shell scripts are auto-collected by `shfmt -f`, which detects them via shebang —
@@ -133,6 +134,11 @@ done
 exit "$status"
 '''
 
+[tasks."test:codex-config"]
+description = "Test Codex config migration and local-state preservation"
+env = { PYTHONDONTWRITEBYTECODE = "1" }
+run = "uv run --no-project --managed-python --python cpython python -m unittest discover -s config/agent/codex -p 'test_*.py'"
+
 # Manual entry points for the agent config syncs (install/update run the same
 # scripts). Each script prints the diff it applies; run the script without
 # --apply for a dry run.
@@ -140,13 +146,21 @@ exit "$status"
 description = "Sync stable Codex defaults into ~/.codex/config.toml"
 run = "uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply"
 
+[tasks."sync:codex:preview"]
+description = "Preview managed Codex config changes without writing"
+run = "uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py"
+
+[tasks."sync:codex:check"]
+description = "Check managed Codex defaults for drift without writing"
+run = "uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --check"
+
 [tasks."sync:antigravity"]
 description = "Sync stable Antigravity settings into the Antigravity CLI and Jetski settings files"
 run = "uv run --no-project --managed-python --python cpython python config/agent/antigravity/sync-config.py --apply"
 
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "lint:agent-budget", "test:hooks"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "lint:agent-budget", "test:hooks", "test:codex-config"]
 
 [tasks."fmt"]
 description = "Run all formatters"
