@@ -50,8 +50,10 @@
 * Keep routine development tools inside a daily access boundary without extra
   approval reviews. Use each agent client's native approval flow for access
   beyond that boundary; do not bypass sandboxing for ordinary builds or tests.
-* Before large multi-file changes, present a one-paragraph plan and wait for my
-  OK.
+* When I ask for a change, decide the approach yourself. Before a large
+  multi-file change, state the plan in a paragraph and proceed; wait for my OK
+  only when it goes beyond what I asked for or the choice is mine to make
+  (policy, preferences, irreversible or outward-facing actions).
 * When asked to modify repository files, finish end-to-end with relevant checks
   and a topic commit, unless told not to commit or the request is clearly
   exploratory.
