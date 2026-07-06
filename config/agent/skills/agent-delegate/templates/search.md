@@ -1,4 +1,4 @@
-# Search / Exploration (read-only)
+# Search / Evidence Scan (read-only)
 
 ```text
 Goal: find <what> in <repo/dir>, because <decision it feeds>.

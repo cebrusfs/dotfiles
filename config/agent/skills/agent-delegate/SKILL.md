@@ -8,28 +8,44 @@ description: Use before dispatching a subagent or agent CLI for large-context wo
 Cost-aware routing and dispatch contract for delegated workers. Global and
 repo guides own the delegation triggers, do-not-delegate list, and caller
 ownership. Worker output stays advisory until the lead validates it against
-the current state.
+the current state. Delegation never transfers final judgment, VCS writes,
+remote actions, or user-facing claims from the lead.
 
 ## Route
+
+Decide two axes independently before choosing a worker:
+
+1. **Execution reason** — latency/parallelism, context isolation, or independent
+   judgment.
+2. **Cost tier** — inline lead, same-tier worker, or a verified lower-cost
+   model/effort through a native or CLI selector.
+
+A native subagent is not inherently cheaper or same-tier. Resolve its effective
+model and effort from the live dispatch schema, selected custom agent, configured
+subagent defaults, or documented inheritance. If that path is not verifiable,
+do not claim a model-cost saving. Context inheritance controls token volume, not
+model strength or per-token price.
 
 Compare weighted cost: tokens each context ingests × model cost, including the
 worker prompt/report, lead verification, and context the lead retains for
 later turns. Do not spawn when both contexts ingest the same material without
-enough model-cost savings.
+enough latency, isolation, independent-judgment, or verified cost value.
 
 | Situation | Route |
 |---|---|
 | Non-author work below the volume gate on a strong lead | Work inline. |
-| Volume gate exceeded | Cheapest capable worker; conclusions and evidence only. |
-| Expensive judge-tier lead doing a lower-tier role | Downshift to a cheaper worker. |
+| User requests a cheaper/smaller/dumber worker | Use the cheapest capable verified native tier; if unavailable, use a verified CLI tier only after its boundary is approved, otherwise disclose the limit and work inline. |
+| Volume gate exceeded | Use the cheapest capable verified worker; return conclusions and evidence only. |
+| Expensive judge-tier lead doing a lower-tier role | Downshift only through a verified model/effort route. |
 | Lead-authored work fully proved by runnable checks | Run the checks; no reviewer. |
 | Lead-authored work needing judgment or read-back | Fresh, blind, non-author reviewer. |
 | Ambiguous or taste-shaped decision | Judge-tier model or the user. |
 
-| Role | Work | Cheapest fitting strength |
+| Role | Work | Cheapest fitting tier when selectable |
 |---|---|---|
-| explore | broad read-only scans, logs, docs | cheap |
-| implement | bounded patch with explicit acceptance | mid |
+| scan | bounded evidence gathering against a known question | cheap to mid |
+| explore | open-ended solution, architecture, or hypothesis search | strong |
+| implement | bounded patch from an approved high-level plan | mid |
 | verify | runnable checks or factual read-back | cheap to mid |
 | review | non-mechanical correctness, security, conventions | strong |
 | judge | ambiguous or taste-shaped choice | judge-tier or user |
@@ -50,9 +66,11 @@ Detect the host from its surfaced native tools, then read exactly one profile:
 | Claude Code with a native subagent tool | [references/claude-host.md](references/claude-host.md) |
 | Any host without a native worker API | [references/cli.md](references/cli.md) |
 
-The profile owns native-versus-CLI routing. Load
+The profile owns native-versus-CLI routing and native context inheritance. Load
 [references/models.md](references/models.md) only when a model or price choice
-remains. Never bypass any callee sandbox or approval protection.
+remains. Before claiming a downshift, verify both that the route accepts the
+selector and that the selected model/effort is lower cost. Never bypass any
+callee sandbox or approval protection.
 
 Give each worker a bounded prompt and a disjoint write set. Start from the
 matching [templates/](templates/) file — search, implementation, refactor,
@@ -65,8 +83,15 @@ research, review, or verification — and carry the dispatch triple:
 
 Close every prompt with: "Scope, write set, and plan are approved. Do not ask
 for permission. On a genuine blocker, stop with one question and
-recommendation; the lead will resume." A dispatched worker does not
-recursively delegate unless its prompt says so.
+recommendation; the lead will resume. Do not spawn or delegate to another agent
+unless the lead explicitly authorizes nested delegation." Only the lead decides
+whether another delegation layer is worth its cost.
+
+Keep nested delegation off by default. If the lead authorizes it, name the
+allowed model/effort, execution reason, child scope and write set, concurrency
+or depth bound, and stop/report condition. When fan-out is known before the
+first dispatch, the lead dispatches those workers directly; reserve a nested
+layer for material independent work discovered only inside worker context.
 
 Load the remaining references only when their condition applies:
 
