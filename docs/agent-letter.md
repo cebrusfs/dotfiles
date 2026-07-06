@@ -20,13 +20,13 @@ Every broad scan loads hundreds of lines into the priciest context and stays
 there for the rest of the session, crowding out the reasoning it was meant to
 serve.
 
-Fix (implemented): hard numeric triggers in `../config/agent/global.md`
-(>~5 files, >~300 lines of logs, >~3-file pattern application, web research
-beyond a single lookup, review passes → delegate); a model routing table in
-`../config/agent/skills/agent-delegate/routing.md` so no per-dispatch
-deliberation is needed; fill-in templates in
-`../config/agent/skills/agent-delegate/templates.md` so composing a worker
-prompt is cheaper than doing the work inline.
+Fix (implemented): volume proxies in `../config/agent/global.md` plus a
+cost/author gate in `../config/agent/skills/agent-delegate/SKILL.md`. Bounded
+work stays inline when a worker would duplicate weighted context cost; an
+expensive lead downshifts to the cheapest capable role, while
+author-independent judgment remains explicit. Per-task files in the
+[template directory](../config/agent/skills/agent-delegate/templates/) make
+composing a worker prompt cheaper than doing the work inline.
 
 ### Leak 2 — Always-loaded rules duplicate each other and drift
 
@@ -58,12 +58,12 @@ context that wrote the code. Worse, after two or three failed attempts the
 original acceptance criteria have usually scrolled out of effective attention,
 so later retries optimize for the wrong target.
 
-Fix (implemented): the escalation ladder with hard counts in
-`../config/agent/skills/agent-delegate/routing.md` (cheap model: one strike;
-mid model: two strikes on the same subtask, then escalate with the full
-failure trail; never a third attempt at the same tier, then stop and report);
-fresh-context verification — work is never graded by its author (the same
-routing.md, rubric 5 in `../config/agent/rules/judgment.md`); and
+Fix (implemented): the hard-count escalation ladder in
+[failures.md](../config/agent/skills/agent-delegate/references/failures.md);
+author-independent evidence — runnable checks need no extra reviewer, while
+judgment/read-back never comes from the author
+([SKILL.md](../config/agent/skills/agent-delegate/SKILL.md), rubric 5 in
+`../config/agent/rules/judgment.md`); and
 wrong-direction signals (rubric 4) that force a stop-and-rethink instead of
 another retry.
 
@@ -105,7 +105,7 @@ another retry.
 |---|---|---|
 | Rule accretion | Every incident adds a rule; nothing deletes one | Size budgets + distillation protocol in agent-maintenance.md; add-one-delete-one habit |
 | Fact rot | Model ids, CLI flags, paths go stale silently | Facts carry a verified date; re-verify with `--help` before relying; factual-rot fixes are self-serve (agent-maintenance.md §What you may change without asking) |
-| Delegation theater | "Delegate" becomes ritual; workers spawned for trivia, reports pasted wholesale | Above the thresholds delegation is the default and skipping needs a stated reason; below them it is optional; the do-not-delegate list always binds |
+| Delegation theater | "Delegate" becomes ritual; workers spawned for trivia, reports pasted wholesale | Compare total context cost; volume proxies and author independence trigger workers, while bounded non-author work stays inline |
 | Template cargo-culting | Blanks filled with vague words ("make sure it works") | Templates require acceptance criteria to be *runnable commands or checkable facts*; a template with an unverifiable criterion is incomplete |
 | Copy drift | Content duplicated across files, then edited in one place | Ownership map in agent-maintenance.md; edits move content to its owner |
 | Silent scope growth of always-loaded files | rules/ and global.md accumulate content that belongs in skills/docs | Placement rule: always-loaded = only what changes behavior in most sessions; everything else is on-demand |

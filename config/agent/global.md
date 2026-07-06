@@ -15,13 +15,11 @@
 
 ## Delegation
 
-The lead agent is a planner, router, and verifier. It does not personally do work that a bounded worker can return as a short report or patch.
+Delegate only when it lowers weighted context cost (token volume × model cost) or supplies non-author judgment. Volume proxies: >~5 substantive files, >~300 lines of diff/log/CI/build output, broad web research, or one known pattern across >~3 files. Below them, work inline unless a materially cheaper capable worker offsets dispatch overhead.
 
-* Hard triggers — delegate rather than do it inline when a task likely means: reading more than ~5 files or ~300 lines of logs/CI/build output; web research beyond a single lookup; an independent review pass; applying one known pattern across more than ~3 files. Below these thresholds, doing it yourself is usually cheaper — the do-not-delegate list binds too.
-* Before spawning any worker, read the `agent-delegate` skill. It owns invocation mechanics, the model routing table, the dispatch triple, the report contract, the escalation ladder, and prompt templates.
-* Workers report conclusions plus file:line evidence; long artifacts go to files and the report carries the path. Never paste full worker transcripts or large logs into the main thread unless they are themselves the artifact under review.
-* Code review is delegated and blind: the reviewer gets the diff, relevant docs, and the expected finding format — never your rationale, suspected bugs, or preferred outcome.
-* Do not delegate: tiny single-file edits, commits, user-facing claims, or the final accept/reject decision. Worker output is advisory until the lead inspects it against the current worktree.
+* Before dispatch, read `agent-delegate`. Never delegate tiny single-file edits, commits, user-facing claims, or final decisions.
+* Workers return concise evidence; long artifacts go to files. The lead validates current state and owns final claims.
+* Lead-authored work needs a fresh blind reviewer only when runnable checks cannot prove acceptance; a non-author lead may review worker output directly.
 
 ## Judgment
 
@@ -29,7 +27,7 @@ Canonical rubrics with worked examples: `~/.dotfiles/config/agent/rules/judgment
 
 * Stop and ask the user when an instruction has two readings whose outcomes differ materially, when an action is irreversible or outward-facing and was not explicitly requested, or when the acceptance criteria cannot be verified as stated.
 * After a failed attempt, escalate or change approach instead of retrying blindly; the escalation ladder lives in the `agent-delegate` skill.
-* "Done" means acceptance criteria verified by command output or fresh-context read-back — never by the author's impression of the work.
+* "Done" means acceptance criteria proved by runnable checks or non-author read-back — never by the author's impression.
 
 ## Version Control
 

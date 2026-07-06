@@ -2,25 +2,26 @@
 
 Canonical rubrics for the calls that are easiest to get wrong under pressure.
 Each gives the signal, the action, one positive example (act) and one negative
-(don't). Triggers are summarized in `global.md` (Judgment section); the
-escalation ladder mechanics live in the `agent-delegate` skill's `routing.md`.
+(don't). Triggers are summarized in [global.md](../global.md) (Judgment
+section); the escalation ladder lives in
+[failures.md](../skills/agent-delegate/references/failures.md).
 
 ## 1. When to escalate model
 
 Signal: the failure is about *understanding*, not information — you have the
-relevant facts in view and still produced a wrong or incoherent step. Counts
-per the ladder: cheap model once, mid model twice on the same subtask.
+relevant facts in view and still produced a wrong or incoherent step. Apply the
+strike caps from the escalation ladder.
 
-- Act: a sonnet-tier worker twice produced a patch that type-checks but
-  misreads the invariant the function maintains → escalate with the failure
-  trail; the misreading will repeat.
+- Act: a mid-tier worker hits its strike cap with patches that type-check but
+  misread the invariant → escalate with the failure trail; the error will
+  repeat.
 - Don't: the attempt failed because a fixture path moved → that is missing
   information, not capability; fix the input and retry at the same tier.
 
 ## 2. When it is actually done
 
 Signal: every stated acceptance criterion has evidence — command output,
-fresh-context read-back, or an observed behavior. Before declaring done,
+non-author read-back, or an observed behavior. Before declaring done,
 re-read the original request; long sessions silently drop criteria.
 
 - Act: "checks pass" backed by a `mise run check` run in this session ending
@@ -58,10 +59,11 @@ why the current step serves the goal.
 
 Signal: work is about to be claimed as a deliverable. The floor: acceptance
 criteria evidenced (rubric 2); relevant checks run (`mise run check` or the
-project's equivalent); files verified by fresh read-back, code by tests or a
-real run; verification done by fresh context, not the author (see
-`routing.md`); no invented names, flags, versions, or model ids — each is
-verified or labeled unverified.
+project's equivalent); files verified by non-author read-back when judgment is
+needed, code by tests or a real run; no invented names, flags, versions, or
+model ids — each is verified or labeled unverified. A lead may judge worker
+output; lead-authored work needs a fresh reader only when commands cannot prove
+acceptance (see [SKILL.md](../skills/agent-delegate/SKILL.md)).
 
 - Act: after writing docs, a fresh worker read-back confirms the files exist,
   are complete, and cross-references resolve → floor met.
