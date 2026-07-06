@@ -63,8 +63,7 @@ call plug#begin('~/.vim/plugged')
     let g:pandoc#syntax#conceal#urls = 1
 " }
 
-" Project-local config and remote clipboard {
-    Plug 'coquelicot/local-vimrc'
+" Remote clipboard {
     Plug 'ShikChen/osc52.vim'
 
     vnoremap Y y:call SendViaOSC52(getreg('"'))<CR>
