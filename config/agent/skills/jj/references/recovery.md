@@ -5,14 +5,15 @@
 
 ## Rollback
 - `jj undo` is gated: run it only when the user explicitly asked for an
-  operation rollback. Without that ask, stop after `jj op log -n 5` and present
-  findings. The skill's allowed-tools listing `jj undo` is capability, not
-  permission.
+  operation rollback. Without that ask, stop after
+  `jj --at-op=@ --ignore-working-copy op log -n 5` and present findings. The
+  skill's allowed-tools listing `jj undo` is capability, not permission.
 
 ## Amending an ancestor
 - `jj absorb` distributes `@` changes to the nearest ancestor that touched the same lines.
-- If absorb mis-routes, that is an undo-shaped situation: show `jj op log -n 5`
-  and ask before `jj undo`; then `jj new` to isolate, redo edits, absorb again.
+- If absorb mis-routes, that is an undo-shaped situation: show
+  `jj --at-op=@ --ignore-working-copy op log -n 5` and ask before `jj undo`;
+  then `jj new` to isolate, redo edits, absorb again.
 
 ## Conflict resolution (no TUI)
 - After a rebase: `jj resolve --list` to enumerate conflicts, edit markers in-file, then `jj squash -m "resolve conflicts"`.
