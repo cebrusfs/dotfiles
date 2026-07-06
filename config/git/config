@@ -35,8 +35,8 @@
 
 # UI
 [core]
-	# Use vim as default editor
-	editor = vim
+	# Use nvim as default editor
+	editor = nvim
 
 	# Fancy diff
 	# Use delta pager but rely on zsh env setup to detect if delta is installed for a fallback
