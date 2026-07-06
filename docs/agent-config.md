@@ -104,6 +104,37 @@ Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
 when invoking `python3 -m unittest` directly. Bare Python test runs write
 `__pycache__` into `config/agent/hooks/`.
 
+## Claude Permission Posture
+
+The [shared guidance](../config/agent/global.md) owns the daily approval
+boundary. User settings keep `permissions.defaultMode = "auto"` and enable
+the Bash sandbox with `autoAllowBashIfSandboxed = true`. Routine commands
+inside its filesystem/network boundary need no extra approval. Native
+background safety checks and protected-path checks still apply.
+
+The settings list tool cache/install directories and common GitHub/package
+hosts explicitly. New network destinations follow Claude's native Auto
+per-command host review. Writes outside the allowed directories can use the
+native unsandboxed retry, reviewed by the Auto classifier. Keep
+`allowUnsandboxedCommands = true`; do not add a blanket Bash allow rule,
+excluded task runner, or a custom approval hook. `failIfUnavailable = true`
+prevents a missing sandbox from silently becoming unrestricted execution.
+
+The narrow `gh` inspection allow rules preserve the everyday authenticated
+CLI workflow, including a native unsandboxed retry when necessary. They do
+not pre-approve GitHub mutations. Old project-local Bash allow rules are not
+part of the managed baseline; remove them when migrating so broad rules such
+as `Bash(gh run *)` cannot skip review for mutations.
+
+Credential file denies protect shell commands; matching `Read(...)` denies
+also protect Claude's file tools. Named credential environment variables are
+removed from sandboxed commands. This does not isolate MCP servers, hooks,
+LSP servers, browsers, or the whole Claude process. Claude's local-address
+guard is not Codex's private-network guard: an approved intranet hostname
+can resolve to a private address. Sensitive or unattended work needs a
+separately chosen outer boundary. See [Claude sandboxing](https://code.claude.com/docs/en/sandboxing)
+and [permission modes](https://code.claude.com/docs/en/permission-modes).
+
 ## Antigravity CLI Permissions
 
 Antigravity CLI stores user settings at
