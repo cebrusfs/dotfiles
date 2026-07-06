@@ -15,9 +15,21 @@
   `jj --at-op=@ --ignore-working-copy op log -n 5` and ask before `jj undo`;
   then `jj new` to isolate, redo edits, absorb again.
 
-## Conflict resolution (no TUI)
-- After a rebase: `jj resolve --list` to enumerate conflicts, edit markers in-file, then `jj squash -m "resolve conflicts"`.
-- Never run bare `jj resolve` (opens TUI).
+## Conflict resolution (non-interactive)
+- Use `jj resolve --list` to enumerate conflicts. In jj 0.45.1 (verified
+  2026-10-08), exit 2 with `No conflicts found at this revision` means clear;
+  inspect the diagnostic rather than treating every nonzero exit as a conflict.
+- Compare both sides with their common base and owning commits before editing.
+  Re-evaluate the merged intent; preserve compatible changes and ask when a
+  material semantic choice remains.
+- For an inherited conflict, create a clean repair with
+  `jj new <first-conflicted-change>`, preserving any populated local-only tip.
+  Edit the conflicted paths, verify the result, and move only the repair into
+  its proven owner with `jj squash --from <repair-change> --into <owner-change>`.
+  Use `--use-destination-message` when that topic description still fits.
+  Do not squash a populated working-copy topic wholesale just to remove markers.
+- Never run bare `jj resolve`; it launches the configured interactive external
+  merge tool.
 
 ## Divergent change (one change ID, multiple visible commits)
 Cause: a commit was rewritten (`squash`/`rebase`) while something else — another
