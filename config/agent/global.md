@@ -29,11 +29,13 @@ Rules: one file owns one concern (single source of truth; cross-link, never rest
 ## Delegation
 
 Delegate work that forms an independently acceptable bounded lane: an explicit
-goal, scope/write set, and acceptance criteria. Use the inline fast path in
-`agent-delegate`; parallelize independent lanes, and give writers disjoint
-write sets.
+goal, scope/write set, and acceptance criteria. It pays when the work holds two
+or more lanes that would otherwise run serially, when a worker keeps bulk
+material out of my context, or when the judgment must not come from the author;
+its cost is one cold start per lane. Parallelize independent lanes, and give
+writers disjoint write sets.
 
-* Before dispatch, read `agent-delegate`. The root retains instruction/skill reading, decomposition, cross-lane judgment, integration, acceptance/rejection of evidence, user-facing claims, VCS writes, and outward or destructive approval decisions.
+* Before dispatch, read `agent-delegate`; it owns the trade, the lane contract, and the rails. If your own model is below the judgment tier that skill's `references/models.md` defines, follow its `references/checklist.md` step by step instead of improvising. The root retains instruction/skill reading, decomposition, cross-lane judgment, integration, acceptance/rejection of evidence, user-facing claims, VCS writes, and outward or destructive approval decisions.
 * Workers return concise evidence; long artifacts go to files. The root validates current state and owns final claims.
 * Root-authored work needs a fresh blind reviewer only when runnable checks cannot prove acceptance; a non-author root may review worker output directly.
 

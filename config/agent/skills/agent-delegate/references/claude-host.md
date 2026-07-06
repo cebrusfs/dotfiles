@@ -8,10 +8,10 @@
 Claude-to-Claude is native. A same-family CLI requires an unavailable native
 tool and user opt-in to the separate fallback.
 
-Whether to delegate is the root's own call from the cost test in
+Whether to delegate is the root's own call from the trade in
 [../SKILL.md](../SKILL.md); there is no permission step. If a host declines the
 dispatch, do not turn that into a question for the user — run the lane inline
-per the fast path and record in the report that delegation was declined.
+and record in the report that delegation was declined.
 
 One lane cannot fall back to inline: a review the root is required to obtain
 because runnable checks cannot prove its own work. Running that inline makes

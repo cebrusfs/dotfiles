@@ -1,9 +1,33 @@
 # Worker Model and Runtime Mapping
 
-Read this only after delegation is approved and the host profile has fixed the
-worker route. [../SKILL.md](../SKILL.md) owns role selection, dispatch, and
-native-versus-CLI routing; this file maps verified worker selectors on that
-route. It never selects, evaluates, or changes the root agent.
+Read this once the worker route is fixed. [../SKILL.md](../SKILL.md) owns the
+delegation decision, dispatch, and native-versus-CLI routing; this file maps
+verified worker selectors on that route, and defines the judgment tier that
+decides whether the root improvises or follows the fallback procedure. It never
+selects, evaluates, or changes the root agent.
+
+## Judgment tier
+
+[../SKILL.md](../SKILL.md) leaves routing to the root's judgment and keeps only
+its Rails hard. That works for a root that can actually price cost against
+value. A root at or above this tier improvises; a root below it works from
+[checklist.md](checklist.md), which converts the same policy into countable
+steps.
+
+| Runtime | At or above | Below |
+|---|---|---|
+| Claude | `opus`, `fable` | `sonnet`, `haiku` |
+| Codex | `gpt-5.6-sol` | `gpt-5.6-terra`, `gpt-5.6-luna` |
+
+Decide from your own model identity as the runtime reports it, not from your
+impression of your own capability — an agent's self-assessment is exactly the
+judgment this switch exists to avoid relying on. If the runtime does not
+surface the model, treat yourself as below the tier.
+
+This table rates a root's *routing* judgment only. It is unrelated to the
+worker-cost mappings below, and the root's model is a given input — never a
+selection (see [../SKILL.md](../SKILL.md)). Placement of `fable` here reflects
+its stated root capability; its worker cost tier remains unverified.
 
 ## Selection
 
@@ -20,8 +44,6 @@ route. It never selects, evaluates, or changes the root agent.
   spec — takes the cheapest tier however many files or steps it spans. Reserve a
   strong worker for ambiguity, design choice, non-mechanical review, and
   difficult debugging.
-- Keep nested delegation off unless the root explicitly pre-authorizes its
-  child scope, write set, model/effort, reason, and depth or concurrency bound.
 
 ## Claude workers
 
