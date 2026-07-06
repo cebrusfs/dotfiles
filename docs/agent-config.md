@@ -47,13 +47,18 @@ workspace skills.
 
 ## Adapter Map
 
-| Agent | Global instruction adapter | Project instruction adapter | Skills adapter |
-|---|---|---|---|
-| Claude Code | `~/.claude/CLAUDE.md -> config/agent/global.md` | `CLAUDE.md -> AGENTS.md` | `~/.claude/skills -> config/agent/skills` |
-| Codex | `~/.codex/AGENTS.md -> config/agent/global.md` | `AGENTS.md` | `~/.agents/skills -> config/agent/skills` |
-| Gemini CLI | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` via `context.fileName` in `~/.gemini/settings.json` | `~/.agents/skills -> config/agent/skills` |
-| Antigravity CLI | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` | `~/.gemini/antigravity-cli/skills -> config/agent/skills` |
-| Antigravity IDE / 2.0 | `~/.gemini/GEMINI.md -> config/agent/global.md` | `AGENTS.md` | `~/.gemini/antigravity/skills` and `~/.gemini/config/skills` -> `config/agent/skills` |
+`install-conf/dotbot.conf.yaml` is authoritative for installed home-directory
+symlink mappings, including global instruction files, skills, hooks, rules, and
+Gemini/Antigravity skill directories. This section records behavior and
+rationale that are not directly readable from that file.
+
+| Agent | Auto-load behavior | Adapter decision |
+|---|---|---|
+| Claude Code | Reads `CLAUDE.md` for global and repo-local instructions. | Root `CLAUDE.md` stays a symlink to `AGENTS.md` so Claude reads the canonical repo instructions without copied prose. |
+| Codex | Reads `AGENTS.md` for global and repo-local instructions, and discovers shared skills through the cross-agent skills path. | Use Codex's native instruction filename while keeping shared skills out of Codex-owned state, cache, and bundled system skill directories. |
+| Gemini CLI | Reads global `GEMINI.md`; the managed `context.fileName` setting makes it read repo-local `AGENTS.md`. | Avoid per-repo `GEMINI.md` shims while keeping Antigravity from loading duplicate repo rules. |
+| Antigravity CLI | Reads the Gemini global guidance, repo-local `AGENTS.md`, and its CLI-specific user skills location. | Keep it on the same global Gemini guidance while preserving Antigravity CLI's own skill discovery path. |
+| Antigravity IDE / 2.0 | Reads the Gemini global guidance, repo-local `AGENTS.md`, and IDE/2.0 skill locations. | Keep IDE/2.0 skill adapters separate because those clients check their own skill discovery locations. |
 
 Gemini CLI also supports `~/.gemini/skills`; avoid wiring it here because
 `~/.agents/skills` already covers Gemini and Codex. Keeping one Gemini-visible
@@ -105,7 +110,8 @@ local Codex config. If copying the template's permission profile into the local
 config, do not mix it with legacy `sandbox_mode` / `[sandbox_workspace_write]`
 settings; use one sandbox configuration model per session.
 
-Sync stable Codex defaults into the local runtime config with:
+The sync script is not directly executable; run it through `uv` to sync stable
+Codex defaults into the local runtime config:
 
 ```sh
 uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply

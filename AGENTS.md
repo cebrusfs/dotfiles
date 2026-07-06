@@ -21,7 +21,9 @@ modules/dotbot/bin/dotbot -d . -c install-conf/dotbot.conf.yaml --only create li
 
 Before committing any change, run `mise run check` and ensure it passes — CI
 (`.github/workflows/lint.yaml`) runs the identical task, so a skipped check
-becomes a red build.
+becomes a red build. Judge success by the exit status, never by skimming
+output: piping into `tail`/`head` swallows the failure code (redirect to a
+file first if the output needs trimming).
 
 For direct hook-test probes, set `PYTHONDONTWRITEBYTECODE=1` when invoking
 `python3 -m unittest`; bare Python test runs write `__pycache__` into
@@ -64,9 +66,10 @@ Platform-conditional links use `if:` clauses:
 | `config/` subdir | Symlinked to | Purpose |
 |-----------------|--------------|---------|
 | `zsh/` | `~/.zshenv`, `~/.zshrc`, etc. | Zsh + prezto config |
-| `fish/` | `~/.config/fish/config.fish`, `~/.config/fish/functions`, etc. | Fish shell config |
+| `fish/` | — (not linked by dotbot) | Fish shell config — experimental mirror, not in active use |
 | `starship/` | `~/.config/starship.toml` | Starship prompt theme |
-| `vim/` | `~/.vim`, `~/.config/nvim` | Vim + Neovim (shared config) |
+| `vim/` | `~/.vim` | Vim config |
+| `nvim/` | `~/.config/nvim` | Neovim config (standalone `init.lua`) |
 | `git/` | `~/.config/git/` | Git config, ignore, themes |
 | `jj/` | `~/.config/jj/` | Jujutsu config |
 | `ssh/` | `~/.ssh/config`, `~/.ssh/authorized_keys` | SSH config |
@@ -75,15 +78,15 @@ Platform-conditional links use `if:` clauses:
 | `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.gemini/*`, `~/.agents/skills` | Shared agent instructions, settings adapters, hooks, and skills for Claude, Codex, Gemini CLI, and Antigravity |
 
 `config/agent/` is the source of truth for shared agent guidance and skills; the
-tool-specific home dirs are only adapters. `config/agent/global.md` is global
-personal guidance; root `AGENTS.md` is this repo's local guidance. `config/agent/skills/`
-is the only skill source of truth — do not put custom skills under
-`~/.codex/skills`, `~/.gemini/skills`, or tool-owned cache directories.
-`config/agent/codex/config.toml` is a template, not a symlink target; the
-script is not directly executable — sync it using the `uv run …
-sync-config.py --apply` command documented in docs/agent-config.md. Full details in
-[docs/agent-config.md](docs/agent-config.md). Use the `agent-config` skill when
-changing cross-agent layout, instruction files, or agent symlink mappings.
+tool-specific home dirs are only adapters. Keep custom skills in
+`config/agent/skills/`; do not put them under `~/.codex/skills`,
+`~/.gemini/skills`, or tool-owned cache directories.
+`config/agent/codex/config.toml` is a template, not a symlink target; sync it
+using the `uv run … sync-config.py --apply` command documented in
+[docs/agent-config.md](docs/agent-config.md). See
+[docs/agent-config.md](docs/agent-config.md) for adapter layout and rationale.
+Use the `agent-config` skill when changing cross-agent layout, instruction
+files, or agent symlink mappings.
 Before changing the *content* of `config/agent/global.md`, `config/agent/rules/`,
 `config/agent/skills/agent-delegate/`, `docs/agent-maintenance.md`, or
 `docs/agent-letter.md`, read
