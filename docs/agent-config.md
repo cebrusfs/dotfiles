@@ -159,8 +159,9 @@ Codex defaults into the local runtime config.
 `./install` runs this sync after installing dev tools, and `./update` runs it
 after updating dev tools.
 
-The script syncs the permission profile and `[features.network_proxy]`, including
-migrating a legacy `[features] network_proxy` value to the managed table. It
+The script syncs the permission profile, `[features.network_proxy]`, and shell
+environment inheritance/filter settings, including migrating a legacy
+`[features] network_proxy` value to the managed table. It
 preserves other feature toggles and local runtime sections such as `[projects]`,
 `[hooks.state]`, `[marketplaces]`, `[plugins]`, `[mcp_servers]`, and `[desktop]`,
 and strips the legacy sandbox keys managed by the template.
@@ -170,21 +171,43 @@ and strips the legacy sandbox keys managed by the template.
 Shared Codex execpolicy rules live in `config/agent/codex/rules/agent.rules`,
 which dotbot links to `~/.codex/rules/agent.rules`. Keep
 `~/.codex/rules/default.rules` as Codex's local mutable allow-list state.
-The shared global guidance selects the repository-documented task runner for
-standard verification; this rules file mechanically allows selected routine
-verification and recoverable local jj command prefixes. Prefix rules also
-match trailing arguments, so they do not guarantee that a command contains
-only the named target. Agents must still honor repository guidance and the
-shared destructive/outward-action rules.
+The [shared guidance](../config/agent/global.md) owns the daily approval
+boundary. Build and test runners have no outside-sandbox allow rules: their
+repository-defined code runs inside the permission profile, without an extra
+review. Missing access goes through native approval instead of making the
+whole task runner an unrestricted host process.
+
+The remaining allow rules are deliberate exceptions for recoverable local jj
+operations, read-only GitHub CLI inspection, and the commit-nudge hook. Codex
+protects `.git` even in writable workspaces, so routine jj snapshots and
+commits may need this exception. These matching commands can run outside the
+sandbox without review. Prefix rules also match trailing arguments; they are
+not an isolation boundary. Destructive/outward-action rules still apply.
 
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =
 "workspace-tool-caches"`. The `workspace-tool-caches` profile is the built-in
-workspace filesystem sandbox plus writable mise, uv, and Bun cache roots. It
-does not grant package-registry network access. The synced
-`features.network_proxy.enabled = true` activates enforcement of the profile's
-`api.github.com` and `github.com` allowlist for sandboxed shell commands; without
-the proxy, enabling command networking does not enforce those domain rules.
-See the [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
-`web_search = "live"` controls the agent's
-web-search tool, not network access for spawned CLI commands such as `gh`.
+workspace filesystem sandbox plus the listed tool cache/install directories.
+The listed GitHub and package/tool distribution hosts are allowed for ordinary
+dependency downloads; the enabled proxy retains its local/private-network
+guard. Other destinations use the native approval flow. Local services,
+SSH-agent/Docker sockets, and additional write locations are not globally
+opened. Explicit credential read denies and child-environment filters reduce
+the login material available to sandboxed commands. The agent client retains
+its own login, and the existing GitHub CLI inspection exception retains its
+normal authenticated workflow.
+
+Access beyond this profile follows `on-request` approval with the native
+`auto_review` reviewer. Full command escalation can run outside the sandbox;
+it is broader than a narrow permission grant. Do not add a broad runner allow
+rule to suppress that review. Read-only/headless workers keep their explicitly
+selected profile and approval policy.
+
+Verified with Codex CLI 0.161.0 on 2026-10-09: the network proxy is experimental;
+fine-grained permission-request features remain disabled. This setup does not
+depend on those features or promise per-command domain grants. An allowed
+destination can still receive readable project data; this is not a
+download-only policy. The proxy does not cover MCP, apps, browsers, or the
+client's service traffic. See [Codex permissions](https://learn.chatgpt.com/docs/permissions)
+and [Auto-review](https://learn.chatgpt.com/docs/sandboxing/auto-review).
+`web_search = "live"` separately controls the hosted web-search tool.

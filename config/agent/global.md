@@ -9,6 +9,9 @@
   directly first, concede if it holds, defend with evidence if it does not.
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data
   proves it necessary.
+* Keep routine development tools inside a daily access boundary without extra
+  approval reviews. Use each runtime's native approval flow for access beyond
+  that boundary; do not bypass sandboxing for ordinary builds or tests.
 * Single source of truth: a rule or fact has exactly one owning file; other
   files link to it instead of restating it.
 * Prefer relative paths in docs, and `$TMPDIR` over `/tmp`. Never hardcode

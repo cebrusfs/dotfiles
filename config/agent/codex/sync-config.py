@@ -23,7 +23,12 @@ TOP_LEVEL_KEYS = (
     "default_permissions",
 )
 LEGACY_TOP_LEVEL_KEYS = ("sandbox_mode",)
-EXACT_SECTIONS = ("features.network_proxy", "tui")
+EXACT_SECTIONS = (
+    "features.network_proxy",
+    "shell_environment_policy",
+    "shell_environment_policy.filters",
+    "tui",
+)
 MANAGED_SECTION_KEYS = {"features": frozenset({"network_proxy"})}
 SECTION_PREFIXES = ("permissions.",)
 LEGACY_SECTIONS = ("sandbox_workspace_write",)

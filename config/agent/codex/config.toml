@@ -1,4 +1,4 @@
-# Stable Codex user defaults that are safe to keep in dotfiles.
+# Managed Codex user defaults that are safe to keep in dotfiles.
 # Do not add runtime state such as [projects] or [hooks.state] here.
 
 web_search = "live"
@@ -8,11 +8,10 @@ approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 default_permissions = "workspace-tool-caches"
 
-# Permission profiles do not compose with legacy sandbox_mode settings. This
-# profile extends the built-in workspace filesystem policy with local tool
-# cache roots and scoped GitHub network access for CLI inspection commands.
+# Keep routine builds, dependency downloads, and tool installs sandboxed.
+# Permission profiles do not compose with legacy sandbox_mode settings.
 [permissions.workspace-tool-caches]
-description = "Workspace access plus writable mise, uv, and Bun caches."
+description = "Daily development with tool caches, package sources, and protected credentials."
 extends = ":workspace"
 
 [permissions.workspace-tool-caches.workspace_roots]
@@ -20,17 +19,55 @@ extends = ":workspace"
 "~/.cache/uv" = true
 "~/.bun/install/cache" = true
 "~/Library/Caches/bun" = true
+"~/.local/share/mise" = true
+"~/.local/share/uv" = true
+"~/.cargo" = true
+"~/.rustup" = true
+
+# Tool processes do not need raw login material for routine local development.
+[permissions.workspace-tool-caches.filesystem]
+"~/.ssh" = "deny"
+"~/.aws" = "deny"
+"~/.kube" = "deny"
+"~/.codex/auth.json" = "deny"
+"~/.claude/.credentials.json" = "deny"
+"~/.cargo/credentials.toml" = "deny"
+"~/.netrc" = "deny"
+"~/.npmrc" = "deny"
 
 [permissions.workspace-tool-caches.network]
 enabled = true
+allow_local_binding = false
 
 [permissions.workspace-tool-caches.network.domains]
-"api.github.com" = "allow"
 "github.com" = "allow"
+"*.github.com" = "allow"
+"*.githubusercontent.com" = "allow"
+"pypi.org" = "allow"
+"files.pythonhosted.org" = "allow"
+"registry.npmjs.org" = "allow"
+"nodejs.org" = "allow"
+"bun.sh" = "allow"
+"mise.jdx.dev" = "allow"
+"crates.io" = "allow"
+"index.crates.io" = "allow"
+"static.crates.io" = "allow"
+"sh.rustup.rs" = "allow"
+"static.rust-lang.org" = "allow"
 
 # Profile domain rules require the sandboxed-command network proxy.
 [features.network_proxy]
 enabled = true
+
+# Filter common secret and agent-socket variables from child commands.
+[shell_environment_policy]
+inherit = "all"
+ignore_default_excludes = false
+
+[shell_environment_policy.filters]
+"*PASSWORD*" = "exclude"
+"*PASSWD*" = "exclude"
+"SSH_AUTH_SOCK" = "exclude"
 
 [tui]
 status_line = [
