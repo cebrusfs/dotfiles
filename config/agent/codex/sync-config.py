@@ -109,7 +109,16 @@ def source_sections(lines: list[str]) -> dict[str, list[str]]:
                     start -= 1
                     continue
                 break
-            sections[name] = lines[start:end]
+            # Comments right before the next header are that section's
+            # preamble; leaving them here would emit them twice.
+            body_end = end
+            while body_end > index + 1:
+                trailing = lines[body_end - 1].strip()
+                if trailing == "" or trailing.startswith("#"):
+                    body_end -= 1
+                    continue
+                break
+            sections[name] = lines[start:body_end]
 
         index = end
     return sections
@@ -193,7 +202,7 @@ def build_synced_config(source: Path, target: Path) -> str:
         result.append("\n")
         for block in sections.values():
             result.extend(trim_blank_edges(block))
-            result.append("\n\n")
+            result.append("\n")
 
     text = "".join(result).rstrip() + "\n"
     tomllib.loads(text)

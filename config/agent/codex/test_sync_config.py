@@ -116,6 +116,17 @@ class ConfigSyncTests(unittest.TestCase):
         self.target.write_text(desired, encoding="utf-8")
         self.assertEqual(sync.build_synced_config(SOURCE, self.target), desired)
 
+    def test_section_comments_are_not_duplicated(self) -> None:
+        source_lines = SOURCE.read_text(encoding="utf-8").splitlines()
+        desired_lines = sync.build_synced_config(SOURCE, self.target).splitlines()
+        for line in source_lines:
+            if line.startswith("#"):
+                with self.subTest(line=line):
+                    self.assertLessEqual(
+                        desired_lines.count(line), source_lines.count(line)
+                    )
+        self.assertNotIn("\n\n\n", "\n".join(desired_lines))
+
     def test_migration_preserves_arrays_of_tables(self) -> None:
         local_arrays = '''\
 [[skills.config]]
