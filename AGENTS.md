@@ -99,10 +99,10 @@ Four Brewfiles for different contexts:
 
 | File | Use |
 |------|-----|
-| `Brewfile.home` | Personal macOS setup |
-| `Brewfile.work` | Work machine |
-| `Brewfile.min` | Minimal/server setup |
-| `Brewfile.ctf` | CTF / security tools / Full setup |
+| `homebrew/Brewfile.home` | Personal macOS setup |
+| `homebrew/Brewfile.work` | Work machine |
+| `homebrew/Brewfile.min` | Minimal/server setup |
+| `homebrew/Brewfile.ctf` | CTF / security tools / Full setup |
 
 ### Submodules
 

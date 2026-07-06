@@ -11,8 +11,8 @@ machine.
 2. **OS Packages** — install system-level dependencies requiring root/sudo via
    `Brewfile.min` on macOS, or batched `apt`/`dnf` on Linux.
 3. **Dev Tools & Binaries** — bootstrap `mise`, install languages and CLI tools
-   (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta), and sync stable Codex
-   runtime defaults.
+   (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta), and sync stable Codex and
+   Antigravity CLI runtime defaults; see [Agent Config](agent-config.md#antigravity-cli-permissions) for its runtime-state preservation caveat.
 4. **Vim Plugins** — run PlugUpdate to install Vim/Neovim plugins.
 5. **Shell Configuration** — ensure Zsh is the default shell and transition the
    session.

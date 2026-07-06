@@ -8,15 +8,15 @@ jj prompt support remain relevant to future shell decisions.
 ## Zsh to Fish
 
 Status: do not migrate the default login shell to fish. `config/fish` starts
-cleanly under fish 4.7.1 in smoke tests, and repo-managed fish artifacts are
-linked into `~/.config/fish` without tracking fish runtime state, but the daily
-prompt path is worse than the current zsh setup for jj-heavy work.
+cleanly under fish 4.7.1 in smoke tests, but it remains an experimental,
+manually tested mirror; the daily prompt path is worse than the current zsh
+setup for jj-heavy work.
 
 Current repo state:
 - `config/fish/` contains a migrated fish config, prompt, and function wrappers.
-- `install-conf/dotbot.conf.yaml` links `config.fish`, `functions/`, `conf.d/`,
-  and `completions/` individually so `~/.config/fish/fish_variables` stays local
-  and untracked.
+- `install-conf/dotbot.conf.yaml` keeps the fish link entries deliberately
+  commented out. Uncomment them if a future migration decision activates the
+  mirror.
 - `config/starship/starship.toml` is linked to `~/.config/starship.toml` for the
   fish Starship prompt experiment.
 - No fish plugin manager is used. Fish built-ins cover autosuggestions, syntax
