@@ -29,7 +29,12 @@ case "$base" in
 esac
 
 if [ -d "$worktree_path" ]; then
-    # A workspace directory knows its main repo; forget it from inside.
-    jj -R "$worktree_path" workspace forget >&2 2>&1 || true
+    # A failed forget may mean the working copy was never snapshotted.
+    # Keep the directory so its unsnapshotted work can be recovered.
+    if [ -e "$worktree_path/.jj" ] &&
+        ! jj -R "$worktree_path" workspace forget >&2 2>&1; then
+        echo "jj workspace forget failed; keeping $worktree_path" >&2
+        exit 1
+    fi
     rm -rf "$worktree_path"
 fi
