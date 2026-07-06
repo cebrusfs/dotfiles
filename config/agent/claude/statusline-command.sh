@@ -7,7 +7,7 @@
 # approval-mode, task-progress) have no equivalent in the payload and are
 # omitted rather than faked.
 #
-#   Opus 5 high · ~/working/bw_dedrm · bw_dedrm · main +2248 -174 · ctx 43% · 5h 66% · 7d 50%
+#   Opus 5 high · ~/working/bw_dedrm · bw_dedrm · main · ctx 43% left · 5h 66% left · 7d 50% left
 
 set -u
 
@@ -20,8 +20,6 @@ C_EFFORT=$'\033[38;2;150;123;114m'
 C_DIR=$'\033[38;2;125;170;235m'
 C_PROJ=$'\033[38;2;186;148;240m'
 C_BRANCH=$'\033[38;2;140;190;140m'
-C_ADD=$'\033[38;2;126;192;126m'
-C_DEL=$'\033[38;2;214;110;110m'
 C_SEP=$'\033[38;2;110;110;120m'
 C_OK=$'\033[38;2;126;192;126m'
 C_WARN=$'\033[38;2;222;184;100m'
@@ -72,14 +70,7 @@ fi
 branch_part=""
 if [ -n "$cwd" ] && git -C "$cwd" --no-optional-locks rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   branch=$(git -C "$cwd" --no-optional-locks branch --show-current 2>/dev/null)
-  read -r adds dels <<<"$(git -C "$cwd" --no-optional-locks diff --numstat HEAD 2>/dev/null |
-    awk '$1 ~ /^[0-9]+$/ { a += $1 } $2 ~ /^[0-9]+$/ { d += $2 } END { print a + 0, d + 0 }')"
-
   [ -n "$branch" ] && branch_part="${C_BRANCH}${branch}${R}"
-  if [ "${adds:-0}" -gt 0 ] || [ "${dels:-0}" -gt 0 ]; then
-    diff_part="${C_ADD}+${adds}${R} ${C_DEL}-${dels}${R}"
-    branch_part="${branch_part:+${branch_part} }${diff_part}"
-  fi
 fi
 
 # --- context remaining -------------------------------------------------------
@@ -87,7 +78,7 @@ ctx_left=$(get '.context_window.remaining_percentage // empty')
 ctx_part=""
 if [ -n "$ctx_left" ]; then
   ctx_int=$(printf '%.0f' "$ctx_left")
-  ctx_part="$(level_color "$ctx_int")ctx ${ctx_int}%${R}"
+  ctx_part="$(level_color "$ctx_int")ctx ${ctx_int}% left${R}"
 fi
 
 # --- rate limits (payload reports used %, status line shows what is left) ----
@@ -98,7 +89,7 @@ limit_part() {
   [ -z "$pct" ] && return
   int=$(printf '%.0f' "$pct")
   left=$((100 - int))
-  printf '%s' "$(level_color "$left")${label} ${left}%${R}"
+  printf '%s' "$(level_color "$left")${label} ${left}% left${R}"
 }
 
 five_part=$(limit_part '.rate_limits.five_hour.used_percentage // empty' '5h')
