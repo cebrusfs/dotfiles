@@ -127,7 +127,7 @@ printf '%s\n' "$fingerprint" >"$state_file" 2>/dev/null || exit 0
 dir_word=directories
 [ "$dir_count" = 1 ] && dir_word=directory
 
-message="Commit nudge: jj @ has ${path_count} tracked change(s) across ${dir_count} ${dir_word}. If this turn completed a topic, follow the project VCS rules: commit it, or squash same-topic follow-ups into the existing local commit — include only files you changed for the task. If leaving changes uncommitted is intentional, say why (pre-existing, unsafe to isolate, or intentionally incomplete)."
+message="Commit nudge: jj @ has ${path_count} tracked change(s) across ${dir_count} ${dir_word}. If this turn completed work, follow the project VCS rules: check jj log -r 'trunk()..@' for an unpushed commit that already owns this topic and squash into it; commit a new topic only if none does — include only files you changed for the task. If leaving changes uncommitted is intentional, say why (pre-existing, unsafe to isolate, or intentionally incomplete)."
 escaped_message=$(printf '%s' "$message" | sed 's/\\/\\\\/g; s/"/\\"/g')
 
 printf '{"decision":"block","reason":"%s"}\n' "$escaped_message"

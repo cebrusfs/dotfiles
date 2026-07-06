@@ -26,6 +26,7 @@ rule below just maintains this — for an uncovered case, derive from the invari
 ## Choosing your flow (decide BEFORE editing — first `jj st`)
 - **`@` clean** → intent-first: `jj new -m "<component>: <title>"`, then edit. Work lands above; `@` stays clean for the next task.
 - **`@` carries sticky local junk** (machine config, app-rewritten files) → split-down: keep junk in `@` (once: `jj describe @ -m "private: local-only"`), edit, then per task `jj split <files> -m "<component>: <title>"` to drop it BELOW `@`.
+- **Work continues an unpushed topic** → no new commit: find the owner with `jj log -r 'trunk()..@'`, edit, then squash into it (`jj squash --into <owner>`, from `@` or from a just-split commit). A turn-end commit nudge marks a checkpoint, not a topic boundary — new commits are for genuinely new topics only.
 - Either way: one component per commit, land it as you finish. Never pile multiple concerns into `@` then split at the end — that's what the `jj` skill's split recipe *recovers* from, not the default.
 
 ## State exploration

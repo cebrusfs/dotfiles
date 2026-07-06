@@ -50,3 +50,8 @@ description and discards the source description. If both descriptions contain
 useful context, write the combined message explicitly with `-m` instead.
 
 A→B→C becomes A→fixupA→B→fixupB→C→fixupC; squash each before finalizing.
+
+When several commits squash into the same ancestor, squash the one closest to
+it first (bottom-most). Starting from a higher one rewrites the ancestor and
+transiently conflicts everything in between; the conflicts auto-resolve as the
+remaining squashes land, but the intermediate states are noisy and risky.
