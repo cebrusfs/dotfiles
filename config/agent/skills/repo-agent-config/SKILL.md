@@ -1,9 +1,9 @@
 ---
-name: agent-config
-description: Design or maintain repo-local agent configuration layout. Use when adding or reviewing AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .codex, .gemini, .claude, MCP files, hooks, or other per-repository config for Claude Code, Codex, Gemini CLI, and Antigravity.
+name: repo-agent-config
+description: Build or maintain shared agent configuration for a repository. Use when adding or reviewing AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .codex, .gemini, .claude, MCP files, hooks, or other per-repository configuration for Claude Code, Codex, Gemini CLI, and Antigravity.
 ---
 
-# Repo Agent Config
+# Build Repo Agent Config
 
 Use this skill to set up agent config inside a normal application, library, or
 tooling repository. Keep one canonical source for shared repo instructions, and

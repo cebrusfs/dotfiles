@@ -85,7 +85,7 @@ tool-specific home dirs are only adapters. Keep custom skills in
 with `mise run sync:codex` (details in
 [docs/agent-config.md](docs/agent-config.md)). See
 [docs/agent-config.md](docs/agent-config.md) for adapter layout and rationale.
-Use the `agent-config` skill when changing cross-agent layout, instruction
+Use the `repo-agent-config` skill when changing cross-agent layout, instruction
 files, or agent symlink mappings.
 Before changing the *content* of `config/agent/global.md`, `config/agent/rules/`,
 `config/agent/skills/agent-delegate/`, `docs/agent-maintenance.md`, or

@@ -93,5 +93,5 @@ When adding pushes a file over budget, remove or merge something, or ask.
 2. Read-back: a fresh look at the final file confirms it is complete and
    its cross-references resolve (files exist, paths correct).
 3. If the change touches adapter wiring or symlinks, follow
-   [agent-config.md](agent-config.md) and the `agent-config` skill.
+   [agent-config.md](agent-config.md) and the `repo-agent-config` skill.
 4. Topic commit as `agent: <title>`.
