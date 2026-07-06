@@ -10,7 +10,7 @@ never silently substitute a CLI for a native worker.
 
 ## Codex
 
-Headless hardening (flags verified against `--help`, codex-cli 0.144.1):
+Headless hardening (flags verified against `--help`, codex-cli 0.144.5):
 
 - `-a never` and `--search` are global flags — they go before `exec`.
 - `--strict-config` fails fast on unknown config keys instead of drifting.
@@ -25,6 +25,11 @@ Headless hardening (flags verified against `--help`, codex-cli 0.144.1):
 - `codex exec resume --last` resumes with edits intact. Run it from the original
   directory; `resume` does not accept `-C`, and still needs
   `--skip-git-repo-check` if the original dispatch did.
+- `resume` also rejects `-s`/`--sandbox`; override the sandbox with
+  `-c 'sandbox_mode="workspace-write"'` (verified 0.144.5). This enables the
+  review-then-fix pattern: dispatch the review with `-s read-only` and no
+  `--ephemeral`, judge the findings, then resume the same session with the
+  write override so the worker applies accepted fixes with its context intact.
 - `codex exec review` runs the built-in repo review; `--json` emits JSONL.
 - In a jj workspace without colocated `.git`, add `--skip-git-repo-check`.
 - On `failed to spawn code-mode host` with mise-installed Codex 0.144.0,
