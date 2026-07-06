@@ -15,3 +15,6 @@ bin/x86_64/nvim
 config/zsh/config.local.zsh
 config/fish/config.local.fish
 config/fish/config.corp.fish
+
+# Claude sync writes runtime skills through the shared skills symlink.
+config/agent/skills/synced/
