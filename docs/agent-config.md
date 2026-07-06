@@ -76,7 +76,7 @@ implicit.
 
 | Agent | Auto-load behavior | Adapter decision |
 |---|---|---|
-| Claude Code | Reads `CLAUDE.md` for global and repo-local instructions. | Root `CLAUDE.md` stays a symlink to `AGENTS.md` so Claude reads the canonical repo instructions without copied prose. |
+| Claude Code | Reads `CLAUDE.md` for global and repo-local instructions; v2.1.277+ falls back to `AGENTS.md` only when no `CLAUDE.md` or `CLAUDE.local.md` exists at or above the working directory (verified 2026-11-16, [memory docs](https://code.claude.com/docs/en/memory)). | Root `CLAUDE.md` stays a symlink to `AGENTS.md` so Claude reads the canonical repo instructions without copied prose. |
 | Codex | Reads `AGENTS.md` for global and repo-local instructions, and discovers shared skills through the cross-agent skills path. | Use Codex's native instruction filename while keeping shared skills out of Codex-owned state, cache, and bundled system skill directories. |
 | Antigravity CLI | Reads the Gemini global guidance, repo-local `AGENTS.md`, and its CLI-specific user skills and settings locations. | Keep it on the same global Gemini guidance while preserving native skill discovery and merging stable settings into CLI-owned runtime config. |
 | Antigravity IDE / 2.0 | Reads the Gemini global guidance, repo-local `AGENTS.md`, and IDE/2.0 skill locations. | Keep IDE/2.0 skill adapters separate because those clients check their own skill discovery locations. |

@@ -31,7 +31,7 @@ Add these only when needed:
 
 | Path | Add when | Notes |
 |---|---|---|
-| `CLAUDE.md` | Claude users need native repo instructions | Prefer symlink or a tiny pointer to `AGENTS.md`; do not duplicate content. |
+| `CLAUDE.md` | Claude-only instructions are needed, or Claude Code older than v2.1.277 must be supported (newer versions read `AGENTS.md` when no `CLAUDE.md` exists) | Symlink it to `AGENTS.md` or start it with an `@AGENTS.md` import; a `CLAUDE.md` with neither hides `AGENTS.md` from Claude. Do not duplicate content. |
 | `.codex/config.toml` | The repo needs Codex-specific settings, MCP, sandbox, fallback instruction filenames, or project hooks | Keep personal model/provider choices out of shared repo config. |
 | `.codex/hooks.json` or `.codex/rules/*.rules` | The repo needs Codex lifecycle enforcement or exec-policy rules | Hooks/rules load only for trusted Codex projects. Prefer repo-relative scripts. |
 | `.agents/mcp_config.json` | Antigravity workspace MCP servers are needed | Keep secrets in environment variables, not committed JSON. |
@@ -46,8 +46,12 @@ Add these only when needed:
 - Use `CLAUDE.md` and `GEMINI.md` as adapters, not second sources of truth.
 - If symlinks are acceptable in the repo, use `CLAUDE.md -> AGENTS.md` and,
   only when necessary, `GEMINI.md -> AGENTS.md`.
-- If symlinks are undesirable for a cross-platform team, make adapter files
-  short pointers that say the canonical instructions are in `AGENTS.md`.
+- If symlinks are undesirable for a cross-platform team, make `CLAUDE.md` a
+  one-line `@AGENTS.md` import: Claude Code reads `AGENTS.md` itself only when
+  no `CLAUDE.md` or `CLAUDE.local.md` exists at or above the working directory,
+  so a prose pointer replaces the shared file instead of loading it (verified
+  2026-11-16, code.claude.com/docs/en/memory). Other adapter files stay short
+  pointers to `AGENTS.md`.
 
 Avoid `.agents/AGENTS.md` as an instruction adapter. Current mainstream
 repo-local uses of `.agents/` include skills, Antigravity workspace rules, and
@@ -70,8 +74,9 @@ the actual adapter/config state, then migrate to the target layout:
 3. Choose the canonical instruction file. Default to root `AGENTS.md` unless the
    repo has a documented reason to use another source of truth.
 4. Move durable shared instructions into the canonical file. Convert tool entry
-   files to symlinks when the repo supports symlinks; use tiny pointer files only
-   when symlinks are unsuitable.
+   files to symlinks when the repo supports symlinks; when symlinks are
+   unsuitable, use an `@AGENTS.md` import for `CLAUDE.md` and tiny pointer files
+   for the rest.
 5. Decide each hidden tool directory by behavior: keep it only if it contains a
    required runtime adapter, shared tool config, hook wiring, MCP config, or
    repo-local workspace skill path. Do not convert a managed user-global skill
@@ -120,9 +125,9 @@ enforces behavior for one tool, put it under that tool's directory.
 ## Review Checklist
 
 1. Is there exactly one canonical repo instruction file?
-2. Are adapter files symlinks or tiny pointers instead of copied prose? Verify
-   actual filesystem state with `ls -l` / `readlink`; prefer symlinks when the
-   repository supports them.
+2. Are adapter files symlinks, an `@AGENTS.md` import (`CLAUDE.md`), or tiny
+   pointers instead of copied prose? Verify actual filesystem state with
+   `ls -l` / `readlink`; prefer symlinks when the repository supports them.
 3. Are repo skills under `.agents/skills` unless a tool-specific path is truly
    required, and are user-global skill sources kept out of repo-local
    `.agents/skills`?
