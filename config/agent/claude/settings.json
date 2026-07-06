@@ -10,11 +10,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
-  "statusLine": {
-    "type": "command",
-    "command": "bash \"$HOME/.claude/statusline-command.sh\""
-  },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -64,6 +60,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline-command.sh\""
+  },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
@@ -78,5 +78,6 @@
   "effortLevel": "xhigh",
   "tui": "fullscreen",
   "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": false,
   "agentPushNotifEnabled": true
 }
