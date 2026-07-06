@@ -2,8 +2,8 @@
 # Do not add runtime state such as [projects] or [hooks.state] here.
 
 web_search = "live"
-model = "gpt-5.6-sol"
-model_reasoning_effort = "max"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "xhigh"
 approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 default_permissions = "workspace-tool-caches"
