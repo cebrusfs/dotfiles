@@ -1,19 +1,95 @@
 prefix_rule(
-    pattern = ["jj", "diff"],
+    pattern = ["jj", ["diff", "help", "log", "show", "st", "status"]],
     decision = "allow",
-    justification = "Inspecting local jj diffs is read-only.",
+    justification = "Common local jj inspection commands are read-only.",
     match = [
         "jj diff",
         "jj diff --stat",
+        "jj help split",
+        "jj log -r trunk()..@",
+        "jj show @-",
+        "jj st",
+        "jj status",
     ],
 )
 
 prefix_rule(
-    pattern = ["jj", "status"],
+    pattern = ["jj", "file", ["annotate", "list", "search", "show"]],
     decision = "allow",
-    justification = "Inspecting local jj status is read-only.",
+    justification = "These jj file commands inspect tracked content without changing it.",
     match = [
-        "jj status",
+        "jj file annotate config.toml",
+        "jj file list",
+        "jj file search approval",
+        "jj file show config.toml",
+    ],
+    not_match = [
+        "jj file chmod +x script",
+        "jj file track generated.txt",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "workspace", ["list", "root"]],
+    decision = "allow",
+    justification = "Listing jj workspaces and resolving the current root are read-only.",
+    match = [
+        "jj workspace list",
+        "jj workspace root",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", ["absorb", "commit", "describe", "edit", "new", "rebase", "split", "squash"]],
+    decision = "allow",
+    justification = "These common local jj operations are recoverable through the operation log; the jj guard still blocks immutability bypasses.",
+    match = [
+        "jj absorb",
+        "jj commit -m 'agent: title'",
+        "jj describe -m 'agent: title'",
+        "jj edit @-",
+        "jj new trunk()",
+        "jj rebase -r @ -d trunk()",
+        "jj split config/agent/global.md -m 'agent: title'",
+        "jj squash -u",
+    ],
+    not_match = [
+        "jj abandon @",
+        "jj restore config.toml",
+        "jj undo",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", ["abandon", "restore", "undo"]],
+    decision = "prompt",
+    justification = "Discarding changes or reversing an operation requires explicit review.",
+    match = [
+        "jj abandon @",
+        "jj restore config.toml",
+        "jj undo",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "workspace", ["add", "forget", "rename", "update-stale"]],
+    decision = "prompt",
+    justification = "Workspace mutations can write outside the current root or detach working-copy state.",
+    match = [
+        "jj workspace add ../other-copy",
+        "jj workspace forget old-copy",
+        "jj workspace rename primary",
+        "jj workspace update-stale",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "bookmark", ["delete", "forget"]],
+    decision = "prompt",
+    justification = "Bookmark removal can alter what a later sync publishes or retains.",
+    match = [
+        "jj bookmark delete topic",
+        "jj bookmark forget topic@origin",
     ],
 )
 
@@ -46,6 +122,95 @@ prefix_rule(
         "jj op integrate old-op",
         "jj op restore abc123",
         "jj op revert abc123",
+    ],
+)
+
+prefix_rule(
+    pattern = ["make", ["build", "check", "ci", "full-verify", "lint", "test"]],
+    decision = "allow",
+    justification = "Run selected routine make verification prefixes from a trusted repository without repeated approval review.",
+    match = [
+        "make build",
+        "make build area=ios",
+        "make check",
+        "make ci",
+        "make full-verify",
+        "make lint area=server",
+        "make test area=ios",
+    ],
+    not_match = [
+        "make clean",
+        "make deploy",
+        "make install",
+    ],
+)
+
+prefix_rule(
+    pattern = ["mise", "run", ["build", "check", "ci", "full-verify", "lint", "test", "typecheck"]],
+    decision = "allow",
+    justification = "Run selected routine mise verification prefixes from a trusted repository without repeated approval review.",
+    match = [
+        "mise run build",
+        "mise run check",
+        "mise run lint",
+        "mise run test -- --filter unit",
+        "mise run typecheck",
+    ],
+    not_match = [
+        "mise exec -- python script.py",
+        "mise install",
+        "mise run deploy",
+    ],
+)
+
+prefix_rule(
+    pattern = ["bun", "test"],
+    decision = "allow",
+    justification = "Run a trusted repository's Bun test suite without repeated approval review.",
+    match = [
+        "bun test",
+        "bun test tests/unit",
+    ],
+)
+
+prefix_rule(
+    pattern = ["bun", "run", ["build", "check", "ci", "lint", "test", "typecheck"]],
+    decision = "allow",
+    justification = "Run selected routine Bun verification prefixes from a trusted repository without repeated approval review.",
+    match = [
+        "bun run build",
+        "bun run check",
+        "bun run lint",
+        "bun run test --watch=false",
+        "bun run typecheck",
+    ],
+    not_match = [
+        "bun run deploy",
+        "bun run publish",
+        "bun x eslint .",
+    ],
+)
+
+prefix_rule(
+    pattern = ["uv", "run", "pytest"],
+    decision = "allow",
+    justification = "Run focused pytest checks from a trusted repository when its canonical task runner has no narrower target.",
+    match = [
+        "uv run pytest",
+        "uv run pytest tests/test_api.py -q",
+    ],
+    not_match = [
+        "uv run python script.py",
+        "uv sync",
+    ],
+)
+
+prefix_rule(
+    pattern = ["uv", "run", "--group", "dev", "pytest"],
+    decision = "allow",
+    justification = "Run the documented focused pytest form with development dependencies.",
+    match = [
+        "uv run --group dev pytest tests/test_api.py -q",
     ],
 )
 

@@ -174,6 +174,12 @@ legacy sandbox keys managed by the template.
 Shared Codex execpolicy rules live in `config/agent/codex/rules/agent.rules`,
 which dotbot links to `~/.codex/rules/agent.rules`. Keep
 `~/.codex/rules/default.rules` as Codex's local mutable allow-list state.
+The shared global guidance selects the repository-documented task runner for
+standard verification; this rules file mechanically allows selected routine
+verification and recoverable local jj command prefixes. Prefix rules also
+match trailing arguments, so they do not guarantee that a command contains
+only the named target. Agents must still honor repository guidance and the
+shared destructive/outward-action rules.
 
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =

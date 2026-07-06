@@ -21,6 +21,14 @@
 * When asked to modify repository files, finish end-to-end with relevant checks
   and a topic commit, unless told not to commit or the request is clearly
   exploratory.
+* For standard project verification, use the task runner documented by the
+  repository; use underlying `uv` or `bun` commands only for focused checks
+  that the repository explicitly documents or its runner does not expose, and
+  return to the canonical runner for final verification. Run repository checks
+  only for repository changes intended to be committed. Agent-workspace
+  `notes_*` and temporary probe scripts need only execute successfully for
+  their immediate purpose; do not run repository formatters, linters, type
+  checkers, or full test suites on them unless explicitly requested.
 * For technology choices, verify current facts and bring concrete numbers:
   stars, last release, pricing, maintenance health. I lean toward Rust, but
   concrete tradeoffs matter more.
