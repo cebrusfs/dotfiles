@@ -1,6 +1,7 @@
 # Worker Model and Runtime Mapping
 
-Read this once the worker route is fixed. [../SKILL.md](../SKILL.md) owns the
+Read this to check your own judgment tier, and again once the worker route is
+fixed to pick a selector on it. [../SKILL.md](../SKILL.md) owns the
 delegation decision, dispatch, and native-versus-CLI routing; this file maps
 verified worker selectors on that route, and defines the judgment tier that
 decides whether the root improvises or follows the fallback procedure. It never
@@ -14,20 +15,20 @@ value. A root at or above this tier improvises; a root below it works from
 [checklist.md](checklist.md), which converts the same policy into countable
 steps.
 
-| Runtime | At or above | Below |
-|---|---|---|
-| Claude | `opus`, `fable` | `sonnet`, `haiku` |
-| Codex | `gpt-5.6-sol` | `gpt-5.6-terra`, `gpt-5.6-luna` |
+At or above the tier: `claude-opus-5`, `claude-fable-5`, `gpt-5.6-sol`.
+Everything else is below it.
 
-Decide from your own model identity as the runtime reports it, not from your
-impression of your own capability — an agent's self-assessment is exactly the
-judgment this switch exists to avoid relying on. If the runtime does not
-surface the model, treat yourself as below the tier.
+Read that as **model ids, not aliases**. An alias like `opus` floats — it can
+resolve to an older model depending on provider and configuration, so knowing
+only your alias does not establish which model answered. If all you have is an
+alias, or the runtime surfaces no model at all, you are below the tier. Decide
+this from the reported id, never from your impression of your own capability:
+self-assessment is the judgment this switch exists to avoid relying on.
 
-This table rates a root's *routing* judgment only. It is unrelated to the
+The tier rates a root's *routing* judgment only. It is unrelated to the
 worker-cost mappings below, and the root's model is a given input — never a
-selection (see [../SKILL.md](../SKILL.md)). Placement of `fable` here reflects
-its stated root capability; its worker cost tier remains unverified.
+selection (see [../SKILL.md](../SKILL.md)). `claude-fable-5` sits here on its
+stated root capability; its worker cost tier remains unverified.
 
 ## Selection
 
@@ -71,10 +72,34 @@ The native collaboration schema currently exposes explicit
 explicitly exposes it. Re-check the live schema rather than guessing an alias,
 model identifier, or effort value.
 
+### Reasoning effort — verified per route, 2026-07-27
+
+The two routes do not declare the same set, so do not carry a value from one to
+the other.
+
+| Route | Declared values | How established |
+|---|---|---|
+| Native `spawn_agent` | `low` `medium` `high` `xhigh` `max` `ultra` | The live schema's own `reasoning_effort` description, read in-session. `none` and `minimal` are **not** listed. |
+| Codex CLI | `none` `minimal` `low` `medium` `high` `xhigh` `max` `ultra` | The `ReasoningEffort` variant list in the codex-cli 0.145.0 binary, plus `max` confirmed live — echoed back as `reasoning effort: max` in the session header of a `codex exec --strict-config` run. |
+
+The native field is typed `string` with no machine-checkable enum, so an
+unlisted value cannot be *proven* rejected — but an unlisted value is also not
+verified, so do not send one. Omitting `reasoning_effort` inherits the parent's;
+the field does exist, so a worker downshift is available on this route. The
+schema likewise declares only `gpt-5.6-sol` and `gpt-5.6-terra` as `model`
+overrides. `ultra` is untested on either route.
+
+Pass a CLI value with `-c model_reasoning_effort="<value>"`.
+
+**`xhigh` is not the ceiling.** This ladder has grown before, and a config file
+left at `xhigh` is evidence of that setting's age, not of the maximum available.
+Re-read the live schema or the variant list rather than inferring the top from
+what happens to be configured.
+
 | Selector | Worker mapping |
 |---|---|
 | `gpt-5.6-luna` + `low` | eligible known-pattern search, inventory, documentation, tests, and mechanical work, when available |
-| `gpt-5.6-terra` + `high` | plan-backed bounded implementation, debugging, and verification |
+| `gpt-5.6-terra` | plan-backed bounded implementation, debugging, and verification. Leave effort at the route's default and raise it only on demonstrated need, per the selection rule above — `high` is not automatic for this row |
 | `gpt-5.6-sol` | use only when evidence shows a need beyond the applicable Terra route, especially for non-mechanical judgment or difficult investigation |
 
 When Luna is unavailable, use the verified Terra route for eligible native
