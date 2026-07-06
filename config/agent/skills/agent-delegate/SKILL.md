@@ -42,15 +42,17 @@ model id, or judge-tier peer is not already fixed, read
 
 ## Dispatch
 
-The default worker is the Codex CLI, non-interactive (never a TUI):
+Detect the host from its surfaced native tools, then read exactly one profile:
 
-```bash
-codex -a never exec -m <model> -s <read-only|workspace-write> [-C <dir>] [-o <file>] "<prompt>"
-```
+| Current host | Required profile |
+|---|---|
+| Codex with `collaboration.spawn_agent` | [references/codex-host.md](references/codex-host.md) |
+| Claude Code with a native subagent tool | [references/claude-host.md](references/claude-host.md) |
+| Any host without a native worker API | [references/cli.md](references/cli.md) |
 
-Never use `danger-full-access` or approval-bypass flags; never bypass any
-callee's sandbox or approval protections. For resume, output-capture caveats,
-or another runtime, read [references/cli.md](references/cli.md).
+The profile owns native-versus-CLI routing. Load
+[references/models.md](references/models.md) only when a model or price choice
+remains. Never bypass any callee sandbox or approval protection.
 
 Give each worker a bounded prompt and a disjoint write set. Start from the
 matching [templates/](templates/) file — search, implementation, refactor,
@@ -70,6 +72,7 @@ Load the remaining references only when their condition applies:
 
 | Condition | Reference |
 |---|---|
+| An agent CLI is selected | [references/cli.md](references/cli.md) |
 | Isolating writable work in a jj repo | [references/workspaces.md](references/workspaces.md) |
 | A dispatch failed or needs escalation | [references/failures.md](references/failures.md) |
 

@@ -1,26 +1,22 @@
 # Model and Runtime Mapping
 
 Read only when a dispatch needs an explicit runtime or model choice.
-[../SKILL.md](../SKILL.md) owns role selection; this file maps roles to
-current model aliases and runtimes.
+[../SKILL.md](../SKILL.md) and its required host profile own role and
+native-versus-CLI routing. This file owns price/strength selection after that
+path is fixed.
 
-## Runtime choice
+## Selection
 
-- Prefer a native worker when it can select, or will inherit, the cheapest tier
-  that fits. Do not pay an agent-CLI prompt tax merely to change process.
-- If a native worker inherits an expensive lead and the role is lower-tier,
-  use a CLI with an explicit cheaper model. Example: a Fable lead uses Sol for
-  strong review, Terra for implementation, and Luna for exploration.
-- For required fresh strong review, a native Sol worker is suitable; if the
-  lead is Fable and the native API cannot downshift, select `gpt-5.6-sol`
-  through the CLI.
+- Follow the host profile; select a model only when that path exposes a
+  selector. Never claim an unreported tier.
+- For a permitted downshift from a Fable lead, use Sol for strong review, Terra
+  for implementation, and Luna for exploration.
 - Claude runtime workers must always receive an explicit `model`; omission
-  inherits the lead. Use runtime workers for their harness advantage and a CLI
-  for a material downshift or cross-family check.
-- Which family is effectively cheapest is set by the owner's subscription mix,
-  not per-token prices alone. As of 2026-07-11 that mix makes the Codex CLI
-  the default worker family (see SKILL.md). Re-verify when plans or prices
-  change; concrete plan details stay out of this public repo.
+  inherits the lead.
+- Which CLI family is effectively cheapest is set by the owner's subscription
+  mix, not per-token prices alone. As of 2026-07-11 that mix makes the Codex CLI
+  the default *CLI fallback*, not the default worker. Re-verify when plans or
+  prices change; concrete plan details stay out of this public repo.
 
 ## Claude (aliases verified 2026-07-07; selector verified 2026-07-11)
 
@@ -33,7 +29,8 @@ current model aliases and runtimes.
 
 A model-less Claude worker inherits its lead. A Fable worker costs 2× Opus at
 public API prices (Fable $10/$50, Opus $5/$25 per MTok in/out, verified
-2026-07-11), so never inherit it for routine work.
+2026-07-11), so never inherit it for routine work. These selectors are aliases,
+not pinned model ids; never claim exact-model reproducibility from them.
 
 ## Codex CLI (verified 2026-07-11)
 

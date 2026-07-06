@@ -4,6 +4,10 @@ Read for CLI mechanics beyond the default dispatch form in
 [../SKILL.md](../SKILL.md): resume, output capture, or a non-Codex runtime.
 Model choice comes from [models.md](models.md).
 
+Every agent CLI starts a separate session. Before passing private repository or
+conversation context, disclose that boundary and obtain explicit user opt-in;
+never silently substitute a CLI for a native worker.
+
 ## Codex
 
 Headless hardening (flags verified against `--help`, codex-cli 0.144.1):
