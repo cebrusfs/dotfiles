@@ -23,8 +23,8 @@ vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
 -- Neovim-only UI defaults live here; shared Vim-compatible defaults stay in
--- `common.vim` so the two editors do not drift for basic editing behavior.
-vim.o.laststatus = 2
+-- `common.vim` so the two editors do not drift. The native statusline defined
+-- there is the Vim and no-plugin fallback; airline overrides it in Neovim.
 vim.opt.completeopt:append({ "menuone", "noselect", "popup" })
 
 -- Clipboard routing:
@@ -52,12 +52,9 @@ local function gh(repo)
     return { src = "https://github.com/" .. repo }
 end
 
--- Keep the old Neovim plugin surface installed first. Replacement rationale
--- lives beside each migrated plugin or module so it stays close to behavior.
 vim.cmd([=[
-" Statusline parity: airline/tender was the previously enabled stack.
-" lualine, mini.statusline, or native statusline are better Neovim candidates,
-" but replacing this needs visual parity checks instead of a migration drive-by.
+" Airline/tender provides the Neovim statusline; the shared native statusline
+" remains the fallback until its visual parity is verified.
 let g:airline_theme = 'tender'
 let g:airline_powerline_fonts = 1
 
@@ -79,34 +76,25 @@ let g:rainbow_conf = {
     \       'python': 0
     \   }
     \}
-
-" Native gc/gcc covers the Neovim comment workflow. Lua below keeps the old
-" <Bslash> alias and restores armasm's '@' delimiter via 'commentstring'.
-
-" Pandoc URL conceal keeps prose buffers readable.
-let g:pandoc#syntax#conceal#urls = 1
 ]=])
 
--- `vim.pack` uses Neovim's native package layout. Keep the old dependency
--- surface during migration; modern replacements are called out in comments so
--- behavior can be swapped one workflow at a time.
+-- `vim.pack` uses Neovim's native package layout. Missing plugins install at
+-- the tracked lock-file revisions on startup; upgrades are intentional
+-- `vim.pack.update()` runs. Rationale for keeping each plugin lives beside its
+-- declaration or setup block so it stays close to behavior.
 local pack_specs = {
-    -- Mini is adopted one small module at a time. The mini review matched this
-    -- config's bias: small modules are good swaps; picker/files/git change core
-    -- workflow. Adopted modules are `trailspace`, `align`, and `jump2d`;
-    -- diff/files/pick/git still need workflow-specific review before replacing larger tools.
+    -- Mini provides the focused `trailspace`, `align`, and `jump2d` modules.
+    -- Its diff/files/pick/git modules change core workflows and stay disabled.
     gh("nvim-mini/mini.nvim"),
 
-    -- Themes and `statusline`.
-    gh("tomasiser/vim-code-dark"),
+    -- `vscode.nvim` is the active Neovim theme; airline/tender provides its
+    -- statusline. Vim uses the native statusline in `common.vim`.
     gh("Mofiqul/vscode.nvim"),
     gh("vim-airline/vim-airline"),
     gh("jacoborus/tender.vim"),
 
-    -- Indent and whitespace. `vim-indent-guides` is kept for parity; `ibl` below
-    -- is the active Neovim indent-guide implementation. `mini.trailspace` handles
-    -- Error-colored trailing whitespace.
-    gh("preservim/vim-indent-guides"),
+    -- `indent-blankline.nvim` provides indent guides; `rainbow` colors delimiters.
+    -- `mini.trailspace` handles Error-colored trailing whitespace.
     gh("lukas-reineke/indent-blankline.nvim"),
     gh("luochen1990/rainbow"),
 
@@ -120,27 +108,21 @@ local pack_specs = {
     gh("hrsh7th/cmp-path"),
     gh("hrsh7th/cmp-cmdline"),
     gh("hrsh7th/nvim-cmp"),
-    -- Keep `fzf-lua` for `fd`/`rg` search with side-by-side previews. `mini.pick` is
-    -- not equivalent for preview-heavy file and grep exploration.
+    -- Keep `fzf-lua` for `fd`/`rg` search with side-by-side previews; NERDTree
+    -- keeps the persistent tree toggle on <S-Tab>.
     gh("ibhagwan/fzf-lua"),
-    -- `gitsigns` keeps the richer hunk workflow. `mini.diff` is a candidate only
-    -- if number-column hunks are worth trading off those actions.
+    -- `gitsigns` keeps passive hunk/sign state; fugitive stays for command
+    -- workflows like status, blame, diff, and mergetool.
     gh("lewis6991/gitsigns.nvim"),
 
-    -- Editing/navigation muscle memory. Fugitive stays for repo/index status;
-    -- `mini.git` is buffer-focused. Native `gc`/`gcc` now covers commenting with
-    -- the old <Bslash> alias below. `EasyAlign` now lives in `mini.align`.
+    -- Editing/navigation muscle memory. `vim-pasta` keeps block-context paste
+    -- indentation; language-aware `end` insertion has no native equivalent.
     gh("tpope/vim-fugitive"),
     gh("sickill/vim-pasta"),
-    -- `mini.files` uses a popup workflow; this keeps the existing tree toggle
-    -- until file browsing is intentionally redesigned.
     gh("preservim/nerdtree"),
     gh("tpope/vim-endwise"),
-    gh("vim-pandoc/vim-pandoc"),
-    gh("vim-pandoc/vim-pandoc-syntax"),
 
-    -- Niche filetypes. Remote copy is handled by the
-    -- provider routing above; visual Y remains an explicit `OSC52` fallback.
+    -- Mojom and GN provide syntax for Chromium-adjacent filetypes.
     gh("ShikChen/mojom.vim"),
     { src = "https://gn.googlesource.com/gn", name = "gn" },
 }
@@ -203,8 +185,8 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<Bslash>", "gcc", { remap = true, desc = "Toggle comment line" })
 vim.keymap.set("x", "<Bslash>", "gc", { remap = true, desc = "Toggle comment" })
 
--- `vscode.nvim` was the active Neovim colorscheme. Fall back to default instead
--- of `codedark` because `codedark` is kept only as legacy/Vim parity.
+-- `vscode.nvim` is the active Neovim colorscheme; `codedark` stays Vim-only.
+-- Fall back to the built-in default when plugins are disabled.
 if plugins_enabled then
     local vscode = require("vscode")
     vscode.setup({

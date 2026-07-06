@@ -193,6 +193,5 @@ Neovim with LSP provides these built-in diagnostic navigation keybindings:
 - [docs/package-management.md](docs/package-management.md) — install flow & per-platform package routing
 - [docs/agent-config.md](docs/agent-config.md) — shared AI agent (Claude/Codex) config
 - Research notes: [shell migration](docs/shell-migration.md),
-  [terminal migration](docs/terminal-migration.md),
-  [nvim plugin review](docs/nvim-plugin-review.md)
+  [terminal migration](docs/terminal-migration.md)
 - Editing this repo with an AI agent? See [AGENTS.md](AGENTS.md).

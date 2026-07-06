@@ -13,7 +13,11 @@ machine.
 3. **Dev Tools & Binaries** — bootstrap `mise`, install languages and CLI tools
    (Rust, Node.js, Bun, Ruby, uv, rg, fd, fzf, delta), and sync stable Codex and
    Antigravity CLI runtime defaults; see [Agent Config](agent-config.md#antigravity-cli-permissions) for its runtime-state preservation caveat.
-4. **Vim Plugins** — run PlugUpdate to install Vim/Neovim plugins.
+4. **Editor Plugins** — Vim plugins install via `PlugUpdate`. Neovim installs
+   missing `vim.pack` plugins at the tracked lock-file revisions
+   (`config/nvim/nvim-pack-lock.json`) on normal startup; upgrades are
+   intentional `vim.pack.update()` operations, and `config/vim/update` cleans
+   plugins no longer declared.
 5. **Shell Configuration** — ensure Zsh is the default shell and transition the
    session.
 
