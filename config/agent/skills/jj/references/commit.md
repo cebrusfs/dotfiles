@@ -1,7 +1,7 @@
 # Writing a jj Commit Message
 
 > **Purpose:** write/apply a message for a finished change — one component per message
-> (`<component>: <title>`, optional summary body).
+> (`<component>: <title>` plus body paragraphs whenever the title omits why).
 
 - Status: !`jj st`
 - Diff: !`jj diff`
@@ -16,7 +16,9 @@ quoting such as `$'...\n...'`. Use stdin instead:
 jj describe --stdin <<'MSG'
 component: title
 
-Summary body.
+Describe the behavior or scope that the title cannot carry.
+
+Explain why this change or approach is needed, including the relevant constraint or trade-off.
 MSG
 ```
 
@@ -30,12 +32,14 @@ or `git commit -F -`.
 2. Match project history pattern
 3. Default: `<component>: <title>`
 
-Title ≤72 chars. Use the subject for the high-level what. Use a body when the
-why or how would not be obvious from the diff, or when the change has tradeoffs,
-risks, or close keywords; do not squeeze material context into the subject. Use
-bullets when the body explains multiple distinct what/why/how points. After
-amending, squashing, or splitting a commit, re-read the final diff and update the
-message if it no longer describes the committed content. If diff is empty, say
-so.
+Title ≤72 chars. The subject states the high-level **what**; include **why**
+there only when it stays clear and concise. If the title does not explain why
+the change or chosen approach is needed, write a body. Use short, unlabeled
+paragraphs in reader order: first any missing **what** or behavior, then
+**why** (the reason, constraint, or trade-off), then a risk, verification, or
+rollout detail only when it informs a future decision. Do not repeat the title
+or diff. After amending, squashing, or splitting a commit, re-read the final
+diff and update the message if it no longer describes the committed content. If
+diff is empty, say so.
 
 Report the message used. Nothing else.

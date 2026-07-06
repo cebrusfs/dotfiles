@@ -229,10 +229,10 @@ Avoid:
   chore: update hooks
 
 Body:
-  Optional for simple self-explanatory changes.
-  Recommended for non-trivial changes: multi-file edits, behavior changes,
-  migration/context, tradeoffs, verification notes, or Closes #N.
-  Do not repeat the title in the body.
+  Use short, unlabeled paragraphs: first any missing what or behavior, then
+  why (the reason, constraint, or trade-off). Add risk, verification, or
+  rollout detail only when it informs a future decision. Do not repeat the
+  title or diff.
 """.rstrip(),
         file=sys.stderr,
     )

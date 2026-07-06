@@ -212,6 +212,13 @@ class MessageValidationTests(unittest.TestCase):
             error,
         )
 
+    def test_failure_explains_body_paragraph_order(self) -> None:
+        error = check_error("jj commit -m 'invalid message'")
+
+        self.assertIn("first any missing what or behavior", error)
+        self.assertIn("why (the reason, constraint, or trade-off)", error)
+        self.assertNotIn("Why:", error)
+
     def test_unrelated_help_and_bare_new_commands_pass(self) -> None:
         for command in (
             "jj status",
