@@ -111,3 +111,8 @@ Load the remaining references only when their condition applies:
   may review a worker's patch; a worker never grades its own work.
 - A blind reviewer gets requirements and the diff — never the author's
   rationale, suspected bugs, or preferred outcome. "No findings" is valid.
+
+## Lessons
+
+- 2026-07-24: Once authorized, delegate read-only review early for cross-repo
+  work above the volume gate. (evidence: Aureus/dotfiles hook refactor)

@@ -27,6 +27,7 @@ Canonical rubrics with worked examples: `~/.dotfiles/config/agent/rules/judgment
 
 * Stop and ask the user when an instruction has two readings whose outcomes differ materially, when an action is irreversible or outward-facing and was not explicitly requested, or when the acceptance criteria cannot be verified as stated.
 * After a failed attempt, escalate or change approach instead of retrying blindly; the escalation ladder lives in the `agent-delegate` skill.
+* When a failure reveals missing or stale reusable guidance, update its owning skill; ignore transient environment failures.
 * "Done" means acceptance criteria proved by runnable checks or non-author read-back — never by the author's impression.
 
 ## Version Control

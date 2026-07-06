@@ -30,7 +30,9 @@ Baseline (invariant, mental model, pre-edit flow choice) lives in the shared rul
 | `jj resolve` | see `references/recovery.md` |
 
 ## Quick reminders
-- Never rewrite commits (`squash` / `rebase` / `absorb`) while another process or delegated agent worker is editing the same working copy — the automatic snapshot races the rewrite and produces divergent change IDs, which can drop edits from disk. Wait for the worker to finish; if it already happened, see "Divergent change" in `references/recovery.md`.
+- Never rewrite commits while another process edits the same working copy or
+  overlapping history; wait first. If they race, follow "Divergent change" in
+  `references/recovery.md`.
 
 ## Amending a commit in a stack
 Mutable commits can be rewritten. Two ways:

@@ -78,7 +78,10 @@ the actual adapter/config state, then migrate to the target layout:
    source into `.agents/skills` just because the repo contains skills. Remove
    empty obsolete directories and ignore local-only state such as
    `.claude/settings.local.json`.
-6. Verify the migration from filesystem evidence, not intent: `ls -l` /
+6. Before renaming or deleting a live hook target, update adapters first; keep
+   temporary compatibility only until sessions reload, then remove it and
+   verify no stale references.
+7. Verify the migration from filesystem evidence, not intent: `ls -l` /
    `readlink` for adapters, `ls -la` for tool directories, and VCS status/diff
    to confirm no generated, secret, or personal runtime state is tracked.
 
