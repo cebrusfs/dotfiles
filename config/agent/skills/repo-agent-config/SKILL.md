@@ -10,12 +10,9 @@ allowed-tools:
 
 Use this skill to set up agent config inside a normal application, library, or
 tooling repository. Keep one canonical source for shared repo instructions, and
-use `.agents/skills` as the canonical place for repo-local skills. Add
+use `.agents/skills` as the canonical source for repo-local skills. Add
 tool-specific files only when a tool needs a native discovery path or actual
-tool-specific behavior. For dotfiles or agent-config repos that publish
-user-global skills, keep that user-global source separate from repo-local
-workspace skills; do not symlink it into `.agents/skills` unless duplicate
-workspace loading is intentional.
+tool-specific behavior.
 
 ## Default Layout
 
@@ -32,6 +29,7 @@ Add these only when needed:
 | Path | Add when | Notes |
 |---|---|---|
 | `CLAUDE.md` | Claude-only instructions are needed, or Claude Code older than v2.1.277 must be supported (newer versions read `AGENTS.md` when no `CLAUDE.md` exists) | Symlink it to `AGENTS.md` or start it with an `@AGENTS.md` import; a `CLAUDE.md` with neither hides `AGENTS.md` from Claude. Do not duplicate content. |
+| `.claude/skills/<name>` | Claude Code must discover a repo-local skill | Use a per-skill adapter to the canonical source; see [Repo Skills](#repo-skills). |
 | `.codex/config.toml` | The repo needs Codex-specific settings, MCP, sandbox, fallback instruction filenames, or project hooks | Keep personal model/provider choices out of shared repo config. |
 | `.codex/hooks.json` or `.codex/rules/*.rules` | The repo needs Codex lifecycle enforcement or exec-policy rules | Hooks/rules load only for trusted Codex projects. Prefer repo-relative scripts. |
 | `.agents/mcp_config.json` | Antigravity workspace MCP servers are needed | Keep secrets in environment variables, not committed JSON. |
@@ -79,8 +77,7 @@ the actual adapter/config state, then migrate to the target layout:
    for the rest.
 5. Decide each hidden tool directory by behavior: keep it only if it contains a
    required runtime adapter, shared tool config, hook wiring, MCP config, or
-   repo-local workspace skill path. Do not convert a managed user-global skill
-   source into `.agents/skills` just because the repo contains skills. Remove
+   repo-local workspace skill path; see [Repo Skills](#repo-skills). Remove
    empty obsolete directories and ignore local-only state such as
    `.claude/settings.local.json`.
 6. Before renaming or deleting a live hook target, update adapters first; keep
@@ -102,8 +99,17 @@ dotfiles-managed source that links there. Do not symlink that user-global source
 back into a repo's `.agents/skills` unless duplicate workspace visibility is
 intentional.
 
-Codex and Antigravity support `.agents/skills` for workspace skills. Prefer
-this over tool-specific workspace skill folders.
+Codex and Antigravity discover workspace skills in `.agents/skills`.
+Claude Code discovers `.claude/skills/<name>/SKILL.md`; add a per-skill
+symlink `.claude/skills/<name> -> ../../.agents/skills/<name>` so it reads the
+same source. Claude documents symlinked skill folders, not direct discovery
+from `.agents/skills` (verified 2026-11-16, [skills docs][claude-skills]).
+A symlink for the entire `.claude/skills` directory is unverified; no custom
+skill-search-path setting was found in those docs. Check permissions for
+both the link and its target ([permission docs][claude-permissions]).
+
+[claude-skills]: https://code.claude.com/docs/en/skills
+[claude-permissions]: https://code.claude.com/docs/en/permissions#symlinks
 
 Keep skills focused on reusable workflows. Do not turn `AGENTS.md` into a large
 skill catalog; if a workflow has steps, references, scripts, or decision rules,
@@ -128,9 +134,9 @@ enforces behavior for one tool, put it under that tool's directory.
 2. Are adapter files symlinks, an `@AGENTS.md` import (`CLAUDE.md`), or tiny
    pointers instead of copied prose? Verify actual filesystem state with
    `ls -l` / `readlink`; prefer symlinks when the repository supports them.
-3. Are repo skills under `.agents/skills` unless a tool-specific path is truly
-   required, and are user-global skill sources kept out of repo-local
-   `.agents/skills`?
+3. Are repo skills under `.agents/skills`, with native discovery adapters
+   verified for every target host, and are user-global skill sources kept out
+   of repo-local `.agents/skills`?
 4. Are secrets, auth, trust state, generated files, logs, and personal UI prefs
    excluded?
 5. Are tool-specific configs justified by actual behavior, not created for

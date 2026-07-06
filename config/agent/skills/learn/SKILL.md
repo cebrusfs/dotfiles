@@ -66,7 +66,7 @@ src=$(cd "$(readlink -f ~/.agents/skills)/../../.." && pwd) &&
 | A tool's mechanics or recipes (jj, delegation, GitHub issues, repository agent config) | that skill under `config/agent/skills/` |
 | How lessons are captured, routed, or applied | `config/agent/skills/learn/SKILL.md` |
 | Adapter wiring, permission posture, hooks | `docs/agent-config.md` and `config/agent/<host>/`. A rule stated in prose and enforced by a hook changes in both; adding or relaxing enforcement is policy |
-| One repository only | Its `AGENTS.md` (create it with `repo-agent-config` if absent) or `.agents/skills/<name>/`; if agent config is unwelcome there, a host-local uncommitted file, reported as such |
+| One repository only | Its `AGENTS.md` (create it with `repo-agent-config` if absent) or a repo-local skill following [Repo Skills](../repo-agent-config/SKILL.md#repo-skills); if agent config is unwelcome there, a host-local uncommitted file, reported as such |
 | Private, corp, or personal context | A private local file outside the shared repository |
 
 A repository-vendored copy of a shared skill is that repository's runtime
@@ -89,7 +89,7 @@ VCS log of the owning file is the history of lessons.
 
 | Host | Invoke | Native mechanics |
 |---|---|---|
-| Claude Code | `/learn [lesson]` | `skill-creator` plugin scaffolds a skill; `/doctor prompt-audit [path]` (v2.1.283+) finds stale or contradictory instructions; auto memory `feedback` notes under `~/.claude/projects/<project>/memory/` are candidates |
+| Claude Code | `/learn [lesson]` | the `skill-creator` skill scaffolds a skill (account-synced as `anthropic-skills:skill-creator`, or the marketplace plugin when enabled); `/doctor prompt-audit [path]` (v2.1.283+) finds stale or contradictory instructions; auto memory `feedback` notes under `~/.claude/projects/<project>/memory/` are candidates |
 | Codex | `$learn` | `$skill-creator` scaffolds a skill; local memories (`/memories`) are candidates |
 | Antigravity | `learn` skill, or the host's proposal flow | Use the host's proposal UI when it offers one |
 

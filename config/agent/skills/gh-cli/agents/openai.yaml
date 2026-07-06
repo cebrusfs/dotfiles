@@ -1,4 +1,6 @@
 interface:
   display_name: "GitHub Issues"
   short_description: "Manage GitHub issues with gh"
-  default_prompt: "Use $gh-cli to manage GitHub issues and dependencies. Default to --body-file for issue, PR, review, and comment bodies; use --body only for short single-line plain text with no special characters."
+  default_prompt: >-
+    Use $gh-cli to manage GitHub issues and dependencies. Follow its Body Files
+    section for body arguments and local staging.
