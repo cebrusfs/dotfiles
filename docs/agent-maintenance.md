@@ -13,7 +13,9 @@ owner; never copy content between these files — link instead.
 | File | Owns | Loaded |
 |---|---|---|
 | `config/agent/global.md` | interaction rules; delegate/judgment *triggers*; cross-agent VCS safety core | every session, all agents |
-| `config/agent/rules/jj.md` | jj mental model and workflow flows | every Claude session |
+| `config/agent/rules/jj.md` | jj invariant, mental model, pre-edit flow choice | every Claude session |
+| `config/agent/skills/jj/**` | jj recipes: skeleton, messages, split, recovery, non-interactive forms | on jj tasks |
+| `config/agent/hooks/*`, Claude `permissions.deny`, `config/agent/codex/rules/agent.rules` | mechanical enforcement: commit-message format, commit nudge, worktree↔workspace wiring, `jj git`/`jj op` bans | at the moment of action |
 | `config/agent/rules/judgment.md` | judgment rubrics with examples | every Claude session; on-demand elsewhere |
 | `config/agent/skills/agent-delegate/SKILL.md` | worker invocation mechanics | on delegation |
 | `config/agent/skills/agent-delegate/routing.md` | model table, dispatch triple, report contract, escalation ladder, verification protocol | on delegation |
@@ -21,8 +23,19 @@ owner; never copy content between these files — link instead.
 | `docs/agent-maintenance.md` | this protocol; lessons format; size budgets | on demand |
 | `docs/agent-letter.md` | diagnosis, degradation modes, handoff notes | on demand |
 
-Placement rule: always-loaded files carry only what changes behavior in most
-sessions. Everything else goes in skills or docs, reachable by a pointer.
+Placement rules:
+
+- Always-loaded files carry only what changes behavior in most sessions;
+  everything else goes in skills or docs, reachable by a pointer.
+- Layer by trigger reliability × frequency: content goes to the latest layer
+  whose load timing still precedes its moment of need. No reliable trigger
+  (safety bans, pre-edit flow choice) → always-on; reliable trigger (commit,
+  split, conflict, dispatch) → skill; mechanically checkable → hook / deny /
+  execpolicy, with a self-teaching message so the prose can stay one line.
+- `config/agent/rules/` is a Claude-only amplifier: nothing safety-critical may
+  live only there; the safety core stays in `global.md` or a mechanical layer.
+- Tool-agnostic policy (e.g. commit topic rules) never moves into a
+  tool-specific skill.
 
 ## What you may change without asking
 

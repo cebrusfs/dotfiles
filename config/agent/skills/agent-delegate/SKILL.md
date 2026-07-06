@@ -70,6 +70,28 @@ codex exec [-m <model>] [-s <sandbox>] [-C <dir>] [-o <file>] "<prompt>"
 - If it refuses to start outside a git repo (e.g. a jj workspace without a
   colocated `.git`), add `--skip-git-repo-check`.
 
+## Workspace isolation (jj repos)
+
+- Preferred (Claude as lead): spawn workers with `isolation: "worktree"` —
+  the WorktreeCreate/WorktreeRemove hooks in
+  `config/agent/claude/settings.json` auto-provision a jj workspace under
+  `.claude/worktrees/` (provisioning verified end-to-end 2026-07-08; removal
+  can lag — after workers finish, check `jj workspace list` and clean
+  leftovers with `jj workspace forget <name>` plus removing the directory).
+  A Codex worker can run inside one via
+  `codex exec -C <path> --skip-git-repo-check` (the workspace has no
+  colocated `.git`).
+- Manual fallback (Codex as lead, or outside Claude): do not assume a
+  worker's worktree is a jj workspace; manage it yourself:
+
+  ```bash
+  jj workspace add --name <name> .claude/worktrees/<name>
+  codex exec -C .claude/worktrees/<name> --skip-git-repo-check "<prompt>"
+  jj workspace forget <name> && rm -rf .claude/worktrees/<name>
+  ```
+- Never let two workers (or a worker and the lead) rewrite the same working
+  copy concurrently — see the `jj` skill's worker-race warning.
+
 ## Adding a new agent CLI
 
 Add a section with the same shape: non-interactive invocation form,

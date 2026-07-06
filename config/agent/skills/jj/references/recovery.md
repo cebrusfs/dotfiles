@@ -4,11 +4,15 @@
 > went wrong — not the normal flow.
 
 ## Rollback
-- `jj undo` reverses the last local op. Use `jj op log -n 5` to inspect first.
+- `jj undo` is gated: run it only when the user explicitly asked for an
+  operation rollback (global instructions ban it otherwise). Without that ask,
+  stop after `jj op log -n 5` and present findings. The skill's allowed-tools
+  listing `jj undo` is capability, not permission.
 
 ## Amending an ancestor
 - `jj absorb` distributes `@` changes to the nearest ancestor that touched the same lines.
-- If absorb mis-routes: `jj undo`, `jj new` to isolate, redo edits, absorb again.
+- If absorb mis-routes, that is an undo-shaped situation: show `jj op log -n 5`
+  and ask before `jj undo`; then `jj new` to isolate, redo edits, absorb again.
 
 ## Conflict resolution (no TUI)
 - After a rebase: `jj resolve --list` to enumerate conflicts, edit markers in-file, then `jj squash -m "resolve conflicts"`.
@@ -26,4 +30,6 @@ are addressed as `<change>/0`, `<change>/1`, …
 4. Redo the interrupted rewrite.
 
 ## Caution: shared/pushed changes
-Before `abandon` / `squash` / `rebase`, confirm the target is local — see rules/jj.md hard rules.
+Before `abandon` / `squash` / `rebase`, confirm the target is local with
+`jj log` (see `config/agent/rules/jj.md` Mental model); destructive-op and
+immutability bans live in the global instructions' Version Control section.

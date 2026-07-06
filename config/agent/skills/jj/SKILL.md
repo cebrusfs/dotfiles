@@ -7,7 +7,7 @@ allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj op log:*)
 
 # jj
 
-Baseline rules (mental model, non-interactive requirements, state-exploration) live in the shared rules file (`config/agent/rules/jj.md` in this repo; `~/.claude/rules/jj.md` when installed for Claude) and always apply. This skill covers operations needing extra recipe.
+Baseline (invariant, mental model, pre-edit flow choice) lives in the shared rules file `~/.dotfiles/config/agent/rules/jj.md` (also linked at `~/.claude/rules/jj.md`) — auto-loaded in Claude Code; other agents read it from that path on demand. The cross-agent safety rules live in the global instructions. This skill covers operations needing extra recipe.
 
 ## Routing
 
@@ -18,8 +18,18 @@ Baseline rules (mental model, non-interactive requirements, state-exploration) l
 | Split a commit non-interactively | `references/split.md` |
 | Recover from a mistake / resolve conflicts | `references/recovery.md` |
 
+## Non-interactive forms (never open a TUI)
+
+| Command | Non-interactive form |
+|---------|---------------------|
+| `jj describe` | `-m "..."` for one line, or `--stdin` for a body |
+| `jj commit` | `-m "..."` |
+| `jj squash` | `-m "..."`; or `-u` / `--use-destination-message` only when discarding the source description is intended |
+| `jj split <files>` | specify explicit file paths |
+| `jj split` (diff-based) | see `references/split.md` |
+| `jj resolve` | see `references/recovery.md` |
+
 ## Quick reminders
-- Baseline (mental model, hard rules, flow choice) is always-on in `rules/jj.md`; this skill holds the heavier recipes.
 - Never rewrite commits (`squash` / `rebase` / `absorb`) while another process or delegated agent worker is editing the same working copy — the automatic snapshot races the rewrite and produces divergent change IDs, which can drop edits from disk. Wait for the worker to finish; if it already happened, see "Divergent change" in `references/recovery.md`.
 
 ## Amending a commit in a stack

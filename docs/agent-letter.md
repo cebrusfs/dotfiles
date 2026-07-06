@@ -45,7 +45,9 @@ toward its owner rather than copying. Full dedup of `rules/jj.md` vs
 `AGENTS.md` and skills, but never `config/agent/rules/`), so the cross-agent
 jj safety core must stay in `global.md`;
 removing them from `rules/jj.md` is a Claude-behavior change that deserves its
-own reviewed commit. That dedup is the first piece of unfinished business.
+own reviewed commit. That dedup landed on 2026-07-08: `rules/jj.md` now defers
+to `global.md` for the safety core and keeps only the pre-edit working model;
+the non-interactive forms table moved into the `jj` skill.
 
 ### Leak 3 — Self-verification and blind retry
 
@@ -72,9 +74,11 @@ another retry.
    of the time — and "most" is where incidents live.
    `config/agent/hooks/commit-message-check.py` is the proof this works. When a
    lesson keeps reappearing in the lessons logs, the correct final form is
-   usually a hook or an execpolicy rule, not a longer paragraph. Candidates
-   already visible: blocking `--ignore-immutable`, blocking `jj git` (Claude
-   has a settings deny; Codex relies on prose).
+   usually a hook or an execpolicy rule, not a longer paragraph. The `jj git`
+   / `jj op` bans are already mechanical on both Claude (settings deny) and
+   Codex (execpolicy `agent.rules`). The visible gaps: `--ignore-immutable`
+   has no mechanical coverage anywhere, and Gemini has no mechanical layer
+   wired at all.
 
 2. **Acceptance criteria die at the context boundary.** Compaction and long
    sessions silently drop the one thing that defines success. Two habits are
@@ -123,9 +127,7 @@ error in this list.
 
 ## E. Unfinished business (handoff)
 
-- Dedup `config/agent/rules/jj.md` vs `global.md` Version Control section
-  (see Leak 2 — needs its own reviewed commit; global.md must keep the
-  Codex-visible safety core).
 - `AGENTS.md` restates the adapter map from `docs/agent-config.md`; converge
   toward a pointer when next touched.
-- Consider hooks for the enforcement candidates in §B.1.
+- Mechanical-enforcement gaps from §B.1: a `--ignore-immutable` guard
+  (Claude + Codex), and the fact that Gemini has no mechanical layer wired.

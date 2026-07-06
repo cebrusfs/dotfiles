@@ -37,6 +37,7 @@ Principle: use judgment to keep history easy to review, revert, and continue. Pr
 
 When the topic boundary is unclear, follow these fallback rules unless repo instructions override them.
 * In `jj + git` colocated repos, use `jj` exclusively; never use `git`. Use the `jj` skill (Claude slash form `/jj`) for detailed guidance.
+* Before editing in a jj repo, pick the flow: `@` clean → `jj new -m "<component>: <title>"` first, work lands above `@`; `@` holding sticky local junk → edit, then `jj split <files> -m "..."` per topic. Full working model: `~/.dotfiles/config/agent/rules/jj.md` (auto-loaded in Claude Code; other agents read it on demand).
 * Topic judgment: one topic has one semantic reason to exist, one owner/reviewer context, one revert boundary, and one concise summary.
 * Same topic: squash follow-up edits that refine, fix, complete, or verify that concern, even across files or after user review.
 * Different topics: split changes that have independent reasons, owner/reviewer contexts, revert boundaries, or unrelated final-summary bullets.
