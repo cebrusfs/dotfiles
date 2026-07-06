@@ -32,6 +32,7 @@ codex = "latest"
 bat = "latest"
 gh = "latest"
 antigravity-cli = "latest"
+cargo-deny = "latest"
 
 # Fish porting
 #starship = "latest"
