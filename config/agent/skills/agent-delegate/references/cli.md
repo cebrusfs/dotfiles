@@ -8,7 +8,8 @@ that conversation boundary.
 
 ## Codex
 
-Headless hardening (flags verified against `--help`, codex-cli 0.144.5):
+Headless hardening (flags and permission selection checked with `--help` and
+`doctor --json`, codex-cli 0.161.0 on 2026-10-08):
 
 - `-a never` and `--search` are global flags — they go before `exec`.
 - `--strict-config` fails fast on unknown config keys instead of drifting.
@@ -25,15 +26,37 @@ Headless hardening (flags verified against `--help`, codex-cli 0.144.5):
   `--skip-git-repo-check` if the original dispatch did. `--last` picks the most
   recent session in that directory, so it resumes the wrong worker as soon as
   two lanes share a cwd — record each dispatch's session id and pass it.
-- `resume` also rejects `-s`/`--sandbox`; override the sandbox with
-  `-c 'sandbox_mode="workspace-write"'` (verified 0.144.5). This enables the
-  review-then-fix pattern: dispatch the review with `-s read-only` and no
-  `--ephemeral`, judge the findings, then resume the same session with the
-  write override so the worker applies accepted fixes with its context intact.
+- Select permission profiles with `-c 'default_permissions="<profile>"'` for
+  both dispatch and resume. `resume` rejects `-s`/`--sandbox`; do not use
+  `sandbox_mode` or other legacy sandbox overrides with permission profiles.
+  Those overrides replace profile selection and lose its cache/network rules.
 - `codex exec review` runs the built-in repo review; `--json` emits JSONL.
 - In a jj workspace without colocated `.git`, add `--skip-git-repo-check`.
 - On `failed to spawn code-mode host` with mise-installed Codex 0.144.0,
   re-dispatch with `--disable code_mode_host` (observed 2026-07-10).
+
+For review followed by accepted fixes, persist the read-only session and record
+its ID from the JSONL events:
+
+```bash
+codex --strict-config -a never \
+  -c 'default_permissions=":read-only"' \
+  exec --json --model "<model>" "<review-prompt>"
+
+# After accepting the findings, resume from the original directory.
+codex --strict-config -a never \
+  -c 'default_permissions="workspace-tool-caches"' \
+  exec resume --json --model "<model>" "<session-id>" "<accepted-fix-prompt>"
+```
+
+The write example assumes this dotfiles-managed
+[permission profile](../../../../../docs/agent-config.md#codex-permission-posture)
+is installed; elsewhere select the caller-approved write profile. `:read-only`
+restricts command networking; the write profile retains its installed cache
+and network settings. Neither invocation enables a missing network proxy.
+`-a never` returns permission failures to the worker without escalation; hand
+them back to the caller instead of bypassing the sandbox. These checks verify
+argument parsing and effective config, not an end-to-end worker resume.
 
 ## Claude
 
