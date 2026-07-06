@@ -24,7 +24,7 @@ allowed-tools:
 - If the escalated retry also fails with the same auth/token error, then treat the credential as genuinely unavailable or invalid and ask the user to refresh authentication.
 
 ## Rules
-- Always `--json` when reading; never omit `--title`/`--body-file` on create/edit (avoids interactive hang)
+- Always `--json` when reading; on create/edit always pass `--title` and a body flag (`--body-file`, or `--body` for short plain text) so `gh` never opens an interactive prompt
 - Default to `--body-file <file>` for issue, PR, review, and comment body text.
 - Use `scripts/gh_issue.sh` for dependencies and sub-issues — `gh issue` has no native support
 - Dependency and sub-issue requests must be written to GitHub issue metadata with the CLI script, not only described in the issue body, checklist, or comments.
