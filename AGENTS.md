@@ -79,10 +79,16 @@ tool-specific home dirs are only adapters. `config/agent/global.md` is global
 personal guidance; root `AGENTS.md` is this repo's local guidance. `config/agent/skills/`
 is the only skill source of truth — do not put custom skills under
 `~/.codex/skills`, `~/.gemini/skills`, or tool-owned cache directories.
-`config/agent/codex/config.toml` is a template, not a symlink target; sync it
-with `config/agent/codex/sync-config.py --apply`. Full details in
+`config/agent/codex/config.toml` is a template, not a symlink target; the
+script is not directly executable — sync it using the `uv run …
+sync-config.py --apply` command documented in docs/agent-config.md. Full details in
 [docs/agent-config.md](docs/agent-config.md). Use the `agent-config` skill when
 changing cross-agent layout, instruction files, or agent symlink mappings.
+Before changing the *content* of `config/agent/global.md`, `config/agent/rules/`,
+`config/agent/skills/agent-delegate/`, `docs/agent-maintenance.md`, or
+`docs/agent-letter.md`, read
+[docs/agent-maintenance.md](docs/agent-maintenance.md) — it defines ownership,
+what may change without asking, and size budgets.
 
 ### Homebrew
 

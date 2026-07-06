@@ -5,11 +5,14 @@ description: Lead delegated agent workers for complex or multi-part work. Prefer
 
 # agent-delegate
 
-Invocation mechanics for delegated agent workers. The delegation contract —
-what may be delegated, caller ownership, blind-review protocol — belongs to
-the repo's agent guide (e.g. AGENTS.md); read it first. The caller always
-owns repo rules, final edits, verification, commits, and user-facing claims;
-worker output is advisory until inspected against the current worktree.
+Invocation mechanics for delegated agent workers. Read the companion files
+before dispatching: [routing.md](routing.md) owns the model table, dispatch
+triple, report contract, escalation ladder, and verification protocol;
+[templates.md](templates.md) owns per-task-shape worker prompts. The
+delegation contract — what may be delegated, caller ownership, blind-review
+protocol — belongs to the global/repo agent guide; read it first. The caller
+always owns repo rules, final edits, commits, and user-facing claims; worker
+output is advisory until inspected against the current worktree.
 
 ## Route first
 
@@ -24,14 +27,13 @@ worker output is advisory until inspected against the current worktree.
 - When using a CLI, use non-interactive mode; never open a TUI.
 - CLI flags rot: when an invocation fails, re-verify with
   `--help` instead of retrying variations from memory.
-- Choose worker strength by role, not by model name: strongest available for
-  correctness-sensitive review, balanced/cheap for routine or read-only work.
+- Choose worker strength by role via [routing.md](routing.md)'s model table.
   If it is unclear which model or runtime the requestor wants to spend, ask
   before spawning.
 - Never bypass a callee's sandbox or approval protections.
-- Give each worker a bounded prompt (task, scope, expected report format) and
-  a disjoint write set; capture the final report to a file when it feeds
-  later steps.
+- Give each worker a bounded prompt carrying the dispatch triple — start from
+  [templates.md](templates.md) — and a disjoint write set; capture the final
+  report to a file when it feeds later steps.
 - For blind review, the prompt carries no self-rationale: give the diff and
   context docs, ask for severity plus file/line findings; "No findings" is
   acceptable.
