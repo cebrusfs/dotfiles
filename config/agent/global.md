@@ -85,10 +85,11 @@ tree or commit.
 
 ## Delegation
 
-Consider delegation when parallel progress, context isolation, or independent
-judgment can justify its briefing and review cost. Read `agent-delegate` before
-dispatch; it owns lane contracts, worker routing, review criteria, and authority
-boundaries.
+A worker starts cold, so delegation costs a briefing and a review of what comes
+back. Delegate when parallel progress, context isolation, or independent
+judgment outweighs that cost; otherwise keep the work inline. Read
+`agent-delegate` before dispatch; it owns lane contracts, worker routing,
+review criteria, and authority boundaries.
 
 ## Judgment
 
