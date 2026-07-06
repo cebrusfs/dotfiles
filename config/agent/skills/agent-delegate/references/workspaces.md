@@ -1,8 +1,10 @@
-# Writable Worker Isolation in jj Repositories
+# Writable Worker Isolation — jj Recipes
 
-Read only before dispatching a worker that may edit a jj repository. Never let
-two workers, or a worker and lead, rewrite the same working copy concurrently;
-see the `jj` skill's worker-race warning.
+The rule is VCS-agnostic and lives in [../SKILL.md](../SKILL.md): concurrent
+writable workers never share a working copy. This file is only the jj recipe
+for obeying it. In another VCS, use that VCS's own worktree mechanism, and if
+there is none, run the lanes one at a time rather than sharing. See the `jj`
+skill's worker-race warning.
 
 ## Claude lead
 
@@ -34,8 +36,26 @@ Use only when the hooks/wrapper are unavailable; do not assume a generic
 worktree is a jj workspace:
 
 ```bash
-ws="$HOME/.claude/worktrees/<repo>-<name>"
-jj workspace add --name <name> "$ws"
+name=<name>                       # no slashes, no dots, no spaces
+case "$name" in *[!A-Za-z0-9_-]*) echo "bad workspace name"; exit 1;; esac
+ws="$HOME/.claude/worktrees/<repo>-$name"
+
+jj workspace add --name "$name" "$ws"
 codex exec -C "$ws" --skip-git-repo-check "<prompt>"
-jj workspace forget <name> && rm -rf "$ws"
 ```
+
+Teardown deletes a directory, so prove the target before removing it. Never
+`rm -rf` a path built from unchecked placeholders:
+
+```bash
+ws=$(cd "$ws" && pwd -P) || exit 1                       # canonical, exists
+case "$ws" in "$HOME/.claude/worktrees/"?*) ;; *) exit 1;; esac  # inside the root
+[ -e "$ws/.jj" ] || exit 1                               # really a workspace
+jj -R "$ws" st                                           # LOOK: unintegrated work?
+
+jj workspace forget "$name" && rm -rf "$ws"
+```
+
+The `jj st` is not decoration. A worker's last commit may be sitting in that
+workspace's `@`; deleting it discards work that was never rebased into the
+stack. Integrate first, then tear down.
