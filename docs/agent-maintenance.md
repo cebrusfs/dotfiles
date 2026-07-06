@@ -40,6 +40,15 @@ Placement rules:
 - Tool-agnostic policy (e.g. commit topic rules) never moves into a
   tool-specific skill.
 
+## Repo-vendored skill copies
+
+A repository-vendored skill copy is the runtime source for everyone working in
+that repository, whether or not they also have global agent configuration. A
+global copy, when one exists, is only an explicit maintenance upstream for
+maintainers of both copies; global-to-repo maintenance never overwrites a
+repository at runtime. Repo-specific behavior stays repo-local, and repo
+content must not depend on home-directory paths.
+
 ## What you may change without asking
 
 - Fix factual rot — a dead path, renamed flag, or stale model id — when you

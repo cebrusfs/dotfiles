@@ -5,9 +5,9 @@
 
 ## Rollback
 - `jj undo` is gated: run it only when the user explicitly asked for an
-  operation rollback (global instructions ban it otherwise). Without that ask,
-  stop after `jj op log -n 5` and present findings. The skill's allowed-tools
-  listing `jj undo` is capability, not permission.
+  operation rollback. Without that ask, stop after `jj op log -n 5` and present
+  findings. The skill's allowed-tools listing `jj undo` is capability, not
+  permission.
 
 ## Amending an ancestor
 - `jj absorb` distributes `@` changes to the nearest ancestor that touched the same lines.
@@ -31,5 +31,5 @@ are addressed as `<change>/0`, `<change>/1`, …
 
 ## Caution: shared/pushed changes
 Before `abandon` / `squash` / `rebase`, confirm the target is local with
-`jj log` (see `config/agent/rules/jj.md` Mental model); destructive-op and
-immutability bans live in the global instructions' Version Control section.
+`jj log`; follow the applicable version-control safeguards and immutability
+limits.

@@ -7,7 +7,10 @@ allowed-tools: Bash(jj diff:*), Bash(jj st:*), Bash(jj log:*), Bash(jj op log:*)
 
 # jj
 
-Baseline (invariant, mental model, pre-edit flow choice) lives in the shared rules file `~/.dotfiles/config/agent/rules/jj.md` (also linked at `~/.claude/rules/jj.md`) — auto-loaded in Claude Code; other agents read it from that path on demand. The cross-agent safety rules live in the global instructions. This skill covers operations needing extra recipe.
+Baseline (invariant, mental model, pre-edit flow choice) lives in the shared jj
+rules loaded by the current environment; read those rules on demand when they
+are not auto-loaded. Cross-agent safety rules live in the applicable agent
+instructions. This skill covers operations needing extra recipe.
 
 ## Routing
 
@@ -46,12 +49,12 @@ jj new --after <target> -m "<component>: fix up <target>"
 jj squash --from <fixup> --into <target>
 ```
 
+A→B→C becomes A→fixupA→B→fixupB→C→fixupC; squash each before finalizing.
+
 Use `jj squash -u` / `--use-destination-message` only when the destination
 description is already the right final message; it keeps the destination
 description and discards the source description. If both descriptions contain
 useful context, write the combined message explicitly with `-m` instead.
-
-A→B→C becomes A→fixupA→B→fixupB→C→fixupC; squash each before finalizing.
 
 When several commits squash into the same ancestor, squash the one closest to
 it first (bottom-most). Starting from a higher one rewrites the ancestor and

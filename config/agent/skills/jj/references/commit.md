@@ -26,9 +26,9 @@ it with `jj describe --stdin < "$message_file"`. `jj describe` supports
 or `git commit -F -`.
 
 **Format (priority order):**
-1. Match project history pattern (most important)
-2. Check `CLAUDE.md` / `CONTRIBUTING.md`
-3. Default: `<component>: <title>` (omit component if not obvious)
+1. Follow active repository agent / contributing instructions (most important)
+2. Match project history pattern
+3. Default: `<component>: <title>`
 
 Title ≤72 chars. Use the subject for the high-level what. Use a body when the
 why or how would not be obvious from the diff, or when the change has tradeoffs,
