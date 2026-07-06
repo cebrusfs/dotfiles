@@ -5,8 +5,6 @@ description: >-
 allowed-tools:
   - Read(~/.claude/skills/gh-cli/**)
   - Read(~/**/config/agent/skills/gh-cli/**)
-  - Bash(gh:*)
-  - Bash(~/.claude/skills/gh-cli/scripts/gh_issue.sh:*)
 ---
 
 # gh-cli
@@ -64,9 +62,11 @@ gh issue reopen  123
 ## Extended Operations (`scripts/gh_issue.sh`)
 
 Invoke the script from this skill's `scripts/` directory. Common installed paths:
-- Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh` (pre-approved via `allowed-tools`)
+- Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh`
 - Codex user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
 - Repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
+
+This skill pre-approves no Bash command: raw `gh` reads use the host's inspection rules, and the helper script and every write go through its normal review.
 
 ```bash
 S=~/.agents/skills/gh-cli/scripts/gh_issue.sh

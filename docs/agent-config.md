@@ -206,7 +206,9 @@ needs the authenticated session the sandbox withholds (`GH_TOKEN` is
 denied), so it runs outside the sandbox through the normal permission flow
 instead of failing first and retrying. The narrow inspection
 allow rules approve read-only calls; other `gh` calls go to the Auto
-classifier. jj has no allow rules: its `--config` option can name an
+classifier. The `gh-cli` skill adds no Bash pre-approvals of its own, so its
+helper script and `gh` writes get the same review. jj has no allow rules: its
+`--config` option can name an
 arbitrary program, so an allow rule would approve that program's
 unsandboxed retry. jj runs inside the sandbox, which already keeps
 `.git/hooks` and `.git/config` read-only. Old project-local Bash allow rules
