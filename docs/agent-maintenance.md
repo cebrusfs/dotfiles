@@ -13,16 +13,17 @@ owner; never copy content between these files — link instead.
 | File | Owns | Loaded |
 |---|---|---|
 | `config/agent/global.md` | interaction rules; delegate/judgment *triggers*; cross-agent VCS safety core | every session, all agents |
-| `config/agent/rules/jj.md` | jj invariant, mental model, pre-edit flow choice | every Claude session |
 | `config/agent/skills/jj/**` | jj recipes: skeleton, messages, split, recovery, non-interactive forms | on jj tasks |
 | `config/agent/hooks/*`, Claude `permissions.deny`, `config/agent/codex/rules/agent.rules` | mechanical enforcement: commit-message format, commit nudge, worktree↔workspace wiring, `jj git`/`jj op` bans | at the moment of action |
 | `config/agent/rules/judgment.md` | judgment rubrics with examples | every Claude session; on-demand elsewhere |
-| `config/agent/skills/agent-delegate/SKILL.md` | dispatch entrypoint; bounded-lane routing; dispatch, context, report, and verification contract; conditional reference routing | on delegation |
+| `config/agent/skills/agent-delegate/SKILL.md` | the delegation trade; lane contract; briefing; the rails; conditional reference routing | on delegation |
+| `config/agent/skills/agent-delegate/references/checklist.md` | the countable fallback procedure for a root below the judgment tier | when improvising is not warranted |
 | `config/agent/skills/agent-delegate/templates/*.md` | per-task worker prompts | one file per dispatch |
-| `config/agent/skills/agent-delegate/references/models.md` | volatile runtime/model mappings | when choosing runtime/model |
+| `config/agent/skills/agent-delegate/references/models.md` | volatile runtime/model mappings; the judgment tier | when choosing runtime/model, or checking own tier |
+| `config/agent/skills/agent-delegate/references/{claude,codex}-host.md` | per-runtime native worker routing | on that runtime |
 | `config/agent/skills/agent-delegate/references/cli.md` | agent CLI invocation and resume mechanics | when using a CLI |
 | `config/agent/skills/agent-delegate/references/workspaces.md` | writable jj worker isolation | for writable jj workers |
-| `config/agent/skills/agent-delegate/references/failures.md` | escalation and retry caps | after a failure |
+| `config/agent/skills/agent-delegate/references/failures.md` | escalation ladder | after a failure |
 | `docs/agent-maintenance.md` | this protocol; lessons format; size budgets | on demand |
 | `docs/agent-letter.md` | diagnosis, degradation modes, handoff notes | on demand |
 
@@ -91,8 +92,13 @@ content must not depend on home-directory paths.
 |---|---|
 | `global.md` | 60 lines |
 | `rules/judgment.md` | 100 lines |
-| `rules/jj.md` | 80 lines |
-| each `agent-delegate` file | 130 lines |
+| each `agent-delegate` file | 160 lines |
+| `agent-delegate/references/checklist.md` | 180 lines |
+
+`checklist.md` gets its own budget because it is a different kind of file: a
+self-sufficient procedure for a root that must not improvise. Squeezing it to
+the principles-file budget would strip the steps that make it self-sufficient,
+which is the whole reason it exists.
 
 When adding pushes a file over budget, remove or merge something, or ask.
 

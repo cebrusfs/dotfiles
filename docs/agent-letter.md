@@ -25,6 +25,12 @@ lanes and disjoint writes. Optimize wall-clock time and accepted-result cost,
 not agent count or token price. Fixed overhead remains, but delegation is default.
 The skill owns its bounded-lane/fast-path gate; uncertain break-even favors delegation.
 
+> Update 2026-07-27: the fast-path gate is gone. It had inverted the default —
+> work could stay inline only if four conditions all held — so `SKILL.md` now
+> states the cost of a cold start per lane against what delegation buys, and
+> lets the root price it. The bias toward delegating on uncertain break-even
+> survived; the gate did not.
+
 ### Leak 2 — Always-loaded rules duplicate each other and drift
 
 `global.md`'s Version Control section and `rules/jj.md` overlap on many rules,
@@ -42,9 +48,18 @@ toward its owner rather than copying. Full dedup of `rules/jj.md` vs
 `AGENTS.md` and skills, but never `config/agent/rules/`), so the cross-agent
 jj safety core must stay in `global.md`;
 removing them from `rules/jj.md` is a Claude-behavior change that deserves its
-own reviewed commit. That dedup landed on 2026-07-08: `rules/jj.md` now defers
-to `global.md` for the safety core and keeps only the pre-edit working model;
+own reviewed commit. That dedup landed on 2026-07-08: `rules/jj.md` deferred
+to `global.md` for the safety core and kept only the pre-edit working model;
 the non-interactive forms table moved into the `jj` skill.
+
+> Update 2026-07-27: `config/agent/rules/jj.md` no longer exists. Measurement
+> showed the premise above was half wrong — Codex loads `AGENTS.md` but not
+> `config/agent/rules/`, so a jj rule living only there was invisible to the
+> runtime handling most sessions. The pre-edit working model moved into the
+> always-loaded baselines (`global.md` here, `AGENTS.md` in a repo that carries
+> one) and the file was retired. `config/agent/rules/` remains a Claude-only
+> amplifier for `paths:`-scoped rules, which is the one thing it can do that
+> `AGENTS.md` cannot.
 
 ### Leak 3 — Self-verification and blind retry
 
