@@ -47,6 +47,13 @@ scriptencoding utf-8
     filetype plugin indent on
 " }
 
+" Statusline {
+    " Native statusline owned here: Vim's statusline, and Neovim's fallback
+    " when plugins are off. With plugins loaded, Neovim's airline overrides it.
+    set laststatus=2
+    set statusline=%f%m%r%h%w\ [%{&ff}/%Y]\ [%l,%c]\ [%p%%]
+" }
+
 " General Key mapping {
     let mapleader="\<Space>"
     let maplocalleader="\<Space>"

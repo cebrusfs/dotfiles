@@ -11,18 +11,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tomasiser/vim-code-dark'
 " }
 
-" Vim-only visual helpers {
-    Plug 'preservim/vim-indent-guides'
-    Plug 'inkarkat/vim-ingo-library'
-    Plug 'inkarkat/vim-ShowTrailingWhitespace'
-
-    let g:indent_guides_auto_colors=0
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesOdd  guibg=grey27 ctermbg=238
-    autocmd VimEnter,Colorscheme * highlight IndentGuidesEven guibg=grey42 ctermbg=242
-    let g:indent_guides_guide_size=1
-    let g:indent_guides_enable_on_vim_startup=1
-" }
-
 " Git {
     Plug 'tpope/vim-fugitive'
 
@@ -54,15 +42,6 @@ call plug#begin('~/.vim/plugged')
     xmap <Bslash> <Plug>NERDCommenterToggle
 " }
 
-" Filetype support {
-    Plug 'vim-pandoc/vim-pandoc'
-    Plug 'vim-pandoc/vim-pandoc-syntax'
-    Plug 'ShikChen/mojom.vim'
-    Plug 'https://gn.googlesource.com/gn', { 'rtp': 'misc/vim' }
-
-    let g:pandoc#syntax#conceal#urls = 1
-" }
-
 " Remote clipboard {
     Plug 'ShikChen/osc52.vim'
 
@@ -72,15 +51,18 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 " }
 
-" Plugin review {
-" Removed from Vim's minimal set: `airline`/`tender`, `NERDTree`, `vim-pasta`,
-" `EasyMotion`, `rainbow`, and `grammarous`. Keep Vim as a fallback editor; use
-" Neovim for richer LSP/completion/search workflows.
+" Editor responsibility {
+" Vim stays a minimal fallback editor; Neovim owns the richer
+" LSP/completion/search workflows.
+" }
+
+" Native whitespace display {
+    " Show tabs, trailing spaces, and non-breaking spaces in Vim. Neovim uses
+    " `mini.trailspace` for trailing whitespace.
+    set list
+    set listchars=tab:>\ ,trail:-,nbsp:+
 " }
 
 " Colorscheme settings {
-    set laststatus=2
-    set statusline=%f%m%r%h%w\ [%{&ff}/%Y]\ [%l,%c]\ [%p%%]
-
     colorscheme codedark
 " }
