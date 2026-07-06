@@ -4,9 +4,10 @@ Read for CLI mechanics beyond the default dispatch form in
 [../SKILL.md](../SKILL.md): resume, output capture, or a non-Codex runtime.
 Model choice comes from [models.md](models.md).
 
-Every agent CLI starts a separate session. Before passing private repository or
-conversation context, disclose that boundary and obtain explicit user opt-in;
-never silently substitute a CLI for a native worker.
+A fresh agent CLI dispatch starts a separate session. Before passing private
+repository or conversation context, disclose that boundary and obtain explicit
+user opt-in; never silently substitute a CLI for a native worker. Later
+`resume` calls for the same approved lane keep that conversation boundary.
 
 ## Codex
 
@@ -37,12 +38,70 @@ Headless hardening (flags verified against `--help`, codex-cli 0.144.5):
 
 ## Claude
 
+For dialogue or review that may need a follow-up, keep one foreground manager
+alive. It owns one read-only Claude CLI child in streaming-input mode:
+
 ```bash
-claude -p --model <model> [--allowedTools <tools>] "<prompt>"
+session_dir="$TMPDIR/agent-delegate/claude/<task>"
+helper="$HOME/.agents/skills/agent-delegate/scripts/claude-session.py"
+
+"$helper" start "$session_dir" --model <model> [--effort <effort>]
 ```
 
-Use `--allowedTools` to keep exploration/review read-only. Runtime subagents
-are preferable when their harness is the reason for staying in Claude.
+Launch it through a persistent process/PTY handle (Codex: unified exec with
+`tty` enabled) and retain that handle for the lane. The manager switches that
+PTY out of canonical mode so long NDJSON prompts are not truncated at the
+terminal line-buffer limit. Wait for `manager_ready`, then send each prompt,
+including follow-ups, as one NDJSON line:
+
+```json
+{"prompt":"<task or follow-up>"}
+{"type":"close"}
+```
+
+The manager serializes queued prompts and prints Claude's raw stream, including
+one `result` per prompt. It records `session.json`, `events.jsonl`, `stderr.log`,
+and the latest `reply.txt`. One Claude process handles every turn, so ordinary
+follow-ups do not rebuild the process-local prompt context. Do not invoke a new
+shell command per turn.
+
+Send `close` when the lane finishes. EOF, SIGHUP, SIGINT, and SIGTERM also close
+the child; after a short grace period the manager terminates it, then exits and
+releases its lock. It is not a daemon and should not remain idle after the
+caller or lane ends.
+
+The helper exposes only `Read,Grep,Glob` with `dontAsk`, preserves the original
+cwd and config root, and rejects a second live manager for the same directory.
+Claude stores recovery transcripts under
+`${CLAUDE_CONFIG_DIR:-$HOME/.claude}/projects/`; the parent sandbox must allow
+writes there. The helper verifies the transcript after every successful turn.
+Do not redirect `CLAUDE_CONFIG_DIR`, which would also replace auth, settings,
+hooks, plugins, and skills.
+
+If the manager dies, first confirm its process is gone, then inspect the logs.
+Start a replacement only by explicitly recovering the recorded session:
+
+```bash
+"$helper" recover "$session_dir"
+```
+
+Use the same NDJSON protocol and make the first prompt state what was
+interrupted. Recovery passes the recorded ID to `--resume`: the conversation
+survives, but the prompt cache may cold-rebuild because this is a new process.
+Never silently replace it with a fresh `start`. `--continue` is ambiguous when
+sessions run in parallel; `--fork-session` is only for intentional divergence.
+
+For a disposable one-shot query, direct CLI use remains appropriate:
+
+```bash
+claude -p --model <model> --tools "Read,Grep,Glob" \
+  --permission-mode dontAsk --mcp-config '{"mcpServers":{}}' \
+  --strict-mcp-config --no-session-persistence "<prompt>"
+```
+
+Flags and two-turn streaming behavior verified with Claude Code 2.1.220.
+Runtime subagents remain preferable when their harness is the reason for
+staying in Claude.
 
 ## Gemini
 
@@ -52,3 +111,7 @@ gemini -p "<prompt>" [-m <verified-model>]
 
 When adding another CLI, record only its non-interactive form, sandbox/read-only
 mode, model selector, output capture, and verified failure recovery.
+
+## Lessons
+
+- 2026-07-26: Re-launching `--resume` preserved dialogue but rebuilt most prompt-cache input; keep one streaming process alive for ordinary follow-ups and reserve resume for recovery. (evidence: Opus usage counters and Claude Code 2.1.220 streaming smoke test)
