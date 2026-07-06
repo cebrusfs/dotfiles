@@ -8,7 +8,6 @@ Tool-specific home directories are only adapters.
 | `config/agent/global.md` | Shared durable guidance for personal and corp-safe use |
 | `config/agent/claude/` | Claude-only settings and hook wiring |
 | `config/agent/codex/` | Codex-only hooks, rules, and stable config template |
-| `config/agent/gemini/` | Gemini CLI settings needed to read shared project instructions |
 | `config/agent/antigravity/` | Antigravity CLI stable config template and sync script |
 | `config/agent/hooks/` | Shared hook implementations used by Claude and Codex adapters |
 | `config/agent/skills/` | Shared Agent Skills source |
@@ -26,9 +25,8 @@ Keep durable instruction content in one of two places:
 
 Adapters should point at those files instead of copying their contents. In this
 repo, `CLAUDE.md` is a symlink to `AGENTS.md` for Claude Code. Do not add a
-root `GEMINI.md` unless Gemini CLI stops honoring the managed
-`context.fileName` setting; Antigravity can read both `AGENTS.md` and
-`GEMINI.md`, so a duplicate root adapter can load the same rules twice.
+root `GEMINI.md`: Antigravity can read both `AGENTS.md` and `GEMINI.md`, so a
+duplicate root adapter can load the same rules twice.
 
 ## This Repo's Local Layout
 
@@ -48,30 +46,21 @@ workspace skills.
 
 ## Adapter Map
 
-Google-agent maintenance targets Antigravity CLI and IDE/2.0. Gemini CLI
-settings remain legacy compatibility artifacts, not an active maintenance target.
+Google-agent maintenance targets Antigravity CLI and IDE/2.0. Gemini CLI is
+not supported. The remaining `~/.gemini/` adapters serve Antigravity's native
+global instruction and skill discovery paths.
 
 `install-conf/dotbot.conf.yaml` is authoritative for installed home-directory
 symlink mappings, including global instruction files, skills, hooks, rules, and
-Gemini/Antigravity skill directories. This section records behavior and
+Antigravity skill directories. This section records behavior and
 rationale that are not directly readable from that file.
 
 | Agent | Auto-load behavior | Adapter decision |
 |---|---|---|
 | Claude Code | Reads `CLAUDE.md` for global and repo-local instructions. | Root `CLAUDE.md` stays a symlink to `AGENTS.md` so Claude reads the canonical repo instructions without copied prose. |
 | Codex | Reads `AGENTS.md` for global and repo-local instructions, and discovers shared skills through the cross-agent skills path. | Use Codex's native instruction filename while keeping shared skills out of Codex-owned state, cache, and bundled system skill directories. |
-| Gemini CLI | Reads global `GEMINI.md`; the managed `context.fileName` setting makes it read repo-local `AGENTS.md`. | Avoid per-repo `GEMINI.md` shims while keeping Antigravity from loading duplicate repo rules. |
 | Antigravity CLI | Reads the Gemini global guidance, repo-local `AGENTS.md`, and its CLI-specific user skills and settings locations. | Keep it on the same global Gemini guidance while preserving native skill discovery and merging stable settings into CLI-owned runtime config. |
 | Antigravity IDE / 2.0 | Reads the Gemini global guidance, repo-local `AGENTS.md`, and IDE/2.0 skill locations. | Keep IDE/2.0 skill adapters separate because those clients check their own skill discovery locations. |
-
-Gemini CLI also supports `~/.gemini/skills`; avoid wiring it here because
-`~/.agents/skills` already covers Gemini and Codex. Keeping one Gemini-visible
-general skill adapter avoids duplicate skill discovery.
-
-`config/agent/gemini/settings.json` is intentionally sparse. Keep only stable,
-non-secret user defaults there, especially `context.fileName`, so Gemini CLI can
-read `AGENTS.md` in any repository without requiring per-repo `GEMINI.md`
-shims.
 
 ## Agent Hooks
 
@@ -108,11 +97,6 @@ Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
 when invoking `python3 -m unittest` directly. Bare Python test runs write
 `__pycache__` into `config/agent/hooks/`.
 
-Gemini CLI hooks are not wired here: its official
-[hook reference](https://geminicli.com/docs/hooks/reference/) requires hook
-declarations in `settings.json`, and `~/.gemini/config/hooks` is not a
-documented discovery path (verified 2026-07-10).
-
 ## Antigravity CLI Permissions
 
 Antigravity CLI stores user settings at
@@ -135,7 +119,7 @@ replaces any legacy dotbot symlink with a regular CLI-owned settings file.
 The template+sync design exists only because the CLI writes runtime trust
 state (`trustedWorkspaces`) into the same `settings.json`. If a future CLI
 version moves trust state out of that file, delete `sync-config.py` and switch
-the adapter back to a plain dotbot symlink like the Gemini settings.
+the adapter back to a plain dotbot symlink.
 
 Hard command-blocking **landed 2026-07-11**: the template's `permissions.deny`
 mirrors Claude's jj deny list as `command(<target> *)` grant strings, in

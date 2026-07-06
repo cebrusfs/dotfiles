@@ -46,7 +46,12 @@ run = "actionlint"
 [tasks."lint:json"]
 # Antigravity uses JSONC syntax in .json files, so strict JSON lint excludes it.
 description = "Validate tracked strict JSON files"
-run = "git ls-files '*.json' | grep -vE '^config/Antigravity/' | xargs jq empty"
+run = """
+git ls-files '*.json' | grep -vE '^config/Antigravity/' | while IFS= read -r file; do
+    [ -f "$file" ] || continue
+    jq empty "$file" || exit "$?"
+done
+"""
 
 [tasks."lint:yaml"]
 description = "Validate tracked YAML files"

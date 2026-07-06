@@ -62,7 +62,7 @@ Create the body file with the normal file-writing tool available in the agent en
 
 Invoke the script from this skill's `scripts/` directory. Common installed paths:
 - Claude: `~/.claude/skills/gh-cli/scripts/gh_issue.sh` (pre-approved via `allowed-tools`)
-- Codex/Gemini user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
+- Codex user skills: `~/.agents/skills/gh-cli/scripts/gh_issue.sh`
 - Repo skills: `.agents/skills/gh-cli/scripts/gh_issue.sh`
 
 ```bash

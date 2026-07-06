@@ -75,7 +75,7 @@ Platform-conditional links use `if:` clauses:
 | `ssh/` | `~/.ssh/config`, `~/.ssh/authorized_keys` | SSH config |
 | `mise/` | `~/.config/mise/` | mise tool version manager |
 | `tmux/` | `~/.tmux.conf` | Tmux config |
-| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.gemini/*`, `~/.agents/skills` | Shared agent instructions, settings adapters, hooks, and skills for Claude, Codex, Gemini CLI, and Antigravity |
+| `agent/` | `~/.claude/*`, `~/.codex/*`, `~/.gemini/*`, `~/.agents/skills` | Shared agent instructions, settings adapters, hooks, and skills for Claude, Codex, and Antigravity |
 
 `config/agent/` is the source of truth for shared agent guidance and skills; the
 tool-specific home dirs are only adapters. Keep custom skills in

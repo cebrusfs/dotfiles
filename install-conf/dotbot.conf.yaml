@@ -107,10 +107,6 @@
         path: config/agent/global.md
         force: true
         backup: true
-    ~/.gemini/settings.json:
-        path: config/agent/gemini/settings.json
-        force: true
-        backup: true
     ~/.agents/skills: config/agent/skills
     ~/.gemini/config/skills: config/agent/skills
     ~/.gemini/antigravity/skills: config/agent/skills

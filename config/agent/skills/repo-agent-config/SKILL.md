@@ -1,6 +1,6 @@
 ---
 name: repo-agent-config
-description: Build or maintain shared agent configuration for a repository. Use when adding or reviewing AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .codex, .gemini, .claude, MCP files, hooks, or other per-repository configuration for Claude Code, Codex, Gemini CLI, and Antigravity.
+description: Build or maintain shared agent configuration for a repository. Use when adding or reviewing AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .codex, .claude, MCP files, hooks, or other per-repository configuration for Claude Code, Codex, and Antigravity.
 ---
 
 # Build Repo Agent Config
@@ -29,11 +29,8 @@ Add these only when needed:
 | Path | Add when | Notes |
 |---|---|---|
 | `CLAUDE.md` | Claude users need native repo instructions | Prefer symlink or a tiny pointer to `AGENTS.md`; do not duplicate content. |
-| `GEMINI.md` | Gemini users cannot rely on `context.fileName = ["AGENTS.md", "GEMINI.md"]` | Prefer symlink or pointer. Avoid if Antigravity would load both `AGENTS.md` and `GEMINI.md`. |
 | `.codex/config.toml` | The repo needs Codex-specific settings, MCP, sandbox, fallback instruction filenames, or project hooks | Keep personal model/provider choices out of shared repo config. |
 | `.codex/hooks.json` or `.codex/rules/*.rules` | The repo needs Codex lifecycle enforcement or exec-policy rules | Hooks/rules load only for trusted Codex projects. Prefer repo-relative scripts. |
-| `.gemini/settings.json` | The repo needs Gemini-specific settings, sandbox profile, context filenames, or MCP config | Keep auth, secrets, and personal UI prefs out. |
-| `.gemini/sandbox.Dockerfile` or `.gemini/sandbox-*.sb` | The repo needs Gemini sandbox customization | Mention the command/env required to use it in `AGENTS.md`. |
 | `.agents/mcp_config.json` | Antigravity workspace MCP servers are needed | Keep secrets in environment variables, not committed JSON. |
 | `.agents/rules/*.md` | Antigravity workspace rules need activation metadata or behavior that should not always load | Keep durable cross-agent repo rules in `AGENTS.md`; use Antigravity rules for tool-specific activation. |
 | `.claude/settings.local.json` | A developer needs local Claude permissions or experiments | Usually do not commit; prefer user-local state. |
@@ -97,10 +94,8 @@ dotfiles-managed source that links there. Do not symlink that user-global source
 back into a repo's `.agents/skills` unless duplicate workspace visibility is
 intentional.
 
-Codex, Gemini CLI, and Antigravity support `.agents/skills` for workspace
-skills. Prefer this over tool-specific workspace skill folders. Use
-`.gemini/skills` only for Gemini-only workspace skills or legacy Gemini-only
-layouts, and avoid keeping both paths with copied content.
+Codex and Antigravity support `.agents/skills` for workspace skills. Prefer
+this over tool-specific workspace skill folders.
 
 Keep skills focused on reusable workflows. Do not turn `AGENTS.md` into a large
 skill catalog; if a workflow has steps, references, scripts, or decision rules,
@@ -111,8 +106,6 @@ make it a skill.
 Use hidden tool directories for runtime behavior, not shared instruction prose:
 
 - `.codex/`: Codex project config, hooks, rules, MCP, and Codex-only settings.
-- `.gemini/`: Gemini project settings, sandbox files, and legacy Gemini skill
-  compatibility.
 - `.claude/`: usually local Claude state; commit only deliberate shared Claude
   settings after checking they contain no personal paths or permissions.
 - `.agents/`: cross-agent workspace skills, Antigravity workspace rules, and
@@ -140,5 +133,5 @@ enforces behavior for one tool, put it under that tool's directory.
 8. After migration, are obsolete tool-specific directories removed or ignored
    when they no longer contain required runtime adapters?
 
-Agent path support changes. Before changing claims about Claude, Codex, Gemini,
-or Antigravity discovery paths, verify current official docs first.
+Agent path support changes. Before changing claims about Claude, Codex, or
+Antigravity discovery paths, verify current official docs first.
