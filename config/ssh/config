@@ -9,7 +9,7 @@ Compression yes
 Include ~/.orbstack/ssh/config
 
 # Work stations @ NTU.CSIE {{{
-Host ws1 ws2 ws3 ws4 ws5 ws6 ws7
+Host ws1 ws2 ws3 ws4 ws5 ws6 ws7 ws8
     User r04922033
     # ws\d -> ws\d.csie.ntu.edu.tw
     CanonicalizeHostname yes
