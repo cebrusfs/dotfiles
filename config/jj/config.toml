@@ -28,15 +28,15 @@ auto-update-stale = true
 # Prevent upload
 private-commits = 'blacklist()'
 
-# Sign on push (works with behavior = "drop"). Off by default: this is the only line
-# that actually attempts signing, and jj hard-fails the push when no key is reachable.
-# Enable it per-machine (where a local or forwarded key is available) as a local,
-# uncommitted toggle.
-# sign-on-push = true
-
 # Do not auto-track every remote bookmark. `jj pull` fetches all remotes so
 # deleted remote bookmarks are observed, while PR/topic branches stay untracked
 # until explicitly adopted with `jj bookmark track`.
+
+[revsets]
+# Sign unsigned commits authored by me on push (works with behavior = "drop").
+# Off by default: pushing fails when no signing key is reachable. Enable it
+# per-machine (with a local or forwarded key) as a local, uncommitted toggle.
+# git-sign-on-push = "~signed() & mine()"
 
 [aliases]
 blame = ["file", "annotate"]
