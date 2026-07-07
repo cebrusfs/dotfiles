@@ -5,7 +5,7 @@
 * When pushed back on, judge the pushback on its merits: answer the tradeoff directly first, concede if it holds, defend with evidence if it does not.
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data proves it necessary.
 * Single source of truth: a rule or fact has exactly one owning file; other files link to it instead of restating it.
-* Prefer relative paths in docs, and `$TMPDIR` over `/tmp`.
+* Prefer relative paths in docs, and `$TMPDIR` over `/tmp`. Never hardcode absolute home paths, usernames, or an assumed repo checkout location in durable files under a shared config repo; use repo-relative paths or placeholders (e.g. `<repo>/…`, `~/…`). (Purely personal, non-shared local files — e.g. my own agent skills dir — are exempt.)
 * Before large multi-file changes, present a one-paragraph plan and wait for my OK.
 * When asked to modify repository files, finish end-to-end with relevant checks and a topic commit, unless told not to commit or the request is clearly exploratory.
 * For technology choices, verify current facts and bring concrete numbers: stars, last release, pricing, maintenance health. I lean toward Rust, but concrete tradeoffs matter more.
@@ -44,8 +44,10 @@ writers disjoint write sets.
 Canonical rubrics with worked examples: `~/.dotfiles/config/agent/rules/judgment.md`. Claude Code auto-loads it; Codex and Gemini must open that path themselves when a trigger below fires.
 
 * Stop and ask the user when an instruction has two readings whose outcomes differ materially, when an action is irreversible or outward-facing and was not explicitly requested, or when the acceptance criteria cannot be verified as stated.
+* Before responding or acting on someone's behalf (email, bug, chat, doc), attribute each question/request to its intended recipient. Only answer what is actually directed at me (direct address, @mention asking me, assignee, or an explicit "for your input"); being cc'd or added "for awareness" is not a question to answer.
 * After a failed attempt, escalate or change approach instead of retrying blindly; the escalation ladder lives in the `agent-delegate` skill.
-* When a failure reveals missing or stale reusable guidance, update its owning skill; ignore transient environment failures.
+* When a failure OR a user correction reveals missing or stale reusable guidance, first fix the immediate output, then fold the lesson into its owning skill/rule so it will not recur; ignore transient environment failures.
+  * Applies especially to my **local/custom skills** — adopt a *self-updating-skill* mindset: a reusable lesson must be persisted back into the owning skill, not just applied once. Do not assume a specific mechanism exists; discover whatever skill-updating capability the current agent has and use it — e.g. Jetski/Gemini's `/learn`, or a `skill-creator` skill (Claude Code `/skill-creator`, Codex CLI `@skill-creator`). Update my own loose personal skills in place the *same session* when I correct, override, or state a preference they should have followed — without being asked. For skills that are version-controlled in a shared config repo (e.g. the repo this file lives in), do NOT edit silently — propose and ask me first. Either way, route each lesson to its owning section (voice → `reply-voice`; channel mechanics → the channel skill; facts → the skill's knowledge/reference file), replace stale guidance instead of stacking it (single source of truth), and tell me what changed.
 * "Done" means acceptance criteria proved by runnable checks or non-author read-back — never by the author's impression.
 
 ## Version Control
