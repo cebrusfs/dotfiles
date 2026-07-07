@@ -146,9 +146,11 @@ hook closed). `config/agent/hooks/antigravity-hook.py` translates both ways
 and runs each shared hook from the first workspace path, so the shared hooks
 keep one format; its own errors fail open like the other adapters. Plugin
 commands use paths relative to the plugin directory, which resolve through the
-symlink to this checkout. A session loads hooks at startup: check its
-`loaded N named hooks from M hooks.json file(s)` log line (verified 2026-10-15:
-the plugin added three hooks and a second file).
+symlink to this checkout. A session loads hooks at startup: its
+`loaded N named hooks from M hooks.json file(s)` log line counts the plugin's
+hooks and file. Verified 2026-10-15 in a fresh headless Jetski session, which
+returned the validator's message instead of running
+`jj describe -m "docs: add readme."`.
 
 `config/agent/hooks/learn-nudge.sh` is a shared `UserPromptSubmit` hook for
 Claude and Codex: when a prompt matches correction or preference markers
@@ -156,9 +158,13 @@ Claude and Codex: when a prompt matches correction or preference markers
 asking the agent to run the `learn` skill after fixing the result. It is
 pattern-gated and never calls a model, so ordinary prompts cost nothing; the
 [shared guidance](../config/agent/global.md#judgment) still decides whether a
-lesson is reusable. Removing the entry from an adapter turns it off. Antigravity
-has no prompt-submit event in the hook contracts checked on 2026-10-09; its
-trigger stays the always-loaded guidance.
+lesson is reusable. Removing the entry from an adapter turns it off.
+Antigravity and Jetski have no prompt-submit event, so their plugin runs the
+same script before each model call (`PreInvocation`) on the newest user
+message, once per message, and injects the reminder as an ephemeral message.
+Jetski passes that message directly; the public Antigravity build falls back
+to the transcript, which is unverified there. Only the `<USER_REQUEST>` part of
+a wrapped message is checked, so client metadata cannot trigger the nudge.
 
 ## Claude Permission Posture
 

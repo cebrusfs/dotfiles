@@ -35,5 +35,14 @@
         "timeout": 30
       }
     ]
+  },
+  "dotfiles-learn-nudge": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "command -v python3 >/dev/null 2>&1 || exit 0; exec python3 ../../hooks/antigravity-hook.py pre-invocation learn-nudge.sh",
+        "timeout": 30
+      }
+    ]
   }
 }

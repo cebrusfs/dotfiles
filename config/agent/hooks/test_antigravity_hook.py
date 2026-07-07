@@ -146,6 +146,56 @@ class Stop(AdapterTestCase):
         self.assertFalse(marker.exists())
 
 
+class PreInvocation(AdapterTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        env = mock.patch.dict("os.environ", {"AGENT_HOOK_STATE_HOME": str(self.tmp / "state")})
+        env.start()
+        self.addCleanup(env.stop)
+
+    def invoke(self, conversation: str = "c1", **fields: object) -> dict | None:
+        data = {"conversationId": conversation, "workspacePaths": [str(self.workspace)], **fields}
+        return adapter.pre_invocation(data, "learn-nudge.sh")
+
+    def assert_nudged(self, verdict: dict | None) -> None:
+        self.assertIsNotNone(verdict)
+        (step,) = verdict["injectSteps"]
+        self.assertIn("learn skill", step["ephemeralMessage"])
+
+    def test_correction_nudges_once_per_message(self) -> None:
+        self.assert_nudged(self.invoke(lastUserInput="Don't use git here, always jj"))
+        self.assertIsNone(self.invoke(lastUserInput="Don't use git here, always jj"))
+        self.assert_nudged(self.invoke(lastUserInput="從現在開始用 bun"))
+
+    def test_conversations_are_independent(self) -> None:
+        self.assert_nudged(self.invoke("c1", lastUserInput="stop doing that"))
+        self.assert_nudged(self.invoke("c2", lastUserInput="stop doing that"))
+
+    def test_ordinary_prompt_and_missing_input_inject_nothing(self) -> None:
+        self.assertIsNone(self.invoke(lastUserInput="please add a unit test for parse()"))
+        self.assertIsNone(self.invoke())
+
+    def test_only_the_tagged_user_request_counts(self) -> None:
+        metadata = "<ADDITIONAL_METADATA>Use /learn instead; don't forget.</ADDITIONAL_METADATA>"
+        ordinary = f"<USER_REQUEST>\nplease add a test\n</USER_REQUEST>\n{metadata}"
+        self.assertIsNone(self.invoke(lastUserInput=ordinary))
+        correction = f"<USER_REQUEST>\nnever do that again\n</USER_REQUEST>\n{metadata}"
+        self.assert_nudged(self.invoke(lastUserInput=correction))
+
+    def test_falls_back_to_the_newest_transcript_input(self) -> None:
+        transcript = self.tmp / "transcript.jsonl"
+        steps = [
+            {"type": "USER_INPUT", "content": "<USER_REQUEST>remember this</USER_REQUEST>"},
+            {"type": "PLANNER_RESPONSE", "content": "never mind"},
+            {"type": "USER_INPUT", "content": "<USER_REQUEST>add a test</USER_REQUEST>"},
+        ]
+        transcript.write_text("".join(json.dumps(s) + "\n" for s in steps), encoding="utf-8")
+        self.assertIsNone(self.invoke(transcriptPath=str(transcript)))
+        steps.append({"type": "USER_INPUT", "content": "<USER_REQUEST>不要這樣做</USER_REQUEST>"})
+        transcript.write_text("".join(json.dumps(s) + "\n" for s in steps), encoding="utf-8")
+        self.assert_nudged(self.invoke(transcriptPath=str(transcript)))
+
+
 class Main(AdapterTestCase):
     def test_prints_the_verdict_as_json(self) -> None:
         hook = self.fake_hook("print('no', file=sys.stderr); sys.exit(2)")

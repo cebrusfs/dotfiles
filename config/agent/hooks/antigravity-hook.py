@@ -10,17 +10,19 @@ PreToolUse hook closed. This adapter translates the payload, runs the shared
 hook from the workspace, and translates its verdict, so the shared hooks keep a
 single format.
 
-Usage: antigravity-hook.py <event> <hook>, where <event> is pre-tool-use or
-stop and <hook> is a script path relative to this directory. Adapter errors
-fail open, matching the Claude and Codex adapters, which skip the hooks when
-python3 is missing.
+Usage: antigravity-hook.py <event> <hook>, where <event> is pre-tool-use,
+stop, or pre-invocation and <hook> is a script path relative to this
+directory. Adapter errors fail open, matching the Claude and Codex adapters,
+which skip the hooks when python3 is missing.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from typing import Any, Callable
@@ -28,6 +30,10 @@ from typing import Any, Callable
 HOOKS_DIR = Path(__file__).resolve().parent
 # Antigravity's default hook timeout is 30s; leave headroom for the adapter.
 HOOK_TIMEOUT_SECONDS = 25
+# Clients may wrap the user's words in metadata whose wording would trip
+# pattern-gated hooks; only the tagged request is the user's message.
+USER_REQUEST = re.compile(r"<USER_REQUEST>(.*?)</USER_REQUEST>", re.DOTALL)
+TRANSCRIPT_TAIL_BYTES = 256 * 1024
 
 
 def hook_command(hook: str) -> list[str]:
@@ -115,9 +121,78 @@ def stop(data: dict[str, Any], hook: str) -> dict[str, Any] | None:
     return None
 
 
+def state_dir() -> Path:
+    """Mirror commit-nudge.sh so all hook state lives under one root."""
+    if base := os.environ.get("AGENT_HOOK_STATE_HOME"):
+        return Path(base)
+    if xdg := os.environ.get("XDG_STATE_HOME"):
+        return Path(xdg) / "agent-hooks"
+    return Path.home() / ".local" / "state" / "agent-hooks"
+
+
+def newest_user_input(data: dict[str, Any]) -> str:
+    # Jetski (internal builds) passes the message; others only the transcript.
+    text = data.get("lastUserInput")
+    if isinstance(text, str) and text.strip():
+        return text
+    path = data.get("transcriptPath")
+    if not (isinstance(path, str) and os.path.isfile(path)):
+        return ""
+    with open(path, "rb") as transcript:
+        transcript.seek(0, os.SEEK_END)
+        transcript.seek(max(0, transcript.tell() - TRANSCRIPT_TAIL_BYTES))
+        lines = transcript.read().decode("utf-8", "replace").splitlines()
+    for line in reversed(lines):
+        step = parse_object(line)
+        if step.get("type") == "USER_INPUT" and isinstance(step.get("content"), str):
+            return step["content"]
+    return ""
+
+
+def user_words(text: str) -> str:
+    match = USER_REQUEST.search(text)
+    return (match.group(1) if match else text).strip()
+
+
+def first_time_seen(conversation: str, prompt: str) -> bool:
+    """Record prompt as handled for the conversation; report whether it is new."""
+    path = state_dir() / "learn-nudge" / hashlib.sha256(conversation.encode()).hexdigest()
+    digest = hashlib.sha256(prompt.encode()).hexdigest()
+    try:
+        if path.read_text(encoding="utf-8").strip() == digest:
+            return False
+    except OSError:
+        pass
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(digest + "\n", encoding="utf-8")
+    return True
+
+
+def pre_invocation(data: dict[str, Any], hook: str) -> dict[str, Any] | None:
+    prompt = user_words(newest_user_input(data))
+    if not prompt:
+        return None
+    # PreInvocation runs before every model call; react once per user message.
+    if not first_time_seen(str(data.get("conversationId") or ""), prompt):
+        return None
+    cwd = first_workspace(data) or os.getcwd()
+
+    result = run_hook(
+        hook,
+        {"hook_event_name": "UserPromptSubmit", "prompt": prompt, "cwd": cwd},
+        cwd,
+    )
+    output = parse_object(result.stdout).get("hookSpecificOutput")
+    context = output.get("additionalContext") if isinstance(output, dict) else None
+    if isinstance(context, str) and context:
+        return {"injectSteps": [{"ephemeralMessage": context}]}
+    return None
+
+
 HANDLERS: dict[str, Callable[[dict[str, Any], str], dict[str, Any] | None]] = {
     "pre-tool-use": pre_tool_use,
     "stop": stop,
+    "pre-invocation": pre_invocation,
 }
 
 
