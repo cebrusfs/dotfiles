@@ -88,9 +88,10 @@ with `mise run sync:codex` (details in
 Use the `repo-agent-config` skill when changing cross-agent layout, instruction
 files, or agent symlink mappings.
 Before changing the *content* of `config/agent/global.md`, `config/agent/rules/`,
-`config/agent/skills/agent-delegate/`, or `docs/agent-maintenance.md`, read
-[docs/agent-maintenance.md](docs/agent-maintenance.md) — it defines ownership,
-what may change without asking, and size budgets.
+or any skill under `config/agent/skills/`, read the `learn` skill
+([config/agent/skills/learn/SKILL.md](config/agent/skills/learn/SKILL.md)) — it
+owns routing and what may change without asking; `mise run lint:agent-budget`
+enforces the size ceilings.
 
 ### Homebrew
 

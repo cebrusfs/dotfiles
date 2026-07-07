@@ -1,0 +1,4 @@
+interface:
+  display_name: "learn"
+  short_description: "Persist a reusable lesson into its owning guidance"
+  default_prompt: "Use $learn to capture the correction or fix from this session, route it to the guidance that owns it, apply it within the approved authority, verify, and commit."

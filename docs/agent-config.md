@@ -69,7 +69,10 @@ global instruction and skill discovery paths.
 `install-conf/dotbot.conf.yaml` is authoritative for installed home-directory
 symlink mappings, including global instruction files, skills, hooks, rules, and
 Antigravity skill directories. This section records behavior and
-rationale that are not directly readable from that file.
+rationale that are not directly readable from that file. Every adapter change
+targets all three hosts with the same behavior; the `learn` skill's rules own
+that parity principle, and a host-only gap is recorded here rather than left
+implicit.
 
 | Agent | Auto-load behavior | Adapter decision |
 |---|---|---|
