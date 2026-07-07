@@ -72,24 +72,28 @@ fi
 # Alias (has warning)
 #
 
+function _rgg () {
+  _warn "'rgg' is deprecated, please use 'fd' directly"
+  fd "$@"
+}
+
 # Better 'find', as known as 'fd'
 if _check_command fd ; then
   export FZF_DEFAULT_COMMAND="$(which fd) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  alias rgg='_rgg'
 # Debian/Ubuntu ship the binary as 'fdfind'; alias it back to 'fd' as a fallback
 elif _check_command fdfind ; then
   export FZF_DEFAULT_COMMAND="$(which fdfind) --type file"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   alias fd='fdfind'
+  alias rgg='_rgg'
 else
   _warn "'fd' is not installed"
 fi
 
-# ripgrep alias
-function _rgg () {
-  rg --colors=path:none --files -g "*$1*"
-}
-_check_command rg && alias rgg='_rgg' || _warn "'rg' is not installed"
+# Ripgrep
+_check_command rg || _warn "'rg' is not installed"
 
 # Use 'neovim' to replace 'vim'
 _check_command nvim && alias vim='nvim' && alias vimdiff='nvim -d' || _warn "'neovim' is not installed"
