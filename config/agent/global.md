@@ -50,10 +50,10 @@
   repository; use underlying `uv` or `bun` commands only for focused checks
   that the repository explicitly documents or its runner does not expose, and
   return to the canonical runner for final verification. Run repository checks
-  only for repository changes intended to be committed. Agent-workspace
-  `notes_*` and temporary probe scripts need only execute successfully for
-  their immediate purpose; do not run repository formatters, linters, type
-  checkers, or full test suites on them unless explicitly requested.
+  only for repository changes intended to be committed. Scratch files and
+  temporary probe scripts need only execute successfully for their immediate
+  purpose; do not run repository formatters, linters, type checkers, or full
+  test suites on them unless explicitly requested.
 
 ## Artifacts & State
 
@@ -93,14 +93,12 @@ boundaries.
   question to answer.
 * Diagnose failures before retrying; change approach when the evidence calls
   for it. Worker failure handling lives in `agent-delegate`.
-* When a correction expresses a reusable preference, fix the current result
-  and update its owning skill or guidance in the same session, including
-  version-controlled custom skills. The correction authorizes that narrow
-  update; report what changed. Replace stale guidance rather than appending a
-  diary; use an available skill-authoring tool when helpful. Do not turn
-  one-off requirements or transient failures into policy. Ask before changing
-  safety, permissions, or model routing, or when the intended preference is
-  unclear. Persist other reusable fixes under the owning maintenance policy.
+* When a correction, an override, or a non-obvious fix is reusable, run the
+  `learn` skill in the same session: fix the current result, then update the
+  owning guidance and report what changed. A narrow preference correction
+  authorizes its own update; ask before changing safety, permissions, model
+  routing, or other policy, or when the intended preference is unclear. `learn`
+  owns routing, scope limits, and the audit of this guidance.
 * Before claiming completion, verify the requested outcome with relevant
   checks, observed behavior, or direct read-back. State any unverified part.
 
