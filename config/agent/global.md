@@ -2,7 +2,9 @@
 
 ## Communication
 
-* Respond in Traditional Chinese (Taiwan); use English everywhere else.
+* Respond in Traditional Chinese (Taiwan). Reports, plans, and other files
+  written for me to read or review (e.g. agent artifacts) also use it; use
+  English everywhere else.
 * Keep simple exploratory answers concise (usually 2-3 sentences). For
   non-trivial architectural or technical decisions where viable options differ
   materially across multiple dimensions, use a compact decision table covering
