@@ -88,12 +88,15 @@ content must not depend on home-directory paths.
 
 ## Size budgets (a file over budget is a bug)
 
+Measured in words (`wc -w`), which track token and attention cost without
+rewarding unwrapped run-on lines:
+
 | File | Budget |
 |---|---|
-| `global.md` | 60 lines |
-| `rules/judgment.md` | 100 lines |
-| each `agent-delegate` file | 160 lines |
-| `agent-delegate/references/checklist.md` | 180 lines |
+| `global.md` | 1,600 words |
+| `rules/judgment.md` | 1,000 words |
+| each `agent-delegate` file | 1,500 words |
+| `agent-delegate/references/checklist.md` | 1,600 words |
 
 `checklist.md` gets its own budget because it is a different kind of file: a
 self-sufficient procedure for a root that must not improvise. Squeezing it to
