@@ -192,6 +192,11 @@
           {
             "type": "command",
             "command": "[ -x \"$HOME/.config/iterm2/cc-status\" ] || exit 0; exec \"$HOME/.config/iterm2/cc-status\""
+          },
+          {
+            "type": "command",
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/learn-nudge.sh\"",
+            "timeout": 10
           }
         ]
       }

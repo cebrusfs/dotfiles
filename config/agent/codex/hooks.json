@@ -19,6 +19,18 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.dotfiles/config/agent/hooks/learn-nudge.sh\"",
+            "timeout": 10,
+            "statusMessage": "Checking for a correction"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

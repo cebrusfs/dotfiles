@@ -133,6 +133,16 @@ Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
 when invoking `python3 -m unittest` directly. Bare Python test runs write
 `__pycache__` into `config/agent/hooks/`.
 
+`config/agent/hooks/learn-nudge.sh` is a shared `UserPromptSubmit` hook for
+Claude and Codex: when a prompt matches correction or preference markers
+(English and Traditional Chinese), it injects one `additionalContext` line
+asking the agent to run the `learn` skill after fixing the result. It is
+pattern-gated and never calls a model, so ordinary prompts cost nothing; the
+[shared guidance](../config/agent/global.md#judgment) still decides whether a
+lesson is reusable. Removing the entry from an adapter turns it off. Antigravity
+has no prompt-submit event in the hook contracts checked on 2026-10-09; its
+trigger stays the always-loaded guidance.
+
 ## Claude Permission Posture
 
 The [shared guidance](../config/agent/global.md) owns the daily approval
