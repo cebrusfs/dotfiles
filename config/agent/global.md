@@ -13,18 +13,12 @@
 * Code comments should explain purpose, object responsibility, or non-obvious logic that would take time to re-derive. Preserve comments for business rules whose intent is not clear from the code.
 * Default tool preferences, unless a project specifies otherwise: JavaScript/Node.js uses `bun`; Python uses `uv`; `rg` over `grep`; `fd` over `find`.
 
-## Artifacts
+## Artifacts & State
 
-Keep artifacts in the agent's own workspace, never in a repository working tree
-or commit. Organize that workspace into exactly three categories, each with a
-clear filename prefix, and keep them current as work proceeds — update the
-relevant file the moment its state changes, without being asked.
-
-* `notes_*` — my (agent) working notes & TODO: decisions with their reason, verified facts with source path/CL, open threads, next steps. My durable scratch memory for the task; re-read on resume and after any compaction.
-* `review_*` — things I need you (the user) to review/decide: plans, mappings, option tables. Each must end with an explicit open-questions/decision list. This is where I park anything blocked on your input.
-* `report_*` — deliverables you explicitly asked me to output (only if any). Final user-facing reports; do not create unless requested.
-
-Rules: one file owns one concern (single source of truth; cross-link, never restate). Fold obsolete content into the current file and delete the stale one instead of accumulating versions. When unsure which category or whether to keep a file, ask before deleting.
+Keep agent scratch, worker handoffs, and generated files in `$TMPDIR` (or the host's native plan/artifact directory), never in a repository working tree or commit.
+* Default to the conversation (or the host's native plan/question UI) for plans, option tables, and reports; write a local file only when requested, when handing off across sessions/workers, or when output is too large for chat.
+* When a detour leaves unfinished steps or deferred decisions, do not nag mid-detour; once the current sub-task wraps up, automatically resume the next pending item or decision (using at most **one** state-only file in `$TMPDIR` only if detailed context must survive compaction — never a turn-by-turn diary; delete items once resolved).
+* Single source of truth across external docs and local files: when a deliverable lives in an external doc (Google Doc, Notion, issue tracker) or a repo file, use `$TMPDIR` only for transient staging and never keep a parallel local copy. Update local files in place instead of accumulating versions.
 
 ## Delegation
 
