@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Sync stable Antigravity CLI settings into its local runtime config."""
+"""Sync stable Antigravity settings into the local runtime configs.
+
+The Antigravity CLI gets every template key. Jetski, the internal Antigravity
+build, shares the settings schema but keeps its own model and UI preferences,
+so it only receives the shared `permissions` tiers, and only where it is
+installed.
+"""
 
 from __future__ import annotations
 
@@ -8,15 +14,27 @@ import difflib
 import json
 from pathlib import Path
 import sys
-from typing import Any
+from typing import Any, NamedTuple
+
+
+class Target(NamedTuple):
+    path: Path
+    # Top-level template keys to sync; None syncs every key.
+    keys: tuple[str, ...] | None
+    # Optional targets are skipped when their settings file does not exist.
+    optional: bool
 
 
 def default_source() -> Path:
     return Path(__file__).resolve().parent / "settings.json"
 
 
-def default_target() -> Path:
-    return Path.home() / ".gemini" / "antigravity-cli" / "settings.json"
+def default_targets() -> list[Target]:
+    gemini = Path.home() / ".gemini"
+    return [
+        Target(gemini / "antigravity-cli" / "settings.json", None, optional=False),
+        Target(gemini / "jetski" / "cli" / "settings.json", ("permissions",), optional=True),
+    ]
 
 
 def load_object(path: Path, *, missing_ok: bool = False) -> dict[str, Any]:
@@ -44,52 +62,81 @@ def merge_objects(
     return merged
 
 
-def build_synced_config(source: Path, target: Path) -> str:
+def build_synced_config(
+    source: Path, target: Path, keys: tuple[str, ...] | None = None
+) -> str:
     template = load_object(source)
+    if keys is not None:
+        template = {key: value for key, value in template.items() if key in keys}
     local = load_object(target, missing_ok=True)
-    return json.dumps(
-        merge_objects(local, template), ensure_ascii=False, indent=2, sort_keys=True
-    ) + "\n"
+    # Keep the client's own key order so a sync only shows managed changes.
+    return json.dumps(merge_objects(local, template), ensure_ascii=False, indent=2) + "\n"
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Sync stable Antigravity CLI settings into its runtime config."
-    )
-    parser.add_argument("--source", type=Path, default=default_source())
-    parser.add_argument("--target", type=Path, default=default_target())
-    parser.add_argument("--apply", action="store_true", help="write the synced config")
-    args = parser.parse_args()
+def sync_target(source: Path, target: Target, *, apply: bool) -> None:
+    path = target.path.expanduser()
+    if target.optional and not path.exists():
+        print(f"skipped (not installed): {path}")
+        return
 
-    source = args.source.expanduser()
-    target = args.target.expanduser()
-    desired = build_synced_config(source, target)
-    current = target.read_text(encoding="utf-8") if target.exists() else ""
-    replace_symlink = target.is_symlink()
+    desired = build_synced_config(source, path, target.keys)
+    current = path.read_text(encoding="utf-8") if path.exists() else ""
+    replace_symlink = path.is_symlink()
 
     if current == desired and not replace_symlink:
-        print("Antigravity CLI config is already in sync.")
-        return 0
+        print(f"already in sync: {path}")
+        return
 
     diff = difflib.unified_diff(
         current.splitlines(keepends=True),
         desired.splitlines(keepends=True),
-        fromfile=str(target),
-        tofile=f"{target} (synced)",
+        fromfile=str(path),
+        tofile=f"{path} (synced)",
     )
     sys.stdout.writelines(diff)
     if replace_symlink:
-        print(f"replace symlink with regular file: {target}")
+        print(f"replace symlink with regular file: {path}")
 
-    if not args.apply:
-        print("\ndry-run only; rerun with --apply to write.")
-        return 0
+    if not apply:
+        print(f"dry-run only; rerun with --apply to write {path}.")
+        return
 
-    target.parent.mkdir(parents=True, exist_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
     if replace_symlink:
-        target.unlink()
-    target.write_text(desired, encoding="utf-8")
-    print(f"synced: {target}")
+        path.unlink()
+    path.write_text(desired, encoding="utf-8")
+    print(f"synced: {path}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Sync stable Antigravity settings into the local runtime configs."
+    )
+    parser.add_argument("--source", type=Path, default=default_source())
+    parser.add_argument(
+        "--target",
+        type=Path,
+        help="sync one settings file instead of the default Antigravity CLI and Jetski targets",
+    )
+    parser.add_argument(
+        "--key",
+        action="append",
+        help="with --target, sync only this top-level template key (repeatable)",
+    )
+    parser.add_argument("--apply", action="store_true", help="write the synced config")
+    args = parser.parse_args()
+
+    if args.key and not args.target:
+        parser.error("--key requires --target")
+    source = args.source.expanduser()
+    if args.target:
+        keys = tuple(args.key) if args.key else None
+        targets = [Target(args.target, keys, optional=False)]
+    else:
+        targets = default_targets()
+
+    for target in targets:
+        sync_target(source, target, apply=args.apply)
     return 0
 
 

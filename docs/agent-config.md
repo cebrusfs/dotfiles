@@ -183,6 +183,12 @@ target. It owns the stable `enableTelemetry`, `colorScheme`, and `model`
 preferences. Runtime state such as `trustedWorkspaces`, plus unknown top-level
 or nested keys added by the CLI, stays local.
 
+Jetski is the internal build of Antigravity: it shares the agent harness,
+settings schema, and `~/.gemini/config/` customization root, but keeps its own
+settings at `~/.gemini/jetski/cli/settings.json` with its own model and UI
+preferences. The sync therefore writes only the template's `permissions` key
+there, and skips machines where that file does not exist.
+
 Like the [Codex Config Template](#codex-config-template), the sync script is not
 directly executable and defaults to a dry-run diff. Apply it with
 `mise run sync:antigravity` (which runs
@@ -198,13 +204,13 @@ state (`trustedWorkspaces`) into the same `settings.json`. If a future CLI
 version moves trust state out of that file, delete `sync-config.py` and switch
 the adapter back to a plain dotbot symlink.
 
-Hard command-blocking uses `permissions.deny` and `permissions.ask` in
-`antigravity-cli/settings.json` itself; the template mirrors Claude's jj deny
-and ask lists. Grant targets are literal token prefixes: `command(jj git push)`
-covers `jj git push --all`, and a trailing `*` only matches a literal `*`
-argument (Jetski source `coversCommand` tests, checked 2026-10-15). The schema
-was captured by adding one rule through the interactive `/permissions` panel
-and diffing the file. Invalid entries are dropped with an
+Hard command-blocking uses `permissions.deny` and `permissions.ask` in each
+settings file itself; the template mirrors Claude's jj deny and ask lists.
+Grant targets are literal token prefixes: `command(jj git push)` covers
+`jj git push --all`, and a trailing `*` only matches a literal `*` argument
+(Jetski source `coversCommand` tests, checked 2026-10-15). The schema was
+captured by adding one rule through the interactive `/permissions` panel and
+diffing the file. Invalid entries are dropped with an
 `ignoring invalid ... grant string` log warning, so after changing rules check
 the startup line, such as
 `CLI settings initialized: permissions=&{Allow:[] Deny:[command(jj git push) ...] Ask:[...]}`,

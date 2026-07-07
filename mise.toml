@@ -141,7 +141,7 @@ description = "Sync stable Codex defaults into ~/.codex/config.toml"
 run = "uv run --no-project --managed-python --python cpython python config/agent/codex/sync-config.py --apply"
 
 [tasks."sync:antigravity"]
-description = "Sync stable Antigravity CLI settings into ~/.gemini/antigravity-cli/settings.json"
+description = "Sync stable Antigravity settings into the Antigravity CLI and Jetski settings files"
 run = "uv run --no-project --managed-python --python cpython python config/agent/antigravity/sync-config.py --apply"
 
 [tasks."lint"]
