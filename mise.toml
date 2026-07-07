@@ -97,6 +97,42 @@ description = "Run unit tests for agent hooks"
 env = { PYTHONDONTWRITEBYTECODE = "1" }
 run = "python3 -m unittest discover -s config/agent/hooks -p 'test_*.py'"
 
+# Always-loaded text is paid for on every turn, so it has a strict ceiling.
+# Skill bodies load on demand; their ceiling is a tripwire near the Agent Skills
+# recommendation (SKILL.md under ~5,000 tokens) to catch runaway growth, not a
+# target. Descriptions are always-loaded metadata and the spec caps them at
+# 1,024 characters. The numbers live only here so prose guidance cannot drift
+# from the gate. The skills glob relies on git pathspec `*` matching across `/`,
+# like the JSON lint above.
+[tasks."lint:agent-budget"]
+description = "Enforce size ceilings on shared agent guidance and skills"
+run = '''
+status=0
+check_words() {
+    words=$(wc -w <"$1" | tr -d ' ')
+    if [ "$words" -gt "$2" ]; then
+        printf '%s: %s words exceeds the %s-word ceiling\n' "$1" "$words" "$2" >&2
+        status=1
+    fi
+}
+check_description() {
+    chars=$(awk 'NR == 1 && $0 != "---" { exit } NR > 1 && $0 == "---" { exit } NR > 1 { print }' "$1" |
+        yq eval '.description // "" | length' -)
+    if [ "$chars" -gt 1024 ]; then
+        printf '%s: description is %s characters; the Agent Skills limit is 1024\n' "$1" "$chars" >&2
+        status=1
+    fi
+}
+check_words config/agent/global.md 1600
+for f in $(git ls-files 'config/agent/skills/*.md'); do
+    check_words "$f" 3000
+done
+for f in $(git ls-files 'config/agent/skills/*/SKILL.md'); do
+    check_description "$f"
+done
+exit "$status"
+'''
+
 # Manual entry points for the agent config syncs (install/update run the same
 # scripts). Each script prints the diff it applies; run the script without
 # --apply for a dry run.
@@ -110,7 +146,7 @@ run = "uv run --no-project --managed-python --python cpython python config/agent
 
 [tasks."lint"]
 description = "Run all linters"
-depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "test:hooks"]
+depends = ["lint:bash", "lint:zsh", "lint:github-actions", "lint:json", "lint:yaml", "lint:dotbot", "lint:nvim", "lint:agent-budget", "test:hooks"]
 
 [tasks."fmt"]
 description = "Run all formatters"

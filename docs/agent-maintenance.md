@@ -56,14 +56,12 @@ at runtime. Keep repo-specific behavior local and independent of home paths.
 
 ## Size and verification
 
-Word limits (`wc -w`) are ceilings, not targets:
+Ceilings are not targets. `mise run lint:agent-budget` enforces them and
+`mise.toml` holds the numbers: always-loaded `global.md` and skill
+descriptions are strict, while skill bodies, which load on demand, have only a
+tripwire.
 
-| File | Budget |
-|---|---|
-| `global.md` | 1,600 words |
-| Each `agent-delegate` file | 1,500 words |
-
-When an edit exceeds a budget, remove or merge content, or ask to change it.
+When an edit exceeds a ceiling, remove or merge content, or ask to change it.
 Before committing, run `mise run check`, read back the result, and verify
 references resolve. For adapter or symlink changes, follow
 [agent-config.md](agent-config.md) and `repo-agent-config`. Use topic commits
