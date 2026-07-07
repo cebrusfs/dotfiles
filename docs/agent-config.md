@@ -188,21 +188,21 @@ state (`trustedWorkspaces`) into the same `settings.json`. If a future CLI
 version moves trust state out of that file, delete `sync-config.py` and switch
 the adapter back to a plain dotbot symlink.
 
-Hard command-blocking **landed 2026-07-11**: the template's `permissions.deny`
-mirrors Claude's jj deny list as `command(<target> *)` grant strings, in
-`antigravity-cli/settings.json` itself. The schema was captured by adding one
-rule through the interactive `/permissions` panel and diffing the file; a
-fresh session then logs
-`CLI settings initialized: permissions=&{Allow:[] Deny:[command(jj git *) ...] Ask:[]}`,
-and enforcement was verified headless — with a probe rule `command(touch *)`,
-`agy -p` refused to run `touch` and created nothing. Earlier probes failed on
-grant syntax/structure, not location (invalid entries are dropped with an
-`ignoring invalid ... grant string` log warning) — after changing rules, check
-the startup log line instead of assuming they loaded.
+Hard command-blocking uses `permissions.deny` and `permissions.ask` in
+`antigravity-cli/settings.json` itself; the template mirrors Claude's jj deny
+and ask lists. Grant targets are literal token prefixes: `command(jj git push)`
+covers `jj git push --all`, and a trailing `*` only matches a literal `*`
+argument (Jetski source `coversCommand` tests, checked 2026-10-15). The schema
+was captured by adding one rule through the interactive `/permissions` panel
+and diffing the file. Invalid entries are dropped with an
+`ignoring invalid ... grant string` log warning, so after changing rules check
+the startup line, such as
+`CLI settings initialized: permissions=&{Allow:[] Deny:[command(jj git push) ...] Ask:[...]}`,
+instead of assuming they loaded.
 
-Caveat: the sync replaces the whole `deny` array with the template's. A rule
-added via `/permissions` survives only until the next sync — promote it into
-the template if it should persist.
+Caveat: the sync replaces the whole `deny` and `ask` arrays with the
+template's. A rule added via `/permissions` survives only until the next sync
+— promote it into the template if it should persist.
 
 ## Codex Config Template
 
@@ -242,7 +242,12 @@ operations, read-only GitHub CLI inspection, and the commit-nudge hook. Codex
 protects `.git` even in writable workspaces, so routine jj snapshots and
 commits may need this exception. These matching commands can run outside the
 sandbox without review. Prefix rules also match trailing arguments; they are
-not an isolation boundary. Destructive/outward-action rules still apply.
+not an isolation boundary. The jj rules follow the
+[shared VCS policy](../config/agent/global.md#version-control): steps the
+operation log reverses, including discards and `jj git fetch`, are allowed and
+the guidance decides when a request authorizes them; repo-wide `jj op`
+rollbacks and remote configuration prompt; `jj op abandon`, `jj util gc`, and
+`jj git push` are forbidden.
 
 The default Codex posture is `approval_policy = "on-request"`,
 `approvals_reviewer = "auto_review"`, and `default_permissions =

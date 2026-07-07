@@ -4,10 +4,15 @@
 > went wrong — not the normal flow.
 
 ## Rollback
-- `jj undo` is gated: run it only when the user explicitly asked for an
-  operation rollback. Without that ask, stop after
-  `jj --at-op=@ --ignore-working-copy op log -n 5` and present findings. The
-  skill's allowed-tools listing `jj undo` is capability, not permission.
+- `jj undo` reverses the latest operation and is itself recorded, so `jj redo`
+  reverses it again. Use it when the user asks to undo, or to reverse your own
+  last jj step when it went wrong: run
+  `jj --at-op=@ --ignore-working-copy op log -n 5` first, confirm the operation
+  is yours, and report its id. Deeper rollbacks (`jj op restore <id>`) need the
+  user's explicit instruction naming the target; `jj op abandon` and
+  `jj util gc` are never run by agents. `undo`, `abandon`, and `restore` are
+  not pre-approved in `allowed-tools`: the shared guidance decides when a
+  request authorizes them.
 
 ## Bad review-fix distribution
 
@@ -24,9 +29,9 @@ its stack-tip **commit ID**.
   `jj restore --from <old-tip-commit-id> <paths>`. This restores file content,
   not the old graph. Inspect the diff and follow
   [amendment routing](../SKILL.md#amending-commits-in-a-stack).
-- If only commit ownership is wrong, restoring content cannot fix it. Ask
-  whether to perform an authorized operation rollback or deliberately
-  reconstruct the affected local stack; the rollback restriction above applies.
+- If only commit ownership is wrong, restoring content cannot fix it: `jj undo`
+  your own most recent operations, or ask for a deeper rollback naming the
+  target operation.
 
 ## Conflict resolution (non-interactive)
 - Use `jj resolve --list` to enumerate conflicts. In jj 0.45.1 (verified

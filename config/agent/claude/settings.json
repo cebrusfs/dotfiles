@@ -2,11 +2,9 @@
   "attribution": false,
   "permissions": {
     "deny": [
-      "Bash(jj git *)",
+      "Bash(jj git push*)",
       "Bash(jj op abandon*)",
-      "Bash(jj op integrate*)",
-      "Bash(jj op restore*)",
-      "Bash(jj op revert*)",
+      "Bash(jj util gc*)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(~/.kube/**)",
@@ -16,8 +14,16 @@
       "Read(~/.netrc)",
       "Read(~/.npmrc)"
     ],
+    "ask": [
+      "Bash(jj op integrate*)",
+      "Bash(jj op restore*)",
+      "Bash(jj op revert*)",
+      "Bash(jj git remote *)"
+    ],
     "defaultMode": "auto",
     "allow": [
+      "Bash(jj git fetch*)",
+      "Bash(jj pull*)",
       "Bash(gh auth status)",
       "Bash(gh issue list *)",
       "Bash(gh issue status *)",

@@ -54,18 +54,18 @@ prefix_rule(
         "jj squash -u",
     ],
     not_match = [
-        "jj abandon @",
-        "jj restore config.toml",
-        "jj undo",
+        "jj op abandon old-op",
+        "jj util gc",
     ],
 )
 
 prefix_rule(
-    pattern = ["jj", ["abandon", "restore", "undo"]],
-    decision = "prompt",
-    justification = "Discarding changes or reversing an operation requires explicit review.",
+    pattern = ["jj", ["abandon", "redo", "restore", "undo"]],
+    decision = "allow",
+    justification = "Discards are reversible through the operation log; the shared guidance decides when a request authorizes them and requires the operation id in the report.",
     match = [
         "jj abandon @",
+        "jj redo",
         "jj restore config.toml",
         "jj undo",
     ],
@@ -85,8 +85,8 @@ prefix_rule(
 
 prefix_rule(
     pattern = ["jj", "bookmark", ["delete", "forget"]],
-    decision = "prompt",
-    justification = "Bookmark removal can alter what a later sync publishes or retains.",
+    decision = "allow",
+    justification = "Local bookmark removal is reversible through the operation log, and publishing stays with the user because jj git push is forbidden.",
     match = [
         "jj bookmark delete topic",
         "jj bookmark forget topic@origin",
@@ -94,12 +94,41 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["jj", "git"],
-    decision = "forbidden",
-    justification = "Use jj sync yourself; agents must not run jj git commands in colocated repos.",
+    pattern = ["jj", "git", "fetch"],
+    decision = "allow",
+    justification = "Fetching only updates remote-tracking bookmarks; the operation log records it.",
     match = [
         "jj git fetch",
+        "jj git fetch --all-remotes",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "pull"],
+    decision = "allow",
+    justification = "The user's pull alias fetches all remotes and rebases local stacks onto trunk; both steps are recoverable through the operation log.",
+    match = [
+        "jj pull",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "git", "remote"],
+    decision = "prompt",
+    justification = "Remote configuration is not covered by the operation log and changes where later syncs publish.",
+    match = [
+        "jj git remote add origin git@github.com:user/repo.git",
+        "jj git remote set-url origin git@github.com:user/repo.git",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "git", "push"],
+    decision = "forbidden",
+    justification = "Publishing is the user's job; agents must not push from colocated repos.",
+    match = [
         "jj git push",
+        "jj git push --all",
     ],
 )
 
@@ -114,14 +143,33 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["jj", "op", ["abandon", "integrate", "restore", "revert"]],
-    decision = "forbidden",
-    justification = "Operation-log mutation and recovery commands are destructive enough to require explicit user instruction.",
+    pattern = ["jj", "op", ["integrate", "restore", "revert"]],
+    decision = "prompt",
+    justification = "Repo-wide rollbacks are reversible but need the user's explicit instruction naming the target operation.",
     match = [
-        "jj op abandon old-op",
         "jj op integrate old-op",
         "jj op restore abc123",
         "jj op revert abc123",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "op", "abandon"],
+    decision = "forbidden",
+    justification = "Abandoning operation history makes commits unreachable for garbage collection; the user runs this manually.",
+    match = [
+        "jj op abandon old-op",
+        "jj op abandon ..old-op",
+    ],
+)
+
+prefix_rule(
+    pattern = ["jj", "util", "gc"],
+    decision = "forbidden",
+    justification = "Garbage collection permanently deletes unreachable commits and operations; the user runs this manually.",
+    match = [
+        "jj util gc",
+        "jj util gc --expire now",
     ],
 )
 

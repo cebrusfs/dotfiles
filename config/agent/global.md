@@ -114,12 +114,16 @@ boundaries.
   Preserve unrelated dirty files.
 * In `jj + git` colocated repos, use `jj` exclusively. Read the `jj` skill
   before editing or rewriting history; it owns the pre-edit flow and recipes.
-* Do not run destructive operations unless I explicitly authorize them or an
-  applicable skill explicitly requires them.
-* Do not run `jj git *`, `jj undo`, or mutating `jj op` subcommands
-  (`jj op abandon`, `jj op integrate`, `jj op restore`, `jj op revert`) unless I
-  explicitly ask; syncing with remotes and operation-log recovery are my job.
-  `jj op log` is allowed for read-only inspection. Never bypass VCS safety or
-  immutability protections, such as `jj --ignore-immutable`.
+* Judge destructive operations by reversibility and by what I asked for: run
+  one only when my request or the task implies it, and ask first when it is
+  irreversible.
+* A local jj step the operation log reverses, including `abandon`, `restore`,
+  and `undo`, is allowed when my request or the task calls for it: confirm the
+  target from `jj log` first and report the operation id. `jj git fetch` and
+  `jj pull` are allowed. Deep rollbacks (`jj op restore`, `jj op revert`,
+  `jj op integrate`) and remote configuration need my explicit instruction
+  naming the target. Never run `jj op abandon`, `jj util gc`, or
+  `jj git push`, and never bypass VCS safety or immutability protections such
+  as `jj --ignore-immutable`; publishing is my job. `jj op log` is read-only.
 * Do not use Conventional Commits format (e.g., `feat(...):`, `fix(...):`). Use
   `component: title` instead.

@@ -14,10 +14,7 @@ allowed-tools:
   - Bash(jj edit:*)
   - Bash(jj new:*)
   - Bash(jj absorb:*)
-  - Bash(jj undo:*)
-  - Bash(jj restore:*)
   - Bash(jj bookmark:*)
-  - Bash(jj abandon:*)
   - Bash(jj fix:*)
   - Bash(jj squash:*)
   - Bash(jj split:*)
@@ -67,6 +64,8 @@ Use `jj new` to leave a populated change behind or start from a different base.
 - Never rewrite commits while another process edits the same working copy or
   overlapping history; wait first. If they race, follow "Divergent change" in
   `references/recovery.md`.
+- Discards (`abandon`, `restore`, `undo`) follow the shared VCS policy: confirm
+  the target from `jj log`, then report the operation id.
 
 ## Amending commits in a stack
 Mutable commits can be rewritten. For a follow-up that belongs wholly to one
