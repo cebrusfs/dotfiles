@@ -14,6 +14,10 @@
 
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data
   proves it necessary.
+* Before building your own agent tooling (scripts, hooks, sync jobs, or
+  skills), check what the agent client already provides: Claude Code, Codex,
+  and Antigravity have built-in permission rules, hooks, plugins, skills, and
+  memory. Use those, and write custom code only for what they cannot do.
 * Default tool preferences, unless a project specifies otherwise:
   JavaScript/Node.js uses `bun`; Python uses `uv`; `rg` over `grep`; `fd` over
   `find`.
@@ -39,8 +43,8 @@
 ## Execution
 
 * Keep routine development tools inside a daily access boundary without extra
-  approval reviews. Use each runtime's native approval flow for access beyond
-  that boundary; do not bypass sandboxing for ordinary builds or tests.
+  approval reviews. Use each agent client's native approval flow for access
+  beyond that boundary; do not bypass sandboxing for ordinary builds or tests.
 * Before large multi-file changes, present a one-paragraph plan and wait for my
   OK.
 * When asked to modify repository files, finish end-to-end with relevant checks
@@ -58,11 +62,12 @@
 ## Artifacts & State
 
 Keep agent scratch, worker handoffs, and generated files in `$TMPDIR` (or the
-host's native plan/artifact directory), never in a repository working tree or
-commit.
-* Default to the conversation (or the host's native plan/question UI) for plans,
-  option tables, and reports; write a local file only when requested, when
-  handing off across sessions/workers, or when output is too large for chat.
+agent client's native plan/artifact directory), never in a repository working
+tree or commit.
+* Default to the conversation (or the agent client's native plan/question UI)
+  for plans, option tables, and reports; write a local file only when
+  requested, when handing off across sessions/workers, or when output is too
+  large for chat.
 * When a detour leaves unfinished steps or deferred decisions, do not nag
   mid-detour; once the current sub-task wraps up, automatically resume the next
   pending item or decision (using at most **one** state-only file in `$TMPDIR`

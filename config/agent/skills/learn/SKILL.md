@@ -27,9 +27,9 @@ without asking, and how it lands in the shared repository.
   or corp details in shared files.
 - Host memories (Claude auto memory, Codex memories) are recall aids, not
   owners; promote a candidate only through this skill.
-- Design every change for Claude Code, Codex, and Antigravity together: the
-  same behavior on all three, through each host's native mechanism. A host-only
-  path is a last resort; report the gap instead of silently accepting it.
+- Design every change for Claude Code, Codex, and Antigravity together, with
+  the same behavior on all three. A host-only path is a last resort; report the
+  gap instead of silently accepting it.
 - Only the root agent persists; workers report candidates with evidence.
 
 ## Authority
