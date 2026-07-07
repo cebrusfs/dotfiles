@@ -114,6 +114,8 @@
     ~/.gemini/config/skills: config/agent/skills
     ~/.gemini/antigravity/skills: config/agent/skills
     ~/.gemini/antigravity-cli/skills: config/agent/skills
+    # Antigravity and Jetski load hooks from enabled plugins in this root.
+    ~/.gemini/config/plugins/dotfiles-agent: config/agent/antigravity/plugin
 
 
 # vim

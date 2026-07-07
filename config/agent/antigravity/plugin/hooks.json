@@ -1,0 +1,39 @@
+{
+  "dotfiles-jj-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v python3 >/dev/null 2>&1 || exit 0; exec python3 ../../hooks/antigravity-hook.py pre-tool-use jj-guard.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "dotfiles-commit-message": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v python3 >/dev/null 2>&1 || exit 0; exec python3 ../../hooks/antigravity-hook.py pre-tool-use validate-commit-message.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "dotfiles-commit-nudge": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "command -v python3 >/dev/null 2>&1 || exit 0; exec python3 ../../hooks/antigravity-hook.py stop commit-nudge.sh",
+        "timeout": 30
+      }
+    ]
+  }
+}

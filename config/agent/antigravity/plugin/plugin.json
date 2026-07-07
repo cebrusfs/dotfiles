@@ -1,0 +1,5 @@
+{
+  "name": "dotfiles-agent",
+  "displayName": "Dotfiles agent hooks",
+  "description": "Runs the dotfiles repository's shared agent hooks in Antigravity and Jetski: the jj safety guard, the commit message check, and the commit nudge."
+}

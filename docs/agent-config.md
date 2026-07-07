@@ -102,8 +102,9 @@ backs it up before restoring the managed symlink.
 validator. `config/agent/hooks/jj-guard.py` is the shared guard for jj
 safety-bypass flags (`--ignore-immutable`) that prefix-based deny patterns and
 execpolicy rules cannot match; both are wired as PreToolUse hooks for Claude
-(`config/agent/claude/settings.json`) and Codex (`config/agent/codex/hooks.json`). Both accept native hook JSON on stdin for global Claude/Codex
-PreToolUse hooks; only `validate-commit-message.py` additionally supports
+(`config/agent/claude/settings.json`), Codex (`config/agent/codex/hooks.json`),
+and Antigravity/Jetski (the plugin below). Both accept native Claude/Codex hook
+JSON on stdin; only `validate-commit-message.py` additionally supports
 `AGENT_COMMIT_COMMAND` for project wrapper scripts that already extracted a
 shell command from hook JSON.
 
@@ -132,6 +133,22 @@ messages, feed the message through stdin or a temporary message file under
 Run hook tests through `mise run test:hooks`, or set `PYTHONDONTWRITEBYTECODE=1`
 when invoking `python3 -m unittest` directly. Bare Python test runs write
 `__pycache__` into `config/agent/hooks/`.
+
+Antigravity and Jetski run the same hooks through the `dotfiles-agent` plugin
+in `config/agent/antigravity/plugin/`, which dotbot links into
+`~/.gemini/config/plugins/`. Enabled plugins contribute their `hooks.json`
+alongside the personal `~/.gemini/config/hooks.json`, so nothing is synced or
+merged into that file. These clients differ from Claude and Codex in payload
+shape (camelCase, `toolCall.args.CommandLine`), working directory (the plugin
+directory rather than the workspace), and verdict format (a JSON object on
+stdout; empty output means no opinion, and a non-zero exit fails a PreToolUse
+hook closed). `config/agent/hooks/antigravity-hook.py` translates both ways
+and runs each shared hook from the first workspace path, so the shared hooks
+keep one format; its own errors fail open like the other adapters. Plugin
+commands use paths relative to the plugin directory, which resolve through the
+symlink to this checkout. A session loads hooks at startup: check its
+`loaded N named hooks from M hooks.json file(s)` log line (verified 2026-10-15:
+the plugin added three hooks and a second file).
 
 `config/agent/hooks/learn-nudge.sh` is a shared `UserPromptSubmit` hook for
 Claude and Codex: when a prompt matches correction or preference markers
