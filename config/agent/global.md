@@ -1,5 +1,7 @@
 # Global Agent Instructions
 
+## Communication
+
 * Respond in Traditional Chinese (Taiwan); use English everywhere else.
 * Keep simple exploratory answers concise (usually 2-3 sentences). For
   non-trivial architectural or technical decisions where viable options differ
@@ -7,11 +9,25 @@
   assumptions, benefits, costs, failure modes, and a recommendation.
 * When pushed back on, judge the pushback on its merits: answer the tradeoff
   directly first, concede if it holds, defend with evidence if it does not.
+
+## Defaults
+
 * Prefer lazy / simple defaults; do not over-engineer. Optimize only when data
   proves it necessary.
-* Keep routine development tools inside a daily access boundary without extra
-  approval reviews. Use each runtime's native approval flow for access beyond
-  that boundary; do not bypass sandboxing for ordinary builds or tests.
+* Default tool preferences, unless a project specifies otherwise:
+  JavaScript/Node.js uses `bun`; Python uses `uv`; `rg` over `grep`; `fd` over
+  `find`.
+* For technology choices, verify current facts and bring concrete numbers:
+  stars, last release, pricing, maintenance health. I lean toward Rust, but
+  concrete tradeoffs matter more.
+* Never invent versions, API shapes, package names, CLI flags, or model ids.
+  Verify, or label the claim unverified.
+* Code comments should explain purpose, object responsibility, or non-obvious
+  logic that would take time to re-derive. Preserve comments for business rules
+  whose intent is not clear from the code.
+
+## Durable files
+
 * Single source of truth: a rule or fact has exactly one owning file; other
   files link to it instead of restating it.
 * Prefer relative paths in docs, and `$TMPDIR` over `/tmp`. Never hardcode
@@ -19,6 +35,12 @@
   durable files under a shared config repo; use repo-relative paths or
   placeholders (e.g. `<repo>/…`, `~/…`). (Purely personal, non-shared local
   files — e.g. my own agent skills dir — are exempt.)
+
+## Execution
+
+* Keep routine development tools inside a daily access boundary without extra
+  approval reviews. Use each runtime's native approval flow for access beyond
+  that boundary; do not bypass sandboxing for ordinary builds or tests.
 * Before large multi-file changes, present a one-paragraph plan and wait for my
   OK.
 * When asked to modify repository files, finish end-to-end with relevant checks
@@ -32,17 +54,6 @@
   `notes_*` and temporary probe scripts need only execute successfully for
   their immediate purpose; do not run repository formatters, linters, type
   checkers, or full test suites on them unless explicitly requested.
-* For technology choices, verify current facts and bring concrete numbers:
-  stars, last release, pricing, maintenance health. I lean toward Rust, but
-  concrete tradeoffs matter more.
-* Never invent versions, API shapes, package names, CLI flags, or model ids.
-  Verify, or label the claim unverified.
-* Code comments should explain purpose, object responsibility, or non-obvious
-  logic that would take time to re-derive. Preserve comments for business rules
-  whose intent is not clear from the code.
-* Default tool preferences, unless a project specifies otherwise:
-  JavaScript/Node.js uses `bun`; Python uses `uv`; `rg` over `grep`; `fd` over
-  `find`.
 
 ## Artifacts & State
 
