@@ -15,7 +15,10 @@
 
 ## Artifacts
 
-Organize every working directory's artifacts into exactly three categories, each with a clear filename prefix, and keep them current as work proceeds — update the relevant file the moment its state changes, without being asked.
+Keep artifacts in the agent's own workspace, never in a repository working tree
+or commit. Organize that workspace into exactly three categories, each with a
+clear filename prefix, and keep them current as work proceeds — update the
+relevant file the moment its state changes, without being asked.
 
 * `notes_*` — my (agent) working notes & TODO: decisions with their reason, verified facts with source path/CL, open threads, next steps. My durable scratch memory for the task; re-read on resume and after any compaction.
 * `review_*` — things I need you (the user) to review/decide: plans, mappings, option tables. Each must end with an explicit open-questions/decision list. This is where I park anything blocked on your input.
