@@ -193,8 +193,9 @@ also protect Claude's file tools. Named credential environment variables are
 removed from sandboxed commands. This does not isolate MCP servers, hooks,
 LSP servers, browsers, or the whole Claude process. Claude's local-address
 guard is not Codex's private-network guard: an approved intranet hostname
-can resolve to a private address. Sensitive or unattended work needs a
-separately chosen outer boundary. See [Claude sandboxing](https://code.claude.com/docs/en/sandboxing)
+can resolve to a private address. This native Auto setup accepts that gap and
+adds no outer enforcement layer. An approved unsandboxed retry also leaves
+the inner filesystem and network boundary. See [Claude sandboxing](https://code.claude.com/docs/en/sandboxing)
 and [permission modes](https://code.claude.com/docs/en/permission-modes).
 
 ## Antigravity CLI Permissions
@@ -250,6 +251,11 @@ template's. A rule added via `/permissions` survives only until the next sync
 local Codex config. If copying the template's permission profile into the local
 config, do not mix it with legacy `sandbox_mode` / `[sandbox_workspace_write]`
 settings; use one sandbox configuration model per session.
+
+This setup targets the current user's local `~/.codex/config.toml`.
+Host-wide requirements and administrator policy are outside its scope.
+The current design target is Codex CLI 0.163.0, the stable release published
+on 2026-10-15; see the [official release](https://github.com/openai/codex/releases/tag/rust-v0.163.0).
 
 Use the task runner to inspect or apply the template:
 
@@ -349,26 +355,30 @@ rejection, not evidence of an expired service token or an origin IP ban.
 Keep a network-specific destination approval separate from a full command
 escalation. The latter can remove filesystem and network restrictions.
 
-The network proxy remains experimental. Both inspected clients (PATH CLI
-0.161.0 and desktop-embedded 0.162.0-alpha.17.2, 2026-10-19) expose native
-host-specific network approval in their app-server schemas, but their
-[session setup](https://github.com/openai/codex/blob/rust-v0.162.0-alpha.17.2/codex-rs/core/src/session/session.rs#L1500-L1546)
-enables the inline approval callback only when managed network requirements
-are configured. The user `features.network_proxy` toggle alone does not enable
-it. The local app-server reported no managed requirements. Adding a system
-network policy is a separate setup decision; see
+The network proxy remains experimental. The target release's
+[session setup](https://github.com/openai/codex/blob/rust-v0.163.0/codex-rs/core/src/session/session.rs#L1495-L1512)
+still enables the inline host-approval callback only when managed network
+requirements are configured. The user `features.network_proxy` toggle alone
+does not enable it. Under the local-user scope above, automatic review remains
+enabled for eligible approval requests, while unlisted proxy destinations are
+blocked. Updating to the target release does not provide reviewed temporary
+host grants through user configuration alone.
+See
 [managed configuration](https://learn.chatgpt.com/docs/enterprise/managed-configuration#configure-network-access-requirements).
 
-Fresh ephemeral threads in both clients loaded the named profile and automatic
-reviewer from the synced defaults without per-thread policy overrides. Allowed
+Runtime checks used PATH CLI 0.161.0 and desktop-embedded
+0.162.0-alpha.17.2 on 2026-10-19; the target release was source-reviewed, not
+installed or executed. Fresh ephemeral threads in both installed clients loaded
+the named profile and automatic reviewer from the synced defaults without
+per-thread policy overrides. Allowed
 public control requests succeeded; a proxy-ignoring connection to the same
 pinned public address was blocked. An allowlisted test hostname resolving to
 a controlled loopback listener was denied with `not_allowed_local`, and the
 listener received no request. On the embedded client, an unknown public host
 was blocked in separate auto-review and human-review turns, with no approval
-event; a synthetic filesystem read deny remained enforced. Those turns did
-not grant connectivity. Do not promise reviewed temporary host access or a
-grant lifetime until the intended managed setup passes a fresh agent turn.
+event; a synthetic filesystem read deny remained enforced. Those turns used
+only the user proxy configuration and did not grant connectivity or establish
+a temporary grant lifetime.
 
 If automatic review is unavailable or times out, the action may remain
 unexecuted. Use the native human-review route rather than granting full
