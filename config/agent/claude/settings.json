@@ -22,8 +22,6 @@
     ],
     "defaultMode": "auto",
     "allow": [
-      "Bash(jj git fetch*)",
-      "Bash(jj pull*)",
       "Bash(gh auth status)",
       "Bash(gh issue list *)",
       "Bash(gh issue status *)",
@@ -226,6 +224,10 @@
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": true,
     "failIfUnavailable": true,
+    "enableWeakerNetworkIsolation": true,
+    "excludedCommands": [
+      "gh *"
+    ],
     "filesystem": {
       "allowWrite": [
         "~/Library/Caches/mise",
@@ -240,6 +242,7 @@
       ]
     },
     "network": {
+      "allowLocalBinding": true,
       "allowedDomains": [
         "github.com",
         "*.github.com",

@@ -182,11 +182,25 @@ native unsandboxed retry, reviewed by the Auto classifier. Keep
 excluded task runner, or a custom approval hook. `failIfUnavailable = true`
 prevents a missing sandbox from silently becoming unrestricted execution.
 
-The narrow `gh` inspection allow rules preserve the everyday authenticated
-CLI workflow, including a native unsandboxed retry when necessary. They do
-not pre-approve GitHub mutations. Old project-local Bash allow rules are not
-part of the managed baseline; remove them when migrating so broad rules such
-as `Bash(gh run *)` cannot skip review for mutations.
+`enableWeakerNetworkIsolation` lets sandboxed commands reach macOS trustd;
+without it, tools on the system TLS stack such as mise fail certificate
+checks with `OSStatus -26276`. Codex's Seatbelt profile allows the same
+service; the documented cost is a possible exfiltration path through it.
+`network.allowLocalBinding` lets tests and development servers listen. Unlike
+Codex, a Claude listener on a non-loopback address accepts LAN connections,
+so bind development servers to loopback.
+
+`gh` is in `excludedCommands`: it failed TLS verification under Seatbelt and
+needs the authenticated session the sandbox withholds (`GH_TOKEN` is
+denied), so it runs outside the sandbox through the normal permission flow
+instead of failing first and retrying. The narrow inspection
+allow rules approve read-only calls; other `gh` calls go to the Auto
+classifier. jj has no allow rules: its `--config` option can name an
+arbitrary program, so an allow rule would approve that program's
+unsandboxed retry. jj runs inside the sandbox, which already keeps
+`.git/hooks` and `.git/config` read-only. Old project-local Bash allow rules
+are not part of the managed baseline; remove them when migrating so broad
+rules such as `Bash(gh run *)` cannot skip review for mutations.
 
 Credential file denies protect shell commands; matching `Read(...)` denies
 also protect Claude's file tools. Named credential environment variables are
