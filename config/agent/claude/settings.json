@@ -44,6 +44,16 @@
       "Bash(gh search repos *)"
     ]
   },
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "Repository visibility: the dotfiles checkout at ~/.dotfiles (github.com/cebrusfs/dotfiles) is public"
+    ],
+    "hard_deny": [
+      "$defaults",
+      "Remote publishing: never create or update refs on any remote (git push, jj git push, or any equivalent route such as global flags, -C/-R paths, aliases, --config overrides, wrapper scripts, gh commands that push a branch or create a tag or release, or API calls that write refs or commits), even when the user asks; publishing is the user's job. Fetching, pulling, dry-run pushes, and read-only gh calls are fine"
+    ]
+  },
   "model": "opus[1m]",
   "modelSettings": {
     "claude-opus-5-5": {

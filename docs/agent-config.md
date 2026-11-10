@@ -212,6 +212,18 @@ adds no outer enforcement layer. An approved unsandboxed retry also leaves
 the inner filesystem and network boundary. See [Claude sandboxing](https://code.claude.com/docs/en/sandboxing)
 and [permission modes](https://code.claude.com/docs/en/permission-modes).
 
+The `autoMode` block tunes the Auto classifier only; it does not replace the
+sandbox or the deny/ask rules, which run before it. It keeps `"$defaults"` in
+each list it sets, records that this repository is public, and turns the
+shared no-push policy into a `hard_deny`: the default "Git Push Destination"
+exception would otherwise allow pushes, and the `Bash(jj git push*)` deny
+does not match spellings such as `git push` or `jj -R . git push`. Add
+trusted orgs, domains, or buckets only when a real block needs them; do not
+accept a `/auto-mode-setup` draft wholesale, since it rewrites `environment`
+without `"$defaults"`. Check the merged result with `claude auto-mode config`
+and wording with `claude auto-mode critique`. See
+[auto mode configuration](https://code.claude.com/docs/en/auto-mode-config).
+
 ## Antigravity CLI Permissions
 
 Antigravity CLI stores user settings at
